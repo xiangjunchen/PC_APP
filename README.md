@@ -10,8 +10,9 @@ windows application
 一：Channel部分
 
 开发完成：
+
     1.  基础框架结构搭建，基础数据结构定义。  
-    1.  完成给定Channel rss源后的xml基础解析，用于针对Channel的功能点开发。
+    2.  完成给定Channel rss源后的xml基础解析，用于针对Channel的功能点开发。
 
 下一步计划：
 
