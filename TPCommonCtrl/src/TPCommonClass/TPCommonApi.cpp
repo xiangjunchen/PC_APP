@@ -20,6 +20,13 @@ int		TP_StrCmp(TCHAR *cS1, TCHAR *cS2, size_t nMaxSize)
 
 	return _tcsncmp(cS1,cS2,nSizeS1);
 }
+int		TP_StrLen(const TCHAR *cStr,	size_t nMaxSize)
+{
+	if(NULL == cStr)				{ASSERT(0);}
+	
+	return _tcsnlen(cStr, nMaxSize);
+}
+
 void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile)
 {
 	WIN32_FIND_DATA findData;

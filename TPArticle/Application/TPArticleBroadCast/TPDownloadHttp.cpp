@@ -26,7 +26,7 @@ UINT CTPDownloadHttp::InternetGetFile(HINTERNET IN hOpen, // Handle from Interne
 	FILE * pFile;
 
 	if ( !(hConnect = InternetOpenUrl ( hOpen, szUrl, szHead,
-		lstrlen (szHead), INTERNET_FLAG_DONT_CACHE | INTERNET_FLAG_PRAGMA_NOCACHE | INTERNET_FLAG_RELOAD, 0)))
+		TP_StrLen(szHead), INTERNET_FLAG_DONT_CACHE | INTERNET_FLAG_PRAGMA_NOCACHE | INTERNET_FLAG_RELOAD, 0)))
 	{
 		return INTERNET_ERROR_OPENURL;
 	}
@@ -116,7 +116,7 @@ int CTPDownloadHttp::InternetDownloadFile(HWND progressWindow, int idStatusText,
 }
 BOOL CTPDownloadHttp::SetHttpUrl(const TCHAR *cHttpUrl, TCHAR *cDownloadPath)
 {
-	int nLen = lstrlen(cHttpUrl) ;
+	int nLen = TP_StrLen(cHttpUrl) ;
 	if(!cHttpUrl || (nLen <= 0))			return FALSE;
 
 	m_cHttpUrl = cHttpUrl;
@@ -132,7 +132,7 @@ BOOL CTPDownloadHttp::Download()
 {
 	if(!m_cHttpUrl)			return FALSE;
 
-	if(lstrlen(m_cDownloadPath) <= 0)	ASSERT(0);
+	if(TP_StrLen(m_cDownloadPath) <= 0)	ASSERT(0);
 
 	InternetDownloadFile(/*AfxGetMainWnd()->m_hWnd*/NULL,4,4,m_cHttpUrl,m_cDownloadPath);
 

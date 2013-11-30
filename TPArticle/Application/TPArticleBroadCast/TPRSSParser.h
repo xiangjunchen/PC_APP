@@ -109,6 +109,10 @@ public:
 
 private:
 	BOOL ParserChannel(const TCHAR *cFileName);
+	BOOL ParserChannelNode(MSXML2::IXMLDOMNodePtr ChildNode);
+	BOOL ParserImageNode(MSXML2::IXMLDOMNodePtr ChildNode);
+	BOOL ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode);
+
 	BOOL ReleaseChannelInfo();
 
 };
