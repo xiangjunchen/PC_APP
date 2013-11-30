@@ -1,5 +1,7 @@
+devenv ..\TPCommonCtrl\Src\TPCommonClass\TPCommonClass2008.vcproj /build "Unicode Debug"
+devenv ..\TPCommonCtrl\Src\TPExtraCtrl\TPExtraCtrl2008.vcproj /build "Unicode Debug"
+devenv ..\TPCommonCtrl\Src\TPCommonCtrl\TPCommonCtrl2008.vcproj /build "Unicode Debug"
+devenv ..\TPArticle\Src\TPArticleManage\TPArticleManage.vcproj /build "Unicode Debug"
+devenv ..\TPArticle\Application\TPArticleBroadCast\TPArticleBroadCast.vcproj /build "Unicode Debug"
+devenv ..\TPArticle\PluginSrc\TPArticleIOPlugin\TPArticleIOPlugin.vcproj /build "Unicode Debug"
 
-
-devenv ..\TPCommonCtrl\Src\TPCommonWnd\TPCommonWnd2008.vcproj /build "Unicode Debug"
-devenv ..\TPCommonCtrl\Src\TPExtendCtrl\TPExtendCtrl2008.vcproj /build "Unicode Debug"
-rem devenv ..\TPEffect\PlugInSrc\Effect_Soft_1\MvColorCorrection\MvColorCorrection2008.vcproj /build "Unicode Debug"
