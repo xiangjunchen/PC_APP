@@ -2,7 +2,7 @@
 
 namespace _tp_commonclass
 {
-void    TP_StrCpy(TCHAR *cDst, TCHAR *cSrc, int nSrcSize, BOOL bNewBuf)
+void    TP_StrCpy(TCHAR *&cDst, TCHAR *cSrc, int nSrcSize, BOOL bNewBuf)
 {
 	if(NULL == cSrc)			{	ASSERT(0); return;				}
 	if(bNewBuf && cDst)			{	delete []cDst;  cDst = NULL;	}

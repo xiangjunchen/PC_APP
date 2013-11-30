@@ -136,18 +136,3 @@ BOOL CTPChannelParser::ReleaseChannelInfo()
 	}
 	return TRUE;
 }
-
-BOOL CTPChannelParser::CopyStr(TCHAR *pDst, TCHAR *pSrc)
-{
-	int nLen = lstrlen(pSrc) ;
-	if(nLen <= 0)	return FALSE;
-
-	if(pDst)
-	{
-		delete pDst;
-		pDst = NULL;
-	}
-	pDst = new TCHAR[nLen];
-	lstrcpyn(pDst, pSrc, sizeof(TCHAR)*nLen);
-	return TRUE;
-}

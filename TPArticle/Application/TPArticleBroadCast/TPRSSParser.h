@@ -65,5 +65,4 @@ private:
 	BOOL ParserChannel(const TCHAR *cFileName);
 	BOOL ReleaseChannelInfo();
 
-	BOOL CopyStr(TCHAR *pDst, TCHAR *pSrc);
 };

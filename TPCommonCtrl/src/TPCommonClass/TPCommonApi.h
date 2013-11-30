@@ -8,7 +8,7 @@ AFX_EXT_API void           TP_FindFileOnly(CString strPath,CStringArray &aFile);
 AFX_EXT_API BOOL		   TP_GetStatus(LPCTSTR lpszFileName, CFileStatus& rStatus);
 
 //string
-AFX_EXT_API void		   TP_StrCpy(TCHAR *cDst, TCHAR *cSrc, int nSrcSize, BOOL bNewBuf = TRUE);
+AFX_EXT_API void		   TP_StrCpy(TCHAR *&cDst, TCHAR *cSrc, int nSrcSize, BOOL bNewBuf = TRUE);
 
 
 
