@@ -142,11 +142,88 @@ BOOL CTPChannelParser::ParserChannel(const TCHAR *cFileName)
 		}
 		else if(TP_StrCmp(nameString,_T("image")) == 0)
 		{
-		//	TP_StrCpy(m_pChannelInfo->cChannelGenerator, bNodeText, nLength);
-		}
-		
+			ChildNode  = NULL;
 
-	}	
+			MSXML2::IXMLDOMNodeListPtr pObjectsImage;
+			ChildNode->get_childNodes(&pObjectsImage);
+			if(NULL != pObjectsImage)
+			{
+				childNodeNum = 0;
+				pObjectsImage->get_length(&childNodeNum);
+				for(int j=0; j<childNodeNum;j++)
+				{
+					nameString = NULL;
+					ChildNode  = NULL;
+
+					ChildNode = pObjectsImage->Getitem(j);
+					ChildNode->get_baseName(&nameString);
+					bNodeText = ChildNode->Gettext();
+					nLength	  = bNodeText.length();
+					if(TP_StrCmp(nameString, _T("url"))==0)
+					{
+						TP_StrCpy(m_pChannelInfo->stuChannelImage.cImageUrl, bNodeText, nLength);
+					}
+					else if(TP_StrCmp(nameString, _T("title"))==0)
+					{
+						TP_StrCpy(m_pChannelInfo->stuChannelImage.cImageTitle, bNodeText, nLength);
+					}
+					else if(TP_StrCmp(nameString, _T("link"))==0)
+					{
+						TP_StrCpy(m_pChannelInfo->stuChannelImage.cImageLink, bNodeText, nLength);
+					}
+					else
+					{
+						ASSERT(0);
+					}
+				}
+			}	
+		}
+		else if(TP_StrCmp(nameString,_T("item")) == 0)
+		{
+			ChildNode  = NULL;
+
+			MSXML2::IXMLDOMNodeListPtr pObjectsItem;
+			ChildNode->get_childNodes(&pObjectsItem);
+			if(NULL != pObjectsItem)
+			{
+				childNodeNum = 0;
+				pObjectsItem->get_length(&childNodeNum);
+				TPChannelItem *pstuChannelItem = new TPChannelItem;
+				for(int j=0; j<childNodeNum;j++)
+				{
+					nameString = NULL;
+					ChildNode  = NULL;
+
+					ChildNode = pObjectsItem->Getitem(j);
+					ChildNode->get_baseName(&nameString);
+					bNodeText = ChildNode->Gettext();
+					nLength	  = bNodeText.length();
+// 					if(TP_StrCmp(nameString, _T("url"))==0)
+// 					{
+// 						TP_StrCpy(stuChannelItem, bNodeText, nLength);
+// 					}
+// 					else if(TP_StrCmp(nameString, _T("title"))==0)
+// 					{
+// 						TP_StrCpy(m_pChannelInfo->stuChannelImage->cImageTitle, bNodeText, nLength);
+// 					}
+// 					else if(TP_StrCmp(nameString, _T("link"))==0)
+// 					{
+// 						TP_StrCpy(m_pChannelInfo->stuChannelImage->cImageLink, bNodeText, nLength);
+// 					}
+// 					else
+// 					{
+// 						ASSERT(0):
+// 					}
+				}
+				m_pChannelInfo->aChannelItem.Add(pstuChannelItem);
+			}	
+		}
+		else
+		{
+			ASSERT(0);
+		}
+
+	}
 // 	<title>»¢ĞáÍø</title>
 // 		<description>»¢ĞáÍøRSS¶©ÔÄ</description>
 // 		<link>http://www.huxiu.com</link>

@@ -18,16 +18,41 @@ typedef struct _tagTPChannelItem
 }TPChannelItem;
 typedef CArray<TPChannelItem *, TPChannelItem *&>	CTPChannelItemArray;
 
+typedef struct _tagTPChannelImage
+{
+	TCHAR	*cImageUrl;
+	TCHAR	*cImageTitle;
+	TCHAR	*cImageLink;
+	_tagTPChannelImage()
+	{
+		Reset();
+	}
+	~_tagTPChannelImage()
+	{
+		if(cImageUrl)  {delete cImageUrl ; cImageUrl = NULL;}
+		if(cImageTitle)  {delete cImageTitle ; cImageTitle = NULL;}
+		if(cImageLink)  {delete cImageLink ; cImageLink = NULL;}
+	}
+	void Reset()
+	{
+		cImageUrl	= NULL;
+		cImageTitle = NULL;
+		cImageLink	= NULL;		
+	}
+}TPChannelImage;
 typedef struct _tagTPChannelInfo
 {
+	TCHAR	*cChannelAddress;       //rss地址
+	int		lUpdateInterval;		//刷新间隔时间（单位是分）
+	int		lSaveNum;				//保存条目数
+	//
 	TCHAR	*cChannelTitle;
 	TCHAR	*cChannelDescription;
 	TCHAR	*cChannelLink;			//网址主页
-	TCHAR	*cChannelAddress;       //rss地址
 	TCHAR	*cChannelGenerator;     //创始者
-	int		lUpdateInterval;		//刷新间隔时间（单位是分）
-	int		lSaveNum;				//保存条目数
+	TPChannelImage		stuChannelImage;
 	CTPChannelItemArray	aChannelItem;
+	//
 	_tagTPChannelInfo()
 	{
 		cChannelTitle = NULL;
@@ -37,6 +62,7 @@ typedef struct _tagTPChannelInfo
 		cChannelGenerator = NULL;
 		lUpdateInterval = 60;  
 		lSaveNum		= 500;
+		stuChannelImage.Reset();
 		aChannelItem.RemoveAll();
 	}
 	~_tagTPChannelInfo()
