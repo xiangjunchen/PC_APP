@@ -6,13 +6,27 @@
 // <generator>huxiu_rss_generator</generator>
 typedef struct _tagTPChannelItem
 {
+	TCHAR	*cItemTitle;
+	TCHAR	*cItemLink;
+	TCHAR	*cItemDescription;
+	TCHAR	*cItemPubDate;
 	_tagTPChannelItem()
 	{
-
+		Reset();
 	}
 	~_tagTPChannelItem()
 	{
-
+		if(cItemTitle)  {delete cItemTitle ; cItemTitle = NULL;}
+		if(cItemLink)  {delete cItemLink ; cItemLink = NULL;}
+		if(cItemDescription)  {delete cItemDescription ; cItemDescription = NULL;}
+		if(cItemPubDate)  {delete cItemPubDate ; cItemPubDate = NULL;}
+	}
+	void Reset()
+	{
+		cItemTitle = NULL;
+		cItemLink = NULL;
+		cItemDescription = NULL;
+		cItemPubDate = NULL;
 	}
 
 }TPChannelItem;
@@ -72,6 +86,12 @@ typedef struct _tagTPChannelInfo
 		if(cChannelLink)     {delete cChannelLink ; cChannelLink = NULL;}
 		if(cChannelAddress)     {delete cChannelAddress ; cChannelAddress = NULL;}
 		if(cChannelGenerator)     {delete cChannelGenerator ; cChannelGenerator = NULL;}
+		for (int l=0;l<aChannelItem.GetSize();l++)	
+		{
+			delete aChannelItem[l];
+			aChannelItem[l] = NULL;
+		}
+		aChannelItem.RemoveAll();		
 	}
 }TPChannelInfo, *LPTPChannelInfo;
 typedef CArray<TPChannelInfo *, TPChannelInfo*&> CTPChannelInfo;
