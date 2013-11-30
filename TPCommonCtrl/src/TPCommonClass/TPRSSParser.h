@@ -1,4 +1,5 @@
 #pragma once
+#import <msxml4.dll>//MSXML2
 
 // <title>»¢ĞáÍø</title>
 // <description>»¢ĞáÍøRSS¶©ÔÄ</description>
@@ -96,7 +97,7 @@ typedef struct _tagTPChannelInfo
 }TPChannelInfo, *LPTPChannelInfo;
 typedef CArray<TPChannelInfo *, TPChannelInfo*&> CTPChannelInfo;
 
-class CTPChannelParser
+class AFX_EXT_CLASS CTPChannelParser
 {
 public:
 	CTPChannelParser(void);

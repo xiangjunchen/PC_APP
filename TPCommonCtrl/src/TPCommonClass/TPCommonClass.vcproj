@@ -354,6 +354,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TPDownloadHttp.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TPDXGraph.cpp"
 				>
 			</File>
@@ -379,6 +383,10 @@
 			</File>
 			<File
 				RelativePath=".\TPNetInterface.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TPRSSParser.cpp"
 				>
 			</File>
 			<File
@@ -472,6 +480,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TPDownloadHttp.h"
+				>
+			</File>
+			<File
 				RelativePath=".\TPDXGraph.h"
 				>
 			</File>
@@ -497,6 +509,10 @@
 			</File>
 			<File
 				RelativePath=".\TPNetInterface.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPRSSParser.h"
 				>
 			</File>
 			<File

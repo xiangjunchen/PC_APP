@@ -398,15 +398,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TPDownloadHttp.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\TPImgPreviewWnd.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TPRSSParser.cpp"
 				>
 			</File>
 		</Filter>
@@ -440,15 +432,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TPDownloadHttp.h"
-				>
-			</File>
-			<File
 				RelativePath=".\TPImgPreviewWnd.h"
-				>
-			</File>
-			<File
-				RelativePath=".\TPRSSParser.h"
 				>
 			</File>
 		</Filter>

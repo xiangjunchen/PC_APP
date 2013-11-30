@@ -9,7 +9,7 @@ enum INTERNET_ERROR
 	INTERNET_ERROR_OPEN
 };
 
-class CTPDownloadHttp
+class AFX_EXT_CLASS CTPDownloadHttp
 {
 public:
 	CTPDownloadHttp(void);

@@ -10,7 +10,8 @@
 #include "TPWinShellInterface.h"
 #include "TPDXGraph.h"
 #include "TPCommonApi.h"
-
+#include "TPDownloadHttp.h"
+#include "TPRSSParser.h"
 //#include "etdbrecordset.h"
 //#include "ETNetDefine.h"
 //#include "ETNetDeclaration.h"

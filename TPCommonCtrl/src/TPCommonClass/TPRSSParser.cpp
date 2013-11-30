@@ -1,7 +1,4 @@
 #include "StdAfx.h"
-#include "TPRSSParser.h"
-#include "TPDownloadHttp.h"
-#import <msxml4.dll>//MSXML2
 
 CTPChannelParser::CTPChannelParser(void)
 {
