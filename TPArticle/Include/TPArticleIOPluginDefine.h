@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\Include\TPCommonInclude.h"
 typedef CArray<GUID,GUID &> CGUIDArray;
 
 #define PATH_MAX					512
@@ -130,9 +131,18 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	int					lUpdateInterval;		//刷新间隔时间（单位是分）
 	int					lSaveNum;				//保存条目数
 
+	TPChannelBase		stuChannelBase;
 	_tagTPChannelData()
 	{
 		Reset();
+	}
+	~_tagTPChannelData()
+	{
+		eResType	= TP_RES_CHANNEL;
+		eChannelType = TP_CHANNEL_UNKNOW;
+		lUpdateInterval = 60;  
+		lSaveNum		= 500;
+		stuChannelBase.Release();
 	}
 	void Reset()
 	{
@@ -140,6 +150,7 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 		eChannelType = TP_CHANNEL_UNKNOW;
 		lUpdateInterval = 60;  
 		lSaveNum		= 500;
+		stuChannelBase.Reset();
 	}
 }TPChannelData;
 
