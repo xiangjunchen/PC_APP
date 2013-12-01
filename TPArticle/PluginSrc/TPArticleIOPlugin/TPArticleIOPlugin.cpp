@@ -28,16 +28,16 @@ LRESULT  TP_DelArticleInfo(GUID guidRes)
 	return S_OK;
 }
 
-LRESULT  TP_GetColumeInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData) 
+LRESULT  TP_GetChannelInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData) 
 {
 	return S_OK;
 }
-LRESULT  TP_SetColumeInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData)
+LRESULT  TP_SetChannelInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData)
 {
 	return S_OK;
 }
 
-LRESULT  TP_DelColumeInfo(GUID guidRes)
+LRESULT  TP_DelChannelInfo(GUID guidRes)
 {
 	return S_OK;
 }
@@ -64,9 +64,9 @@ LRESULT TP_GetPlugInFunction(TPArticleIOPluginInterface *pInterface)
 	pInterface->stuArticleInterface.TP_DelArticleInfo = TP_DelArticleInfo;
 
 	//Column
-	pInterface->stuColumeInterface.TP_GetColumeInfo = TP_GetColumeInfo;
-	pInterface->stuColumeInterface.TP_SetColumeInfo = TP_SetColumeInfo;
-	pInterface->stuColumeInterface.TP_DelColumeInfo = TP_DelColumeInfo;
+	pInterface->stuChannelInterface.TP_GetChannelInfo = TP_GetChannelInfo;
+	pInterface->stuChannelInterface.TP_SetChannelInfo = TP_SetChannelInfo;
+	pInterface->stuChannelInterface.TP_DelChannelInfo = TP_DelChannelInfo;
 
 	//Comment
 	pInterface->stuCommentInterface.TP_GetCommentInfo = TP_GetCommentInfo;

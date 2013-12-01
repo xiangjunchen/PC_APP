@@ -37,6 +37,8 @@ CTPArticleBroadCastApp theApp;
 
 // CTPArticleBroadCastApp initialization
 HMODULE g_hArticleManage = NULL;  
+TPArticleManageProcess   g_stuPress;
+TPArticleManageInterface g_stuArticleInterface;
 LRESULT TP_InitArticleCenter()
 {
 	CString sFile   = _T("TPArticleManage");
@@ -47,7 +49,6 @@ LRESULT TP_InitArticleCenter()
 #endif
 	if(g_hArticleManage == NULL){ASSERT(0); return S_FALSE;}
 
-	TPArticleManageProcess stuPress;
 	void (*TP_GetManageProcess)(TPArticleManageProcess * ) = NULL;
 	TP_GetManageProcess = (void (* )(TPArticleManageProcess *)) ::GetProcAddress(g_hArticleManage,"TP_GetManageProcess");
 	if(TP_GetManageProcess == NULL)
@@ -57,11 +58,14 @@ LRESULT TP_InitArticleCenter()
 		g_hArticleManage = NULL;
 		return S_FALSE;
 	}
-	TP_GetManageProcess(&stuPress);	
+	TP_GetManageProcess(&g_stuPress);	
+	g_stuPress.TP_GetManageFunction(&g_stuArticleInterface);
+	g_stuPress.TP_InitData(NULL);
 	return S_OK;
 }
 LRESULT TP_ReleaseArticleCenter()
 {
+	g_stuPress.TP_ReleaseData(NULL);
 	if(g_hArticleManage)
 	{
 		::FreeLibrary(g_hArticleManage);

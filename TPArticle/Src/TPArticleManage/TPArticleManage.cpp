@@ -14,19 +14,66 @@ LRESULT TP_GetProcessName(LPTSTR &strManageName)
 	return S_OK;
 }
 
+HMODULE g_hArticleIOPlugin = NULL;  
+TPArticleIOPluginProcess g_stuPress;
+TPArticleIOPluginInterface g_stuArticleIOPluginInterface;
+
 LRESULT TP_InitData(void *pData)
 {
+	CString sFile   = _T("TPArticleIOPlugin");
+#ifdef _DEBUG
+	g_hArticleIOPlugin = ::LoadLibrary((CString)sFile + _T("ud.dll"));
+#else
+	g_hArticleIOPlugin = ::LoadLibrary((CString)sFile + _T("u.dll"));
+#endif
+	if(g_hArticleIOPlugin == NULL){ASSERT(0); return S_FALSE;}
+
+	void (*TP_GetPlugInProcess)(TPArticleIOPluginProcess *stuPress) = NULL;
+	TP_GetPlugInProcess = (void (* )(TPArticleIOPluginProcess *)) ::GetProcAddress(g_hArticleIOPlugin,"TP_GetPlugInProcess");
+	if(TP_GetPlugInProcess == NULL)
+	{
+		ASSERT(0);
+		::FreeLibrary(g_hArticleIOPlugin);
+		g_hArticleIOPlugin = NULL;
+		return S_FALSE;
+	}
+	TP_GetPlugInProcess(&g_stuPress);	
+	g_stuPress.TP_GetPlugInFunction(&g_stuArticleIOPluginInterface);
+	g_stuPress.TP_InitData(NULL);
 	return S_OK;
 
 }
 LRESULT TP_ReleaseData(void *pData)
 {
+	g_stuPress.TP_ReleaseData(NULL);
+	if(g_hArticleIOPlugin)
+	{
+		::FreeLibrary(g_hArticleIOPlugin);
+		g_hArticleIOPlugin = NULL;
+		return S_OK;
+	}
 	return S_OK;
 
 }
+LRESULT  TP_GetChannelInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData) 
+{
+	return S_OK;
+}
+LRESULT  TP_SetChannelInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData)
+{
+	return S_OK;
+}
 
+LRESULT  TP_DelChannelInfo(GUID guidRes)
+{
+	return S_OK;
+}
 LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)
 {
+	pInterface->stuChannelInterface.TP_GetChannelInfo = TP_GetChannelInfo;
+	pInterface->stuChannelInterface.TP_SetChannelInfo = TP_SetChannelInfo;
+	pInterface->stuChannelInterface.TP_DelChannelInfo = TP_DelChannelInfo;
+
 	return S_OK;
 }
 void TP_GetManageProcess(TPArticleManageProcess *pstuProcess)

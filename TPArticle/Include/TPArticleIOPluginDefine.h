@@ -154,6 +154,59 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	}
 }TPChannelData;
 
+//Manage interface 
+typedef struct _tagTPChannelInterface
+{
+	LRESULT  (*TP_GetChannelInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
+	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
+	LRESULT  (*TP_DelChannelInfo)(GUID guidRes);
+
+	_tagTPChannelInterface()
+	{
+		TP_GetChannelInfo = NULL;
+		TP_SetChannelInfo = NULL;
+		TP_DelChannelInfo = NULL;
+	}
+}TPChannelInterface;
+typedef struct _tagTPArticleInterface
+{
+	_tagTPArticleInterface()
+	{
+
+	}
+}TPArticleInterface;
+typedef struct _tagTPCommentInterface
+{
+	_tagTPCommentInterface()
+	{
+
+	}
+}TPCommentInterface;
+typedef struct _tagTPFuncionInterface
+{
+	_tagTPFuncionInterface()
+	{
+
+	}
+}TPFuncionInterface;
+typedef struct _tagTPArticleManageInterface
+{
+	TCHAR cManageName[PATH_MAX];
+
+	TPChannelInterface		stuChannelInterface;
+	TPArticleInterface      stuArticleInterfce; 
+	TPCommentInterface      stuCommentInterfce; 
+	TPFuncionInterface		stuFuncitonInterface;
+
+	_tagTPArticleManageInterface()
+	{
+		ZeroMemory(this,sizeof(_tagTPArticleManageInterface));
+	} 
+
+}TPArticleManageInterface;
+//
+
+//IOPlugin interface 
 typedef struct _tagTPArticlePluginInterface
 {
 	LRESULT  (*TP_GetArticleInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData); //
@@ -162,47 +215,36 @@ typedef struct _tagTPArticlePluginInterface
 
 }TPArticlePluginInterface;
 
-typedef struct _tagTPColumePluginInterface
+typedef struct _tagTPChannelPluginInterface
 {
-	LRESULT  (*TP_GetColumeInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
-	LRESULT  (*TP_SetColumeInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
-	LRESULT  (*TP_DelColumeInfo)(GUID guidRes);
-	
-}TPColumePluginInterface;
+	LRESULT  (*TP_GetChannelInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
+	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
+	LRESULT  (*TP_DelChannelInfo)(GUID guidRes);
+
+}TPChannelPluginInterface;
 
 typedef struct _tagTPCommentPluginInterface
 {
 	LRESULT  (*TP_GetCommentInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPCommentData &stuCommentData); //
 	LRESULT  (*TP_SetCommentInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPCommentData &stuCommentData); //
 	LRESULT  (*TP_DelCommentInfo)(GUID guidRes);
-	
+
 }TPCommentPluginInterface;
-
-
-typedef struct _tagTPArticleManageInterface
-{
-	TCHAR cManageName[PATH_MAX];
-
-	_tagTPArticleManageInterface()
-	{
-		ZeroMemory(this,sizeof(_tagTPArticleManageInterface));
-	} 
-
-}TPArticleManageInterface;
 
 typedef struct _tagTPArticleIOPluginInterface
 {
 	TCHAR cPluginName[PATH_MAX];
 
-	TPArticlePluginInterface  stuArticleInterface;
-	TPColumePluginInterface   stuColumeInterface;
-	TPCommentPluginInterface  stuCommentInterface;
+	TPArticlePluginInterface	stuArticleInterface;
+	TPChannelPluginInterface	stuChannelInterface;
+	TPCommentPluginInterface	stuCommentInterface;
 	_tagTPArticleIOPluginInterface()
 	{
 		ZeroMemory(this,sizeof(_tagTPArticleIOPluginInterface));
 	} 
 
 }TPArticleIOPluginInterface;
+//
 
 typedef struct _tagTPBaseProcess
 {
