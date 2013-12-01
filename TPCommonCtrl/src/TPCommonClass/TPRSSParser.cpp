@@ -208,7 +208,7 @@ BOOL CTPChannelParser::ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode)
 	if(NULL != pItemNodeList)
 	{
 		pItemNodeList->get_length(&childItemNum);
-		TPChannelItem *pstuChannelItem = new TPChannelItem;
+		TPChannelBase *pstuChannelItem = new TPChannelBase;
 		for(int j=0; j<childItemNum;j++)
 		{
 			nameString = NULL;

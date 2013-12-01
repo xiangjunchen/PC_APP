@@ -203,7 +203,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Include;..\..\..\include"
+				AdditionalIncludeDirectories="..\..\Include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -411,6 +411,10 @@
 			</File>
 			<File
 				RelativePath=".\TPArticleIOPlugin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Include\TPArticleIOPluginDefine.h"
 				>
 			</File>
 		</Filter>
