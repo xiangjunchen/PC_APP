@@ -20,7 +20,7 @@ int	CTPChannelParser::SetChannelAddress(TCHAR *cAddress)
 	TP_StrCpy(m_pChannelInfo->cChannelAddress, cAddress, nLen);
 	return 1;
 }
-int CTPChannelParser::GetChannelInfo(TPChannelBase *pInfo)
+int CTPChannelParser::GetChannelInfo(TPChannelBase *&pInfo)
 {
 	if(!m_pChannelInfo || TP_StrLen(m_pChannelInfo->cChannelAddress) <= 0)	return 0;
 
@@ -30,6 +30,8 @@ int CTPChannelParser::GetChannelInfo(TPChannelBase *pInfo)
 	stuDownload.Download();
 
 	ParserChannel(cXMLPath);
+
+	pInfo = m_pChannelInfo;
 	return 1;
 }
 BOOL CTPChannelParser::ParserChannel(const TCHAR *cFileName)

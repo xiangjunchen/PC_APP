@@ -15,7 +15,7 @@ public:
 	LPTPChannelBase	m_pChannelInfo;
 public:
 	int	SetChannelAddress(TCHAR *cAddress);
-	int GetChannelInfo(TPChannelBase *pInfo);
+	int GetChannelInfo(TPChannelBase *&pInfo);
 
 private:
 	BOOL ParserChannel(const TCHAR *cFileName);
