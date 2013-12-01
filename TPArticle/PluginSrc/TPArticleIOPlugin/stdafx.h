@@ -38,3 +38,6 @@
 
 
 #include "TPArticleIOPluginDefine.h"
+
+#include "TPMemFile.h"
+#include "TPArticleDataBase.h"

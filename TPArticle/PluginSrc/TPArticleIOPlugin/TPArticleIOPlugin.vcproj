@@ -384,11 +384,19 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\TPArticleDataBase.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TPArticleIOPlugin.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\TPArticleIOPluginud.def"
+				>
+			</File>
+			<File
+				RelativePath=".\TPMemFile.cpp"
 				>
 			</File>
 		</Filter>
@@ -410,11 +418,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TPArticleDataBase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\TPArticleIOPlugin.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\Include\TPArticleIOPluginDefine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPMemFile.h"
 				>
 			</File>
 		</Filter>

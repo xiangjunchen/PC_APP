@@ -8,6 +8,8 @@
 #define new DEBUG_NEW
 #endif
 
+CTPArticleDataBase g_stuArticleDataBase;
+
 LRESULT TP_GetProcessName(LPTSTR &strManageName)
 {
 	strManageName = _T("TPArticleIOPlugin");
@@ -30,10 +32,13 @@ LRESULT  TP_DelArticleInfo(GUID guidRes)
 
 LRESULT  TP_GetChannelInfo(GUID guidRes,TPChannelData &stuChannelData) 
 {
+	g_stuArticleDataBase.ReadChannel(guidRes, stuChannelData);
 	return S_OK;
 }
 LRESULT  TP_SetChannelInfo(GUID guidRes,TPChannelData &stuChannelData)
 {
+	CString sFileName = _T("");
+	g_stuArticleDataBase.WriteChannel(guidRes, stuChannelData);
 	return S_OK;
 }
 
