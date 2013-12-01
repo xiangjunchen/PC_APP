@@ -28,11 +28,11 @@ LRESULT  TP_DelArticleInfo(GUID guidRes)
 	return S_OK;
 }
 
-LRESULT  TP_GetColumeInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPColumnData &stuColumnData) 
+LRESULT  TP_GetColumeInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData) 
 {
 	return S_OK;
 }
-LRESULT  TP_SetColumeInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPColumnData &stuColumnData)
+LRESULT  TP_SetColumeInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData)
 {
 	return S_OK;
 }
