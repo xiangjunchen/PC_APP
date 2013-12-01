@@ -28,11 +28,11 @@ LRESULT  TP_DelArticleInfo(GUID guidRes)
 	return S_OK;
 }
 
-LRESULT  TP_GetChannelInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData) 
+LRESULT  TP_GetChannelInfo(GUID guidRes,TPChannelData &stuChannelData) 
 {
 	return S_OK;
 }
-LRESULT  TP_SetChannelInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData)
+LRESULT  TP_SetChannelInfo(GUID guidRes,TPChannelData &stuChannelData)
 {
 	return S_OK;
 }

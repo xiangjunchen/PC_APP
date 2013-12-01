@@ -55,17 +55,20 @@ LRESULT TP_ReleaseData(void *pData)
 	return S_OK;
 
 }
-LRESULT  TP_GetChannelInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData) 
+LRESULT  TP_GetChannelInfo(GUID guidRes,TPChannelData &stuChannelData) 
 {
+	g_stuArticleIOPluginInterface.stuChannelInterface.TP_GetChannelInfo(guidRes,stuChannelData);
 	return S_OK;
 }
-LRESULT  TP_SetChannelInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData)
+LRESULT  TP_SetChannelInfo(GUID guidRes,TPChannelData &stuChannelData)
 {
+	g_stuArticleIOPluginInterface.stuChannelInterface.TP_SetChannelInfo(guidRes,stuChannelData);
 	return S_OK;
 }
 
 LRESULT  TP_DelChannelInfo(GUID guidRes)
 {
+	g_stuArticleIOPluginInterface.stuChannelInterface.TP_DelChannelInfo(guidRes);
 	return S_OK;
 }
 LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)

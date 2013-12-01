@@ -106,6 +106,8 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
 
+	TP_InitArticleCenter();
+
 	//////////////////////////////////////////////////////////////////////////rss test
 
 	TCHAR cAddress[] = _T("http://www.huxiu.com/rss/0.xml");
@@ -114,6 +116,11 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 	stuParser.SetChannelAddress(cAddress);
 	stuParser.GetChannelInfo(pChannelInfo);
 
+	TPChannelData stuChannel;
+	CoCreateGuid(&stuChannel.guidRes);
+	stuChannel.eChannelType = TP_CHANNEL_TECH;
+	stuChannel.stuChannelBase = *pChannelInfo;
+	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
 	//////////////////////////////////////////////////////////////////////////
 	InitContextMenuManager();
 
@@ -157,7 +164,6 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 
 	//////////////////////////////////////////////////////////////////////////
 	//
-	TP_InitArticleCenter();
 
 
 	return TRUE;

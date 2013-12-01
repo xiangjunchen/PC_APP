@@ -15,6 +15,7 @@ typedef CArray<GUID,GUID &> CGUIDArray;
 #define  TP_GRADE_UNKNOW			0x00000000
 #define  TP_GRADE_BASE				0x00000001
 #define  TP_GRADE_COMMENT			0x00000002
+#define  TP_GRADE_ALL			    0x007FFFFF
 
 #define  TP_CHANNEL_TYPE            ULONGLONG
 #define  TP_CHANNEL_UNKNOW			0x00000000
@@ -157,8 +158,8 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 //Manage interface 
 typedef struct _tagTPChannelInterface
 {
-	LRESULT  (*TP_GetChannelInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
-	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
+	LRESULT  (*TP_GetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
+	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
 	LRESULT  (*TP_DelChannelInfo)(GUID guidRes);
 
 	_tagTPChannelInterface()
@@ -217,8 +218,8 @@ typedef struct _tagTPArticlePluginInterface
 
 typedef struct _tagTPChannelPluginInterface
 {
-	LRESULT  (*TP_GetChannelInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
-	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPChannelData &stuChannelData); //
+	LRESULT  (*TP_GetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
+	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
 	LRESULT  (*TP_DelChannelInfo)(GUID guidRes);
 
 }TPChannelPluginInterface;
