@@ -12,10 +12,10 @@ public:
 	CTPChannelParser(void);
 	~CTPChannelParser(void);
 
-	LPTPChannelInfo	m_pChannelInfo;
+	LPTPChannelBase	m_pChannelInfo;
 public:
 	int	SetChannelAddress(TCHAR *cAddress);
-	int GetChannelInfo(TPChannelInfo *pInfo);
+	int GetChannelInfo(TPChannelBase *pInfo);
 
 private:
 	BOOL ParserChannel(const TCHAR *cFileName);

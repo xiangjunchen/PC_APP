@@ -16,11 +16,11 @@ int	CTPChannelParser::SetChannelAddress(TCHAR *cAddress)
 	int nLen = TP_StrLen(cAddress);
 	if(nLen <= 0)	return 0;
 
-	m_pChannelInfo = new TPChannelInfo;
+	m_pChannelInfo = new TPChannelBase;
 	TP_StrCpy(m_pChannelInfo->cChannelAddress, cAddress, nLen);
 	return 1;
 }
-int CTPChannelParser::GetChannelInfo(TPChannelInfo *pInfo)
+int CTPChannelParser::GetChannelInfo(TPChannelBase *pInfo)
 {
 	if(!m_pChannelInfo || TP_StrLen(m_pChannelInfo->cChannelAddress) <= 0)	return 0;
 
@@ -208,7 +208,7 @@ BOOL CTPChannelParser::ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode)
 	if(NULL != pItemNodeList)
 	{
 		pItemNodeList->get_length(&childItemNum);
-		TPChannelBase *pstuChannelItem = new TPChannelBase;
+		TPChannelItem *pstuChannelItem = new TPChannelItem;
 		for(int j=0; j<childItemNum;j++)
 		{
 			nameString = NULL;

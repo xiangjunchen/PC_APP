@@ -126,12 +126,6 @@ typedef struct _tagTPArticleData : public TPResBaseInfo
 
 typedef struct _tagTPChannelData : public TPResBaseInfo
 {
-	TCHAR	*cChannelAddress;       //rss地址
-	TCHAR	*cChannelTitle;
-	TCHAR	*cChannelDescription;
-	TCHAR	*cChannelLink;			//网址主页
-	TCHAR	*cChannelGenerator;     //创始者
-
 	TP_CHANNEL_TYPE		eChannelType;
 	int					lUpdateInterval;		//刷新间隔时间（单位是分）
 	int					lSaveNum;				//保存条目数

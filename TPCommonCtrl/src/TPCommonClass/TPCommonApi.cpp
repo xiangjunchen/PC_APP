@@ -2,31 +2,6 @@
 
 namespace _tp_commonclass
 {
-void    TP_StrCpy(TCHAR *&cDst, TCHAR *cSrc, size_t nSrcSize, BOOL bNewBuf)
-{
-	if(NULL == cSrc)			{	ASSERT(0); return;				}
-	if(bNewBuf && cDst)			{	delete []cDst;  cDst = NULL;	}
-	if(NULL == cDst)			{   cDst = new TCHAR[nSrcSize + 1]; ZeroMemory(cDst,sizeof(TCHAR)*(nSrcSize + 1));}
-
-	_tcsncpy_s(cDst , (nSrcSize + 1), cSrc , nSrcSize);
-}
-int		TP_StrCmp(TCHAR *cS1, TCHAR *cS2, size_t nMaxSize)
-{
-	if(NULL == cS1 || NULL == cS2)	{ASSERT(0);}
-
-	size_t nSizeS1 = _tcsnlen(cS1, nMaxSize);
-	size_t nSizeS2 = _tcsnlen(cS2, nMaxSize);
-	if(nSizeS1 != nSizeS2)			{	return (int)(nSizeS1-nSizeS2);	}
-
-	return _tcsncmp(cS1,cS2,nSizeS1);
-}
-int		TP_StrLen(const TCHAR *cStr,	size_t nMaxSize)
-{
-	if(NULL == cStr)				{ASSERT(0);}
-	
-	return _tcsnlen(cStr, nMaxSize);
-}
-
 void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile)
 {
 	WIN32_FIND_DATA findData;

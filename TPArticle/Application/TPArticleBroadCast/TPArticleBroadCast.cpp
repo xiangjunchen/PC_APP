@@ -105,7 +105,7 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 	//////////////////////////////////////////////////////////////////////////rss test
 
 	TCHAR cAddress[] = _T("http://www.huxiu.com/rss/0.xml");
-	TPChannelInfo stuChannelInfo ;
+	TPChannelBase stuChannelInfo ;
 	CTPChannelParser stuParser;
 	stuParser.SetChannelAddress(cAddress);
 	stuParser.GetChannelInfo(&stuChannelInfo);
