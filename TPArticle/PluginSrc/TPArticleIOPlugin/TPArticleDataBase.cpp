@@ -37,7 +37,7 @@ CString CTPArticleDataBase::GetLocalDataPath()
 {
 	if(!m_sLocalDataPath.IsEmpty())	return m_sLocalDataPath;
 
-//	m_sLocalDataPath = TP_GetWindowsSysPath(TP_WINDOWSPATH_PERSONAL);
+	m_sLocalDataPath = TP_GetWindowsSysPath(TP_WINDOWSPATH_PERSONAL);
 	m_sLocalDataPath += _T("\\Article\\Data");
 	return m_sLocalDataPath;
 }
