@@ -200,3 +200,6 @@ typedef struct stu_TPRegisterInfo  //文件节点
 #ifdef  TP_NS_CX
 #undef  TP_NS_AVI2AUDIO
 #endif
+
+
+//////////////////////////////////////////////////////////////////////////

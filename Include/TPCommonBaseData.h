@@ -820,6 +820,31 @@ inline GUID TP_GetGuidByFileName(CString sText)
 	}
 	return guidBaseUser;
 }
+//TP_Str
+inline int		TP_StrLen(const TCHAR *cStr,	size_t nMaxSize = MAX_PATH)
+{
+	if(NULL == cStr)				{ASSERT(0);}
+
+	return _tcsnlen(cStr, nMaxSize);
+}
+inline void    TP_StrCpy(TCHAR *&cDst, TCHAR *cSrc, size_t nSrcSize , BOOL bNewBuf = TRUE)
+{
+	if(NULL == cSrc)			{	ASSERT(0); return;				}
+	if(bNewBuf && cDst)			{	delete []cDst;  cDst = NULL;	}
+	if(NULL == cDst)			{   cDst = new TCHAR[nSrcSize + 1]; ZeroMemory(cDst,sizeof(TCHAR)*(nSrcSize + 1));}
+
+	_tcsncpy_s(cDst , (nSrcSize + 1), cSrc , nSrcSize);
+}
+inline int		TP_StrCmp(TCHAR *cS1, TCHAR *cS2, size_t nMaxSize = MAX_PATH)
+{
+	if(NULL == cS1 || NULL == cS2)	{ASSERT(0);}
+
+	size_t nSizeS1 = _tcsnlen(cS1, nMaxSize);
+	size_t nSizeS2 = _tcsnlen(cS2, nMaxSize);
+	if(nSizeS1 != nSizeS2)			{	return (int)(nSizeS1-nSizeS2);	}
+
+	return _tcsncmp(cS1,cS2,nSizeS1);
+}
 
 class CTraceEx
 {
@@ -1190,4 +1215,145 @@ _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 _CrtDumpMemoryLeaks。
 _CrtSetReportMode */
 
+//////////////////////////////////////////////////////////////////////////
 
+typedef struct _tagTPChannelItem
+{
+	TCHAR	*cItemTitle;
+	TCHAR	*cItemLink;
+	TCHAR	*cItemDescription;
+	TCHAR	*cItemPubDate;
+	_tagTPChannelItem()
+	{
+		Reset();
+	}
+	~_tagTPChannelItem()
+	{
+		Release();
+	}
+	void Reset()
+	{
+		cItemTitle = NULL;
+		cItemLink = NULL;
+		cItemDescription = NULL;
+		cItemPubDate = NULL;
+	}
+	void Release()
+	{
+		if(cItemTitle)  {delete cItemTitle ; cItemTitle = NULL;}
+		if(cItemLink)  {delete cItemLink ; cItemLink = NULL;}
+		if(cItemDescription)  {delete cItemDescription ; cItemDescription = NULL;}
+		if(cItemPubDate)  {delete cItemPubDate ; cItemPubDate = NULL;}
+	}
+	_tagTPChannelItem &operator = (_tagTPChannelItem &oTher)
+	{
+		Release();
+
+		TP_StrCpy(cItemTitle, oTher.cItemTitle, TP_StrLen(oTher.cItemTitle));
+		TP_StrCpy(cItemLink, oTher.cItemLink, TP_StrLen(oTher.cItemLink));
+		TP_StrCpy(cItemDescription, oTher.cItemDescription, TP_StrLen(oTher.cItemDescription));
+		TP_StrCpy(cItemPubDate, oTher.cItemPubDate, TP_StrLen(oTher.cItemPubDate));
+		return *this;
+	}
+
+}TPChannelItem;
+typedef CArray<TPChannelItem *, TPChannelItem *&>	CTPChannelItemArray;
+
+typedef struct _tagTPChannelImage
+{
+	TCHAR	*cImageUrl;
+	TCHAR	*cImageTitle;
+	TCHAR	*cImageLink;
+	_tagTPChannelImage()
+	{
+		Reset();
+	}
+	~_tagTPChannelImage()
+	{
+		Release();
+	}
+	void Reset()
+	{
+		cImageUrl	= NULL;
+		cImageTitle = NULL;
+		cImageLink	= NULL;		
+	}
+	void Release()
+	{
+		if(cImageUrl)  {delete cImageUrl ; cImageUrl = NULL;}
+		if(cImageTitle)  {delete cImageTitle ; cImageTitle = NULL;}
+		if(cImageLink)  {delete cImageLink ; cImageLink = NULL;}
+	}
+	_tagTPChannelImage &operator =(_tagTPChannelImage &oTher)
+	{
+		Release();
+
+		TP_StrCpy(cImageUrl, oTher.cImageUrl, TP_StrLen(oTher.cImageUrl));
+		TP_StrCpy(cImageTitle, oTher.cImageTitle, TP_StrLen(oTher.cImageTitle));
+		TP_StrCpy(cImageLink, oTher.cImageLink, TP_StrLen(oTher.cImageLink));
+		return *this;
+	}
+}TPChannelImage;
+typedef struct _tagTPChannelBase
+{
+	TCHAR	*cChannelAddress;       //频道rss地址
+	TCHAR	*cChannelTitle;			//频道名
+	TCHAR	*cChannelDescription;	//频道描述
+	TCHAR	*cChannelLink;			//频道主页
+	TCHAR	*cChannelGenerator;     //频道创始者
+	TPChannelImage		stuChannelImage;
+	CTPChannelItemArray	aChannelItem;
+	_tagTPChannelBase()
+	{	
+		Reset();
+	}
+	~_tagTPChannelBase()
+	{
+		Release();	
+	}
+	void Release()
+	{
+		if(cChannelTitle)     {delete cChannelTitle ; cChannelTitle = NULL;}
+		if(cChannelDescription)     {delete cChannelDescription ; cChannelDescription = NULL;}
+		if(cChannelLink)     {delete cChannelLink ; cChannelLink = NULL;}
+		if(cChannelAddress)     {delete cChannelAddress ; cChannelAddress = NULL;}
+		if(cChannelGenerator)     {delete cChannelGenerator ; cChannelGenerator = NULL;}
+		stuChannelImage.Release();
+		for (int l=0;l<aChannelItem.GetSize();l++)	
+		{
+			delete aChannelItem[l];
+			aChannelItem[l] = NULL;
+		}
+		aChannelItem.RemoveAll();	
+	}
+	void Reset()
+	{
+		cChannelTitle = NULL;
+		cChannelDescription = NULL;
+		cChannelLink  = NULL;
+		cChannelAddress = NULL;
+		cChannelGenerator = NULL;
+		stuChannelImage.Reset();
+		aChannelItem.RemoveAll();
+	}
+	_tagTPChannelBase &operator = (_tagTPChannelBase &oTher)
+	{
+		Release();
+
+		TP_StrCpy(cChannelTitle, oTher.cChannelTitle, TP_StrLen(oTher.cChannelTitle));
+		TP_StrCpy(cChannelDescription, oTher.cChannelDescription, TP_StrLen(oTher.cChannelDescription));
+		TP_StrCpy(cChannelLink, oTher.cChannelLink, TP_StrLen(oTher.cChannelLink));
+		TP_StrCpy(cChannelAddress, oTher.cChannelAddress, TP_StrLen(oTher.cChannelAddress));
+		TP_StrCpy(cChannelGenerator, oTher.cChannelGenerator, TP_StrLen(oTher.cChannelGenerator));
+		stuChannelImage = oTher.stuChannelImage;
+		for (int l = 0 ; l < oTher.aChannelItem.GetSize(); l++)
+		{
+			TPChannelItem *pItem = new TPChannelItem;
+			*pItem = *oTher.aChannelItem[l];
+			aChannelItem.Add(pItem);
+		}
+		
+		return *this;
+	}
+}TPChannelBase, *LPTPChannelBase;
+typedef CArray<TPChannelBase *, TPChannelBase*&> CTPChannelBase;
