@@ -83,8 +83,31 @@ LRESULT TP_GetPlugInFunction(TPArticleIOPluginInterface *pInterface)
 
 LRESULT TP_InitData(void *pData)
 {
-	g_stuArticleDataBase.GetLocalDataPath();
+	CString sFilePersonal = g_stuArticleDataBase.GetLocalDataPath();
+	if(!PathFileExists(sFilePersonal)) 
+	{ 
+		if(!::CreateDirectory(sFilePersonal,NULL)) 
+		{
+			ASSERT(0);
+		}
+		if(!PathFileExists(sFilePersonal + _T("\\Channel")))
+		{
+			::CreateDirectory(sFilePersonal + _T("\\Channel"),NULL);
+		}
+		if(!PathFileExists(sFilePersonal + _T("\\ChannelNode")))
+		{
+			::CreateDirectory(sFilePersonal + _T("\\ChannelNode"),NULL);
+		}
+		if(!PathFileExists(sFilePersonal + _T("\\Article")))
+		{
+			::CreateDirectory(sFilePersonal + _T("\\Article"),NULL);
+		}
+		if(!PathFileExists(sFilePersonal + _T("\\ArticleSource")))
+		{
+			::CreateDirectory(sFilePersonal + _T("\\ArticleSource"),NULL);
+		}
 
+	}
 	return S_OK;
 
 }

@@ -10,7 +10,7 @@ CTPArticleDataBase::~CTPArticleDataBase(void)
 }
 LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelData)
 {
-	CString  sFileName = _T("\\test.Chl");
+	CString  sFileName = GetResFilePath(TP_RES_CHANNEL, &stuChannelData);
 	CTPMemFile hMemFile;
 	hMemFile.ReadFile(sFileName);
 	DWORD dwTemp = 0;
@@ -23,7 +23,7 @@ LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelDa
 }
 LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelData)
 {
-	CString  sFileName = _T("\\test.Chl");
+	CString  sFileName = GetResFilePath(TP_RES_CHANNEL, &stuChannelData);
 	CTPMemFile hMemFile;
 	DWORD dwTemp = 8;
 	//
@@ -38,51 +38,66 @@ CString CTPArticleDataBase::GetLocalDataPath()
 	if(!m_sLocalDataPath.IsEmpty())	return m_sLocalDataPath;
 
 	m_sLocalDataPath = TP_GetWindowsSysPath(TP_WINDOWSPATH_PERSONAL);
-	m_sLocalDataPath += _T("\\Article\\Data");
+	m_sLocalDataPath += _T("\\Article");
 	return m_sLocalDataPath;
 }
-//CString   CTPArticleDataBase::GetFileName(CString sName,GUID guidRes,GUID guidNode,TP_RES_TYPE eResType,__int64 lLength,SYSTEMTIME sTime,DWORD dwVideoStrand)
-//{
-//	CString sFileName,sGuidRes = TP_UuidToString(&guidRes),sGuidNode = TP_UuidToString(&guidNode) ;
-//	CTime tm(sTime);	
-//	TPTimeBase sBase = TP_GetSysTimebaseEx((TP_VIDEO_STANDARD)dwVideoStrand);
-//	sFileName.Format(_T("%s#%s#%s#%d#%d#%d#%s"),sGuidRes,sGuidNode,sName,(int)tm.GetTime(),(int)lLength,sBase.lTimeRate%100,TP_ResTypeToName(eResType));
-//	return sFileName;
-//}
-//CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
-//{
-//	if(eResType & TP_RES_CHANNELTYPE)
-//	{
-//
-//	}
-//	else if(eResType & TP_RES_CHANNEL)
-//	{
-//
-//	}
-//	else if(eResType & TP_RES_ARTICLE)
-//	{
-//
-//	}
-//	else if(eResType & TP_RES_COMMENT)
-//	{
-//
-//	}
-//	else
-//	{
-//		ASSERT(0);
-//	}
-//
-//	//if(eResType & TP_RES_CLIP)
-//	//{
-//	//	TPClipData  *pClipData = (TPClipData  *)pData;	
-//	//	CString sName     = pClipData->sName;		
-//	//	ASSERT(pClipData->eVideoStandard != TP_VIDEOSTANDARD_UNKNOW);
-//	//	CString sCatalog  =  m_sResClipPath;	
-//	//	CString sFileName =  _L("");	
-//	//	sFileName = sCatalog + _L("\\");
-//	//	sFileName += GetFileName(sName,pClipData->guidRes,pClipData->guidNode,pClipData->eResType,pClipData->lClipLength,pClipData->tmCreate,pClipData->eVideoStandard);		
-//	//	return sFileName;
-//	//}
-//	//else if(eResType & TP_RES_CATALOG)
-//	//{
-//}
+CString CTPArticleDataBase::ResTypeToExt(TP_RES_TYPE eResType)
+{
+	if(eResType & TP_RES_CHANNELNODE)		return _T(".che");
+	else if(eResType & TP_RES_CHANNEL)		return _T(".chl");
+	else if(eResType & TP_RES_ARTICLE)		return _T(".ate");
+	else if(eResType & TP_RES_COMMENT)		return _T(".cmt");
+	else									ASSERT(0);
+	return _T("");
+}
+CString CTPArticleDataBase::ResTypeToFolderName(TP_RES_TYPE eResType)
+{
+	if(eResType & TP_RES_CHANNELNODE)		return _T("ChannelNode");
+	else if(eResType & TP_RES_CHANNEL)		return _T("Channel");
+	else if(eResType & TP_RES_ARTICLE)		return _T("Article");
+	else if(eResType & TP_RES_COMMENT)		return _T("ArticleSource");
+	else									ASSERT(0);
+	return _T("");
+}
+CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
+{
+	CString sFileName = GetLocalDataPath();
+	if(!pData)	{ASSERT(0);return sFileName;}
+
+	CString sGuidRes,sGuidNode,sName ;
+	if(eResType & TP_RES_CHANNELNODE)
+	{
+		TPChannelNode *pNode = (TPChannelNode *)pData;
+		sGuidRes = TP_UuidToString(&pNode->guidRes);
+		sGuidNode = TP_UuidToString(&pNode->guidNode) ;
+		sName	= pNode->cNodeName;
+		sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
+	}
+	else if(eResType & TP_RES_CHANNEL)
+	{
+		TPChannelData *pChannelData = (TPChannelData *)pData;
+		sGuidRes = TP_UuidToString(&pChannelData->guidRes);
+		sGuidNode = TP_UuidToString(&pChannelData->guidNode) ;
+		sName	= pChannelData->stuChannelBase.cChannelTitle;
+		sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
+
+	}
+	else if(eResType & TP_RES_ARTICLE)
+	{
+		TPArticleData *pArticleData = (TPArticleData *)pData;
+		sGuidRes = TP_UuidToString(&pArticleData->guidRes);
+		sGuidNode = TP_UuidToString(&pArticleData->guidNode) ;
+		sName	= pArticleData->sName;
+		sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
+
+	}
+	else if(eResType & TP_RES_COMMENT)
+	{
+		TPCommentData *pCommentData = (TPCommentData *)pData;
+	}
+	else
+	{
+		ASSERT(0);
+	}
+	return sFileName;
+}

@@ -162,7 +162,7 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 
 typedef struct _tagTPChannelNode : public TPResBaseInfo
 {
-	TCHAR *pNodeName;
+	TCHAR *cNodeName;
 	_tagTPChannelNode()
 	{
 		Reset();
@@ -173,11 +173,11 @@ typedef struct _tagTPChannelNode : public TPResBaseInfo
 	}
 	void Reset()
 	{
-		pNodeName = NULL;
+		cNodeName = NULL;
 	}
 	void Release()
 	{
-		if(pNodeName)	{delete pNodeName; pNodeName = NULL;}
+		if(cNodeName)	{delete cNodeName; cNodeName = NULL;}
 	}
 }TPChannelNode;
 //Manage interface 
