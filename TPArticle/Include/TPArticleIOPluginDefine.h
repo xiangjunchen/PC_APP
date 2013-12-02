@@ -7,7 +7,7 @@ typedef CArray<GUID,GUID &> CGUIDArray;
 
 #define  TP_RES_TYPE                ULONGLONG
 #define  TP_RES_UNKNOW              0x00000000
-#define  TP_RES_CHANNELTYPE			0x00000001
+#define  TP_RES_CHANNELNODE			0x00000001
 #define  TP_RES_CHANNEL				0x00000002
 #define  TP_RES_ARTICLE             0x00000004
 #define  TP_RES_COMMENT				0x00000008
@@ -18,16 +18,19 @@ typedef CArray<GUID,GUID &> CGUIDArray;
 #define  TP_GRADE_COMMENT			0x00000002
 #define  TP_GRADE_ALL			    0x007FFFFF
 
-#define  TP_CHANNEL_TYPE            ULONGLONG
+#define  TP_CHANNEL_NODETYPE		ULONGLONG
 #define  TP_CHANNEL_UNKNOW			0x00000000
-#define  TP_CHANNEL_TECH			0x00000001
-#define  TP_CHANNEL_SPORT			0x00000002
+#define  TP_CHANNEL_SYSTEM			0x00000001
+#define  TP_CHANNEL_PERSON			0x00000002
+#define  TP_CHANNEL_TECH			0x00000004
+#define  TP_CHANNEL_SPORT			0x00000008
 
 typedef struct _tagTPResBaseInfo
 {
 	DWORD		dwVersion;
 	DWORD		dwState;
 	GUID		guidRes; //唯一索引
+	GUID		guidNode; //所属节点
 	GUID		guidDBType; 
 	SYSTEMTIME	tmCreate;
 	SYSTEMTIME	tmModify;
@@ -43,6 +46,7 @@ typedef struct _tagTPResBaseInfo
 		dwVersion = 0;
 		dwState   = 0;
 		guidRes   = GUID_NULL;
+		guidNode  = GUID_NULL;
 		guidDBType = GUID_NULL;  
 		GetLocalTime(&tmCreate);
 		GetLocalTime(&tmModify);
@@ -156,6 +160,10 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	}
 }TPChannelData;
 
+typedef struct _tagTPChannelNode : public TPResBaseInfo
+{
+	TCHAR *pNodeName;
+};
 //Manage interface 
 typedef struct _tagTPChannelInterface
 {
