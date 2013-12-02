@@ -83,6 +83,8 @@ LRESULT TP_GetPlugInFunction(TPArticleIOPluginInterface *pInterface)
 
 LRESULT TP_InitData(void *pData)
 {
+	g_stuArticleDataBase.GetLocalDataPath();
+
 	return S_OK;
 
 }

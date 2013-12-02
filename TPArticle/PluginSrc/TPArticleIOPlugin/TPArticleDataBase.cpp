@@ -2,6 +2,7 @@
 
 CTPArticleDataBase::CTPArticleDataBase(void)
 {
+	m_sLocalDataPath = _T("");
 }
 
 CTPArticleDataBase::~CTPArticleDataBase(void)
@@ -31,4 +32,10 @@ LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelD
 	hMemFile.WriteFile(sFileName);
 	hMemFile.Close();
 	return S_OK;
+}
+CString CTPArticleDataBase::GetLocalDataPath()
+{
+	if(!m_sLocalDataPath.IsEmpty())	return m_sLocalDataPath;
+
+	return m_sLocalDataPath;
 }

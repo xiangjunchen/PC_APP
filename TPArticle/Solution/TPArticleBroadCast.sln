@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TPCommonCtrl", "..\..\TPCom
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TPCommonClass", "..\..\TPCommonCtrl\src\TPCommonClass\TPCommonClass.vcproj", "{66848830-1379-4C50-86F8-0D720BBE299F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TPBaseTest", "..\Tool\TPBaseTest\TPBaseTest.vcproj", "{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -69,6 +71,14 @@ Global
 		{66848830-1379-4C50-86F8-0D720BBE299F}.Unicode Debug|Win32.Build.0 = Unicode Debug|Win32
 		{66848830-1379-4C50-86F8-0D720BBE299F}.Unicode Release|Win32.ActiveCfg = Release|Win32
 		{66848830-1379-4C50-86F8-0D720BBE299F}.Unicode Release|Win32.Build.0 = Release|Win32
+		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Debug|Win32.Build.0 = Debug|Win32
+		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Release|Win32.ActiveCfg = Release|Win32
+		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Release|Win32.Build.0 = Release|Win32
+		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Unicode Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
