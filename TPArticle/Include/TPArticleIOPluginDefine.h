@@ -7,9 +7,10 @@ typedef CArray<GUID,GUID &> CGUIDArray;
 
 #define  TP_RES_TYPE                ULONGLONG
 #define  TP_RES_UNKNOW              0x00000000
-#define  TP_RES_CHANNEL				0x00000001
-#define  TP_RES_ARTICLE             0x00000002
-#define  TP_RES_COMMENT				0x00000004
+#define  TP_RES_CHANNELTYPE			0x00000001
+#define  TP_RES_CHANNEL				0x00000002
+#define  TP_RES_ARTICLE             0x00000004
+#define  TP_RES_COMMENT				0x00000008
 
 #define  TP_GRADE_TYPE              ULONGLONG
 #define  TP_GRADE_UNKNOW			0x00000000
