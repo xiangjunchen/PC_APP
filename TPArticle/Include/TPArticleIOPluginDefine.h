@@ -133,7 +133,7 @@ typedef struct _tagTPArticleData : public TPResBaseInfo
 
 typedef struct _tagTPChannelData : public TPResBaseInfo
 {
-	TP_CHANNEL_TYPE		eChannelType;
+	TP_CHANNEL_NODETYPE		eNodeType;
 	int					lUpdateInterval;		//刷新间隔时间（单位是分）
 	int					lSaveNum;				//保存条目数
 
@@ -145,7 +145,7 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	~_tagTPChannelData()
 	{
 		eResType	= TP_RES_CHANNEL;
-		eChannelType = TP_CHANNEL_UNKNOW;
+		eNodeType = TP_CHANNEL_UNKNOW;
 		lUpdateInterval = 60;  
 		lSaveNum		= 500;
 		stuChannelBase.Release();
@@ -153,7 +153,7 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	void Reset()
 	{
 		eResType	= TP_RES_CHANNEL;
-		eChannelType = TP_CHANNEL_UNKNOW;
+		eNodeType = TP_CHANNEL_UNKNOW;
 		lUpdateInterval = 60;  
 		lSaveNum		= 500;
 		stuChannelBase.Reset();
@@ -163,7 +163,23 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 typedef struct _tagTPChannelNode : public TPResBaseInfo
 {
 	TCHAR *pNodeName;
-};
+	_tagTPChannelNode()
+	{
+		Reset();
+	}
+	~_tagTPChannelNode()
+	{
+		Release();
+	}
+	void Reset()
+	{
+		pNodeName = NULL;
+	}
+	void Release()
+	{
+		if(pNodeName)	{delete pNodeName; pNodeName = NULL;}
+	}
+}TPChannelNode;
 //Manage interface 
 typedef struct _tagTPChannelInterface
 {

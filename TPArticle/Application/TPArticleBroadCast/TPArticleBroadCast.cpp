@@ -118,7 +118,7 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 
 	TPChannelData stuChannel;
 	CoCreateGuid(&stuChannel.guidRes);
-	stuChannel.eChannelType = TP_CHANNEL_TECH;
+	stuChannel.eNodeType = TP_CHANNEL_TECH;
 	stuChannel.stuChannelBase = *pChannelInfo;
 	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
 	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);

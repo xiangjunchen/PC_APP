@@ -100,7 +100,7 @@ BOOL CTPBaseTestDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 
-	CString sPath = TP_GetWindowsSysPath(TP_WINDOWSPATH_PERSONAL);
+	//CString sPath = TP_GetWindowsSysPath(TP_WINDOWSPATH_PERSONAL);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
