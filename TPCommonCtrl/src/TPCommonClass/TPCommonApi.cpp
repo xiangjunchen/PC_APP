@@ -2,6 +2,12 @@
 
 namespace _tp_commonclass
 {
+CString TP_GetWindowsSysPath(TP_WINDOWSPATH_TYPE eType)
+{
+	TCHAR MyDir[_MAX_PATH];   
+	SHGetSpecialFolderPath(NULL,MyDir,eType,0); 
+	return MyDir;
+}
 void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile)
 {
 	WIN32_FIND_DATA findData;
