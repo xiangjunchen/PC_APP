@@ -152,6 +152,7 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	}
 	void Reset()
 	{
+		TPResBaseInfo::Reset();
 		eResType	= TP_RES_CHANNEL;
 		eNodeType = TP_CHANNEL_UNKNOW;
 		lUpdateInterval = 60;  
@@ -161,10 +162,6 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	}
 	void Release()
 	{
-		eResType	= TP_RES_CHANNEL;
-		eNodeType = TP_CHANNEL_UNKNOW;
-		lUpdateInterval = 60;  
-		lSaveNum		= 500;
 		stuChannelBase.Release();
 		for (int l=0;l<aChannelItemAll.GetSize();l++)	
 		{
@@ -172,6 +169,8 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 			aChannelItemAll[l] = NULL;
 		}
 		aChannelItemAll.RemoveAll();	
+
+		Reset();
 	}
 	void AppendUpdateItem()
 	{
@@ -193,11 +192,13 @@ typedef struct _tagTPChannelNode : public TPResBaseInfo
 	}
 	void Reset()
 	{
+		TPResBaseInfo::Reset();
 		cNodeName = NULL;
 	}
 	void Release()
 	{
 		if(cNodeName)	{delete cNodeName; cNodeName = NULL;}
+		Reset();
 	}
 }TPChannelNode;
 //Manage interface 
