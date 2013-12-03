@@ -131,6 +131,9 @@ typedef struct _tagTPArticleData : public TPResBaseInfo
 	}
 }TPArticleData;
 
+#define TP_CHANNEL_VERSION1		1  //
+#define TP_CHANNEL_VERSION		TP_CHANNEL_VERSION1
+
 typedef struct _tagTPChannelData : public TPResBaseInfo
 {
 	TP_CHANNEL_NODETYPE		eNodeType;
@@ -138,17 +141,14 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	int					lSaveNum;				//保存条目数
 
 	TPChannelBase		stuChannelBase;
+	CTPChannelItemArray	aChannelItemAll;
 	_tagTPChannelData()
 	{
 		Reset();
 	}
 	~_tagTPChannelData()
 	{
-		eResType	= TP_RES_CHANNEL;
-		eNodeType = TP_CHANNEL_UNKNOW;
-		lUpdateInterval = 60;  
-		lSaveNum		= 500;
-		stuChannelBase.Release();
+		Release();
 	}
 	void Reset()
 	{
@@ -157,6 +157,26 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 		lUpdateInterval = 60;  
 		lSaveNum		= 500;
 		stuChannelBase.Reset();
+		aChannelItemAll.RemoveAll();
+	}
+	void Release()
+	{
+		eResType	= TP_RES_CHANNEL;
+		eNodeType = TP_CHANNEL_UNKNOW;
+		lUpdateInterval = 60;  
+		lSaveNum		= 500;
+		stuChannelBase.Release();
+		for (int l=0;l<aChannelItemAll.GetSize();l++)	
+		{
+			delete aChannelItemAll[l];
+			aChannelItemAll[l] = NULL;
+		}
+		aChannelItemAll.RemoveAll();	
+	}
+	void AppendUpdateItem()
+	{
+		aChannelItemAll.Append(stuChannelBase.aChannelItem);
+		stuChannelBase.aChannelItem.RemoveAll();//需要清除掉，不然aChannelItemAll，stuChannelBase.aChannelItem会同时释放
 	}
 }TPChannelData;
 

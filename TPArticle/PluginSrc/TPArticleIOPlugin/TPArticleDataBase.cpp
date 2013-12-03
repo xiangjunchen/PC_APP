@@ -10,12 +10,36 @@ CTPArticleDataBase::~CTPArticleDataBase(void)
 }
 LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelData)
 {
+	DWORD dwSize = 0;
 	CString  sFileName = GetResFilePath(TP_RES_CHANNEL, &stuChannelData);
 	CTPMemFile hMemFile;
 	hMemFile.ReadFile(sFileName);
 	DWORD dwTemp = 0;
 	//
-	hMemFile.Read(&dwTemp,sizeof(DWORD));	
+	stuChannelData.Release();
+	hMemFile.Read(&stuChannelData.dwVersion,sizeof(DWORD));
+	hMemFile.Read(&stuChannelData.dwState,sizeof(DWORD));
+	hMemFile.Read(&stuChannelData.guidRes,sizeof(GUID));				
+	hMemFile.Read(&stuChannelData.guidNode,sizeof(GUID));				
+	hMemFile.Read(&stuChannelData.guidDBType,sizeof(GUID));				
+	hMemFile.Read(&stuChannelData.tmCreate,sizeof(SYSTEMTIME));				
+	hMemFile.Read(&stuChannelData.tmModify,sizeof(SYSTEMTIME));				
+	hMemFile.Read(&stuChannelData.tmRead,sizeof(SYSTEMTIME));				
+	hMemFile.Read(&stuChannelData.eResType,sizeof(ULONGLONG));			
+
+	hMemFile.Read(&stuChannelData.eNodeType,sizeof(ULONGLONG));			
+	hMemFile.Read(&stuChannelData.lUpdateInterval,sizeof(int));			
+	hMemFile.Read(&stuChannelData.lSaveNum,sizeof(int));			
+
+	stuChannelData.stuChannelBase.ReadFile(hMemFile);
+
+	hMemFile.Write(&dwSize,sizeof(int));			
+	for(DWORD l = 0 ; l < dwSize; l++)
+	{
+		TPChannelItem *pItem = new TPChannelItem;
+		pItem->ReadFile(hMemFile);
+		stuChannelData.aChannelItemAll.Add(pItem);
+	}
 
 	//
 	hMemFile.Close();
@@ -23,12 +47,34 @@ LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelDa
 }
 LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelData)
 {
+	DWORD dwSize = 0;
 	CString  sFileName = GetResFilePath(TP_RES_CHANNEL, &stuChannelData);
 	CTPMemFile hMemFile;
-	DWORD dwTemp = 8;
 	//
-	hMemFile.Write(&dwTemp,sizeof(DWORD));
-	//
+	stuChannelData.dwVersion = TP_CHANNEL_VERSION;
+	hMemFile.Write(&stuChannelData.dwVersion,sizeof(DWORD));
+	hMemFile.Write(&stuChannelData.dwState,sizeof(DWORD));
+	hMemFile.Write(&stuChannelData.guidRes,sizeof(GUID));				
+	hMemFile.Write(&stuChannelData.guidNode,sizeof(GUID));				
+	hMemFile.Write(&stuChannelData.guidDBType,sizeof(GUID));				
+	hMemFile.Write(&stuChannelData.tmCreate,sizeof(SYSTEMTIME));				
+	hMemFile.Write(&stuChannelData.tmModify,sizeof(SYSTEMTIME));				
+	hMemFile.Write(&stuChannelData.tmRead,sizeof(SYSTEMTIME));				
+	hMemFile.Write(&stuChannelData.eResType,sizeof(ULONGLONG));			
+
+	hMemFile.Write(&stuChannelData.eNodeType,sizeof(ULONGLONG));			
+	hMemFile.Write(&stuChannelData.lUpdateInterval,sizeof(int));			
+	hMemFile.Write(&stuChannelData.lSaveNum,sizeof(int));			
+
+	stuChannelData.stuChannelBase.SaveFile(hMemFile);
+
+	dwSize = stuChannelData.aChannelItemAll.GetSize();
+	hMemFile.Write(&dwSize,sizeof(int));			
+	for(DWORD l = 0 ; l < dwSize; l++)
+	{
+		stuChannelData.aChannelItemAll[l]->SaveFile(hMemFile);
+	}
+	
 	hMemFile.WriteFile(sFileName);
 	hMemFile.Close();
 	return S_OK;
