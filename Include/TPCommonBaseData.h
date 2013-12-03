@@ -870,7 +870,26 @@ inline CString TP_GetWindowsSysPath(TP_WINDOWSPATH_TYPE eType)
 	SHGetSpecialFolderPath(NULL,MyDir,eType,0); 
 	return MyDir;
 }
+inline BOOL	   TP_WriteStrToFile(const TCHAR *cChar, CFile &cFileWrite)
+{
+	if(cChar == NULL)	{ASSERT(0);	return FALSE;}
 
+	DWORD dwSize = (TP_StrLen(cChar) + 1) * sizeof(TCHAR);
+	cFileWrite.Write(&dwSize,sizeof(DWORD));
+	cFileWrite.Write(cChar, dwSize);
+	return TRUE;
+}
+inline BOOL	   TP_ReadStrFromFile(TCHAR *&cChar, CFile &cFileRead)
+{
+	DWORD dwSize = 0;
+	cFileRead.Read(&dwSize,sizeof(DWORD));
+	if(dwSize <= 0)		{ASSERT(0);	return FALSE;}
+
+	cChar = new TCHAR[dwSize/sizeof(TCHAR)];//×Ö·û¸öÊý
+	ZeroMemory(cChar,dwSize);
+	cFileRead.Read(cChar,dwSize);
+	return TRUE;
+}
 class CTraceEx
 {
 public:
@@ -1282,42 +1301,19 @@ typedef struct _tagTPChannelItem
 	}
 	void SaveFile(CFile &cFileWrite)
 	{
-		DWORD dwSize = TP_StrLen(cItemTitle);
-		cFileWrite.Write(&dwSize,sizeof(DWORD));
-		cFileWrite.Write(&cItemTitle,TP_StrLen(cItemTitle));
-
-		dwSize = TP_StrLen(cItemLink);
-		cFileWrite.Write(&dwSize,sizeof(DWORD));
-		cFileWrite.Write(&cItemLink,TP_StrLen(cItemLink));
-
-		dwSize = TP_StrLen(cItemDescription);
-		cFileWrite.Write(&dwSize,sizeof(DWORD));
-		cFileWrite.Write(&cItemDescription,TP_StrLen(cItemDescription));
-
-		dwSize = TP_StrLen(cItemPubDate);
-		cFileWrite.Write(&dwSize,sizeof(DWORD));
-		cFileWrite.Write(&cItemPubDate,TP_StrLen(cItemPubDate));
+		TP_WriteStrToFile(cItemTitle, cFileWrite);
+		TP_WriteStrToFile(cItemLink,  cFileWrite);
+		TP_WriteStrToFile(cItemDescription,  cFileWrite);
+		TP_WriteStrToFile(cItemPubDate,  cFileWrite);
 	}
 	void ReadFile(CFile &cFileRead)
 	{
 		Release();
 
-		DWORD dwSize = 0;
-		cFileRead.Read(&dwSize,sizeof(DWORD));
-		cItemTitle = new TCHAR[dwSize/sizeof(TCHAR)];
-		cFileRead.Read(&cItemTitle,dwSize);
-
-		cFileRead.Read(&dwSize,sizeof(DWORD));
-		cItemLink = new TCHAR[dwSize/sizeof(TCHAR)];
-		cFileRead.Read(&cItemLink,dwSize);
-
-		cFileRead.Read(&dwSize,sizeof(DWORD));
-		cItemDescription = new TCHAR[dwSize/sizeof(TCHAR)];
-		cFileRead.Read(&cItemDescription,dwSize);
-
-		cFileRead.Read(&dwSize,sizeof(DWORD));
-		cItemPubDate = new TCHAR[dwSize/sizeof(TCHAR)];
-		cFileRead.Read(&cItemPubDate,dwSize);
+		TP_ReadStrFromFile(cItemTitle, cFileRead);
+		TP_ReadStrFromFile(cItemLink, cFileRead);
+		TP_ReadStrFromFile(cItemDescription, cFileRead);
+		TP_ReadStrFromFile(cItemPubDate, cFileRead);
 	}
 }TPChannelItem;
 typedef CArray<TPChannelItem *, TPChannelItem *&>	CTPChannelItemArray;
@@ -1358,32 +1354,17 @@ typedef struct _tagTPChannelImage
 	}
 	void SaveFile(CFile &cFileWrite)
 	{
-		DWORD dwSize = TP_StrLen(cImageUrl);
-		cFileWrite.Write(&dwSize,sizeof(DWORD));
-		cFileWrite.Write(&cImageUrl,TP_StrLen(cImageUrl));
-		dwSize = TP_StrLen(cImageTitle);
-		cFileWrite.Write(&dwSize,sizeof(DWORD));
-		cFileWrite.Write(&cImageTitle,TP_StrLen(cImageTitle));
-		dwSize = TP_StrLen(cImageLink);
-		cFileWrite.Write(&dwSize,sizeof(DWORD));
-		cFileWrite.Write(&cImageLink,TP_StrLen(cImageLink));
+		TP_WriteStrToFile(cImageUrl, cFileWrite);
+		TP_WriteStrToFile(cImageTitle, cFileWrite);
+		TP_WriteStrToFile(cImageLink, cFileWrite);
 	}
 	void ReadFile(CFile &cFileRead)
 	{
 		Release();
 
-		DWORD dwSize = 0;
-		cFileRead.Read(&dwSize,sizeof(DWORD));
-		cImageUrl = new TCHAR[dwSize/sizeof(TCHAR)];
-		cFileRead.Read(&cImageUrl,dwSize);
-
-		cFileRead.Read(&dwSize,sizeof(DWORD));
-		cImageTitle = new TCHAR[dwSize/sizeof(TCHAR)];
-		cFileRead.Read(&cImageTitle,dwSize);
-
-		cFileRead.Read(&dwSize,sizeof(DWORD));
-		cImageLink = new TCHAR[dwSize/sizeof(TCHAR)];
-		cFileRead.Read(&cImageLink,dwSize);
+		TP_ReadStrFromFile(cImageUrl, cFileRead);
+		TP_ReadStrFromFile(cImageTitle, cFileRead);
+		TP_ReadStrFromFile(cImageLink, cFileRead);
 	}
 }TPChannelImage;
 typedef struct _tagTPChannelBase
@@ -1455,25 +1436,11 @@ typedef struct _tagTPChannelBase
 		DWORD	dwSize = 0;
 		fileWrite.Write(&dwVersion,sizeof(DWORD));
 
-		dwSize = TP_StrLen(cChannelAddress);
-		fileWrite.Write(&dwSize,sizeof(DWORD));
-		fileWrite.Write(&cChannelAddress,TP_StrLen(cChannelAddress)*sizeof(TCHAR));
-
-		dwSize = TP_StrLen(cChannelTitle);
-		fileWrite.Write(&dwSize,sizeof(DWORD));
-		fileWrite.Write(&cChannelTitle,TP_StrLen(cChannelTitle));
-
-		dwSize = TP_StrLen(cChannelDescription);
-		fileWrite.Write(&dwSize,sizeof(DWORD));
-		fileWrite.Write(&cChannelDescription,TP_StrLen(cChannelDescription));
-
-		dwSize = TP_StrLen(cChannelLink);
-		fileWrite.Write(&dwSize,sizeof(DWORD));
-		fileWrite.Write(&cChannelLink,TP_StrLen(cChannelLink));
-
-		dwSize = TP_StrLen(cChannelGenerator);
-		fileWrite.Write(&dwSize,sizeof(DWORD));
-		fileWrite.Write(&cChannelGenerator,TP_StrLen(cChannelGenerator));
+		TP_WriteStrToFile(cChannelAddress, fileWrite);
+		TP_WriteStrToFile(cChannelTitle, fileWrite);
+		TP_WriteStrToFile(cChannelDescription, fileWrite);
+		TP_WriteStrToFile(cChannelLink, fileWrite);
+		TP_WriteStrToFile(cChannelGenerator, fileWrite);
 
 		stuChannelImage.SaveFile(fileWrite);
 	}
@@ -1484,25 +1451,13 @@ typedef struct _tagTPChannelBase
 		DWORD dwSize = 0;
 		fileRead.Read(&dwVersion,sizeof(DWORD));
 
-		fileRead.Read(&dwSize,sizeof(DWORD));
-		cChannelAddress = new TCHAR[dwSize];
-		fileRead.Read(&cChannelAddress,dwSize);
+		TP_ReadStrFromFile(cChannelAddress, fileRead);
+		TP_ReadStrFromFile(cChannelTitle, fileRead);
+		TP_ReadStrFromFile(cChannelDescription, fileRead);
+		TP_ReadStrFromFile(cChannelLink, fileRead);
+		TP_ReadStrFromFile(cChannelGenerator, fileRead);
 
-		fileRead.Read(&dwSize,sizeof(DWORD));
-		cChannelTitle = new TCHAR[dwSize/sizeof(TCHAR)];
-		fileRead.Read(&cChannelTitle,dwSize);
-
-		fileRead.Read(&dwSize,sizeof(DWORD));
-		cChannelDescription = new TCHAR[dwSize/sizeof(TCHAR)];
-		fileRead.Read(&cChannelDescription,dwSize);
-
-		fileRead.Read(&dwSize,sizeof(DWORD));
-		cChannelLink = new TCHAR[dwSize/sizeof(TCHAR)];
-		fileRead.Read(&cChannelLink,dwSize);
-
-		fileRead.Read(&dwSize,sizeof(DWORD));
-		cChannelGenerator = new TCHAR[dwSize/sizeof(TCHAR)];
-		fileRead.Read(&cChannelGenerator,dwSize);
+		stuChannelImage.ReadFile(fileRead);
 	}
 }TPChannelBase, *LPTPChannelBase;
 typedef CArray<TPChannelBase *, TPChannelBase*&> CTPChannelBase;
