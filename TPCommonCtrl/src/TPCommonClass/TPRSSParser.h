@@ -26,3 +26,23 @@ private:
 	BOOL ReleaseChannelInfo();
 
 };
+class AFX_EXT_CLASS CTPArticleParser
+{
+public:
+	CTPArticleParser(void);
+	~CTPArticleParser(void);
+
+	TPChannelItem 	*m_pChannelItem;
+public:
+	int	SetItemAddress(TCHAR *cAddress);
+	int GetItemInfo(TPChannelItem *&pInfo);
+
+private:
+	//BOOL ParserChannel(const TCHAR *cFileName);
+	//BOOL ParserChannelNode(MSXML2::IXMLDOMNodePtr ChildNode);
+	//BOOL ParserImageNode(MSXML2::IXMLDOMNodePtr ChildNode);
+	//BOOL ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode);
+
+	BOOL ReleaseItemInfo();
+
+};

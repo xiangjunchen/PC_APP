@@ -123,6 +123,15 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 	stuChannel.AppendUpdateItem();
 	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
 	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
+
+	for (int l = 0 ; l < stuChannel.aChannelItemAll.GetSize(); l++)
+	{
+		TPChannelItem *pItemInfo = NULL;
+		CTPArticleParser stuArticle;
+		stuArticle.SetItemAddress(stuChannel.aChannelItemAll[l]->cItemLink);
+		stuArticle.GetItemInfo(pItemInfo);
+
+	}
 	//////////////////////////////////////////////////////////////////////////
 	InitContextMenuManager();
 

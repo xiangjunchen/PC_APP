@@ -24,7 +24,11 @@ int CTPChannelParser::GetChannelInfo(TPChannelBase *&pInfo)
 {
 	if(!m_pChannelInfo || TP_StrLen(m_pChannelInfo->cChannelAddress) <= 0)	return 0;
 
-	TCHAR cXMLPath[MAX_PATH] ;
+	TCHAR cXMLPath[MAX_PATH];
+	::GetModuleFileName(NULL,cXMLPath,MAX_PATH);
+	PathRemoveFileSpec(cXMLPath);	
+	lstrcat(cXMLPath,_T("\\temp.xml"));
+
 	CTPDownloadHttp stuDownload;
 	stuDownload.SetHttpUrl(m_pChannelInfo->cChannelAddress, cXMLPath);
 	stuDownload.Download();
@@ -255,3 +259,63 @@ BOOL CTPChannelParser::ReleaseChannelInfo()
 	}
 	return TRUE;
 }
+
+
+
+
+
+
+
+
+
+CTPArticleParser::CTPArticleParser(void)
+{
+	m_pChannelItem = NULL;
+}
+
+CTPArticleParser::~CTPArticleParser(void)
+{
+	ReleaseItemInfo();
+}
+int	CTPArticleParser::SetItemAddress(TCHAR *cAddress)
+{
+	ReleaseItemInfo();
+
+	int nLen = TP_StrLen(cAddress);
+	if(nLen <= 0)	return 0;
+
+	m_pChannelItem = new TPChannelItem;
+	TP_StrCpy(m_pChannelItem->cItemLink, cAddress, nLen);
+	return 1;
+}
+int CTPArticleParser::GetItemInfo(TPChannelItem *&pInfo)
+{
+	if(!m_pChannelItem || TP_StrLen(m_pChannelItem->cItemLink) <= 0)	return 0;
+
+	TCHAR cXMLPath[MAX_PATH];
+	::GetModuleFileName(NULL,cXMLPath,MAX_PATH);
+	PathRemoveFileSpec(cXMLPath);	
+	lstrcat(cXMLPath,_T("\\temp.html"));
+
+	CTPDownloadHttp stuDownload;
+	stuDownload.SetHttpUrl(m_pChannelItem->cItemLink, cXMLPath);
+	stuDownload.Download();
+
+	//ParserChannel(cXMLPath);
+
+	pInfo = m_pChannelItem;
+	return 1;
+}
+
+BOOL CTPArticleParser::ReleaseItemInfo()
+{
+	if(m_pChannelItem)
+	{
+		delete m_pChannelItem;
+		m_pChannelItem = NULL;
+	}
+	return TRUE;
+}
+
+
+

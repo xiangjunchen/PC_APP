@@ -121,11 +121,6 @@ BOOL CTPDownloadHttp::SetHttpUrl(const TCHAR *cHttpUrl, TCHAR *cDownloadPath)
 
 	m_cHttpUrl = cHttpUrl;
 	m_cDownloadPath = cDownloadPath;
-	TCHAR cPath[MAX_PATH];
-	::GetModuleFileName(NULL,cPath,MAX_PATH);
-	PathRemoveFileSpec(cPath);	
-	lstrcat(cPath,_T("\\temp.xml"));
-	lstrcpy(m_cDownloadPath, cPath);
 	return TRUE;
 }
 BOOL CTPDownloadHttp::Download()
