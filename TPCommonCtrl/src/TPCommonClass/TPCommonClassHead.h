@@ -10,6 +10,7 @@
 #include "TPWinShellInterface.h"
 #include "TPDXGraph.h"
 #include "TPCommonApi.h"
+#include "TPWebHost.h"
 #include "TPDownloadHttp.h"
 #include "TPRSSParser.h"
 //#include "etdbrecordset.h"

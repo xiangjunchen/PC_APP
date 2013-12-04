@@ -80,35 +80,35 @@ void CTPWebHost::OnAnalyseJavascrript(const CString& str_htmlcode ,  vector<Hype
 			if( pos1!=-1 )
 			{
 				pos1 +=1 ;
-				pos2 = str_javascript[a].Find("')",pos1);
+				pos2 = str_javascript[a].Find(_L("')"),pos1);
 				pos2 -=pos1;
 
 				str_link = str_javascript[a].Mid(pos1,pos2);
 
-				if(str_link.Find(".htm",0)!=-1||str_link.Find(".html",0)!=-1||
-					str_link.Find(".php",0)!=-1||str_link.Find(".asp",0)!=-1||
-					str_link.Find(".xml",0)!=-1||str_link.Find("http://",0)!=-1)
+				if(str_link.Find(_L(".htm"),0)!=-1||str_link.Find(_L(".html"),0)!=-1||
+					str_link.Find(_L(".php"),0)!=-1||str_link.Find(_L(".asp"),0)!=-1||
+					str_link.Find(_L(".xml"),0)!=-1||str_link.Find(_L("http://"),0)!=-1)
 			 {
-				 str_link.Replace(_L(" "),"");
-				 str_link.Replace("'","");
-				 str_link.Replace("\"","");
+				 str_link.Replace(_L(" "),_L(""));
+				 str_link.Replace(_L("'"),_L(""));
+				 str_link.Replace(_L("\""),_L(""));
 				 //,逗号处理
-				 if(str_link.Find(",",0)!=-1)
+				 if(str_link.Find(_L(","),0)!=-1)
 				 {
-					 str_link=str_link.Left(str_link.Find(",",0));
+					 str_link=str_link.Left(str_link.Find(_L(","),0));
 				 }
 				 //=号处理
-				 if(str_link.Find("=",0)!=-1)
+				 if(str_link.Find(_L("="),0)!=-1)
 				 {
-					 str_link=str_link.Right(str_link.Find("=",0));
+					 str_link=str_link.Right(str_link.Find(_L("="),0));
 				 }
 				 //>处理
-				 if(str_link.Find(">",0)!=-1)
+				 if(str_link.Find(_L(">"),0)!=-1)
 				 {
-					 str_link=str_link.Left(str_link.Find(">",0));
+					 str_link=str_link.Left(str_link.Find(_L(">"),0));
 				 }
 				 //-----------------------------------------------------------------
-				 if(str_link.Find("http://",0)<-1)//URL如果是相对地址的话
+				 if(str_link.Find(_L("http://"),0)<-1)//URL如果是相对地址的话
 				 { 
 					 str_link = OnConversionURL ( str_Page_URL , str_link);
 				 }	
@@ -134,16 +134,16 @@ void CTPWebHost::OnAnalyseJavascrript(const CString& str_htmlcode ,  vector<Hype
 // 把URL转换成绝对地址
 CString CTPWebHost::OnConversionURL(CString sURL,CString str_fafURL)
 {
-	if(sURL.Find("/",8)<0)
+	if(sURL.Find(_L("/"),8)<0)
 	{
 		sURL +="/";
 	}
-	str_fafURL.Replace("'","");
+	str_fafURL.Replace(_L("'"),_L(""));
 	CString str_activeURL;
 	int int_j = 0;
 	int i=0;
 	str_activeURL = str_fafURL;
-	if(str_fafURL.Find("../",0)!=-1&&str_fafURL[0]!='/')
+	if(str_fafURL.Find(_L("../"),0)!=-1&&str_fafURL[0]!='/')
 	{
 		while( i<=str_fafURL.GetLength() )
 		{
@@ -155,7 +155,7 @@ CString CTPWebHost::OnConversionURL(CString sURL,CString str_fafURL)
 		{
 			str_fafURL.Delete(0,1);
 		}
-		str_fafURL.Replace("../","");
+		str_fafURL.Replace(_L("../"),_L(""));
 		i=0;
 		int int_i=0;
 		while( i <= sURL.GetLength() )
@@ -243,14 +243,14 @@ void CTPWebHost::OnGetHtmlURL(const CString& str_htmlcode, vector<HyperLink>& m_
 
 	for(int i=0;i<pagesize&&tag0!=-1;i++)
 	{
-		tag0=str_htmlcode.Find("href=",tag0);
+		tag0=str_htmlcode.Find(_L("href="),tag0);
 		if(tag0!=-1)
 		{tag0 +=5;}
-		tag1=str_htmlcode.Find(">",tag0);
+		tag1=str_htmlcode.Find(_L(">"),tag0);
 		iLinkTextpos = tag1;
 		tag1 -=tag0;
 		str_link=str_htmlcode.Mid(tag0,tag1);
-		str_link.Replace("\"","");
+		str_link.Replace(_L("\""),_L(""));
 		 
 		if(!str_link.IsEmpty())
 		{
@@ -261,17 +261,17 @@ void CTPWebHost::OnGetHtmlURL(const CString& str_htmlcode, vector<HyperLink>& m_
 			}
 			else 
 				//URL可能含有换行符合
-			if(str_link.Find("\n",0)!=-1)
+			if(str_link.Find(_L("\n"),0)!=-1)
 			{
-				str_link=str_link.Left(str_link.Find("\n",0));
+				str_link=str_link.Left(str_link.Find(_L("\n"),0));
 			}
 	       
 			//-----------------------------------------------------------------
-			if(str_link.Find("http://",0)<0)//URL如果是相对地址的话
+			if(str_link.Find(_L("http://"),0)<0)//URL如果是相对地址的话
 			{ 
 				str_link= OnConversionURL(str_Page_URL,str_link);
 			}			    			
-				str_link.Replace( "\'" , "");
+				str_link.Replace( _L("\'") , _L(""));
 				m_HyperLink.str_Hyperlink=str_link;
 				//AfxMessageBox(str_link);
 				m_HyperLink.str_HyperlinkText=OnGetLinkText(iLinkTextpos+1,str_htmlcode);
@@ -292,10 +292,10 @@ void CTPWebHost::OnGetJumpURL(const CString& str_htmlcode, vector<HyperLink>& m_
 	int iLinkTextpos=0;
 	for( i=0;i<pagesize&&tag0!=-1;i++)
 	{
-		tag0=str_htmlcode.Find("url=",tag0);
+		tag0=str_htmlcode.Find(_L("url="),tag0);
 		if(tag0!=-1)
 		{tag0 +=4;}
-		tag1=str_htmlcode.Find(">",tag0);
+		tag1=str_htmlcode.Find(_L(">"),tag0);
 		iLinkTextpos = tag1;
 		tag1 -=tag0;
 		str_link=str_htmlcode.Mid(tag0,tag1);
@@ -303,9 +303,9 @@ void CTPWebHost::OnGetJumpURL(const CString& str_htmlcode, vector<HyperLink>& m_
 		if(!str_link.IsEmpty())
 		{
 
-			tag3=str_link.Find("\"",0);
+			tag3=str_link.Find(_L("\""),0);
 			if(tag3!=-1)
-			{ str_link.Replace("\"","");}
+			{ str_link.Replace(_L("\""),_L(""));}
 			tag3=str_link.Find(_L(" "),0);
 			if(tag3!=-1)
 			{	
@@ -313,18 +313,18 @@ void CTPWebHost::OnGetJumpURL(const CString& str_htmlcode, vector<HyperLink>& m_
 			}
 			else
 				//URL可能含有换行符合
-				if(str_link.Find("\n",0)!=-1)
+				if(str_link.Find(_L("\n"),0)!=-1)
 				{
-					str_link=str_link.Left(str_link.Find("\n",0));
+					str_link=str_link.Left(str_link.Find(_L("\n"),0));
 				}
 
-				if(str_link.Find("http://",0)==-1)//URL如果是相对地址的话
+				if(str_link.Find(_L("http://"),0)==-1)//URL如果是相对地址的话
 				{ 
 					str_link=OnConversionURL(str_Page_URL,str_link);
 				}	
 				if( !tag4 && str_link.GetLength() > 5)//URL未被处理
 				{
-					str_link.Replace( "\'" , "");
+					str_link.Replace( _L("\'") , _L(""));
 					mb_ifFream=TRUE;
 					m_HyperLink.str_Hyperlink=str_link;
 					m_HyperLink.str_HyperlinkText=OnGetLinkText(iLinkTextpos+1,str_htmlcode);
@@ -344,8 +344,8 @@ CString CTPWebHost::OnGetLinkText(int iIn,const CString& htmlcode)
 	int ipos1=0;
 	int ipos2=0;
 	int iSafety=0;
-	ipos1=htmlcode.Find("</a>",iIn);
-    ipos2 = htmlcode.Find("<a>",iIn);
+	ipos1=htmlcode.Find(_L("</a>"),iIn);
+    ipos2 = htmlcode.Find(_L("<a>"),iIn);
     if(ipos2>0)
      {
        if(ipos2<ipos1)
@@ -354,14 +354,14 @@ CString CTPWebHost::OnGetLinkText(int iIn,const CString& htmlcode)
 	if(ipos1>-1)
 	{
         str_return =htmlcode.Mid(iIn,ipos1-iIn);
-		if(str_return.Find("href=",0)<0)
+		if(str_return.Find(_L("href="),0)<0)
 		{
 			while(ipos1>-1&&iSafety<500)
 			{
 				iSafety++;
 				//
-				ipos1 = str_return.Find("<",0);
-				ipos2 = str_return.Find(">",ipos1);
+				ipos1 = str_return.Find(_L("<"),0);
+				ipos2 = str_return.Find(_L(">"),ipos1);
 				if(ipos1>-1&&ipos2>-1)
 				{
 					str_return.Delete(ipos1,ipos2-ipos1+1);
@@ -395,10 +395,10 @@ void CTPWebHost::OnReturnFrameURL(const CString& str_htmlcode ,vector<HyperLink>
     CString str_link;
    while( pos1 != -1 )
    {
-    pos1 = str_htmlcode.Find( "<frame" , pos1 );
+    pos1 = str_htmlcode.Find( _L("<frame") , pos1 );
     if( pos1!=-1 )
     {
-	pos2 = str_htmlcode.Find( "</frameset>" , pos1);
+	pos2 = str_htmlcode.Find( _L("</frameset>") , pos1);
     pos1 += 6;
     pos2 -= pos1;
 	str_javascript.Add( str_htmlcode.Mid( pos1 , pos2 ) );
@@ -413,22 +413,22 @@ void CTPWebHost::OnReturnFrameURL(const CString& str_htmlcode ,vector<HyperLink>
 	   for(int b=0;pos1!=-1&&b<str_javascript[a].GetLength();b++)
 	   {
 		   
-           pos1 =str_javascript[a].Find( "src" , pos1 );
+           pos1 =str_javascript[a].Find( _L("src") , pos1 );
 		   if( pos1!=-1 )
 		   {
-			   pos1 = str_javascript[a].Find( "=" , pos1 );
-			   pos2 = str_javascript[a].Find( ">" , pos1 );
+			   pos1 = str_javascript[a].Find( _L("=") , pos1 );
+			   pos2 = str_javascript[a].Find( _L(">") , pos1 );
 			   pos1 += 1;
 			   pos2 -= pos1;
                str_link = str_javascript[a].Mid(pos1,pos2);
 			  
-               if(str_link.Find("http://",0)<0 
-				   && str_link.Find(">",0)<0 && str_link.Find("<",0)<0 )//URL如果是相对地址的话
+               if(str_link.Find(_L("http://"),0)<0 
+				   && str_link.Find(_L(">"),0)<0 && str_link.Find(_L("<"),0)<0 )//URL如果是相对地址的话
 				 { 
 				   
 			      str_link = OnConversionURL ( str_Page_URL , str_link);
 				 }		  
-			    str_link.Replace( "\'" , "");
+			    str_link.Replace( _L("\'") , _L(""));
 				
 				if( str_link.GetLength() > 5)//URL未被处理
 				{

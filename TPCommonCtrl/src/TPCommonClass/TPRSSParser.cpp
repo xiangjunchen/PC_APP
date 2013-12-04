@@ -308,6 +308,14 @@ int CTPArticleParser::GetItemInfo(TPChannelItem *&pInfo)
 }
 BOOL	CTPArticleParser::ParserHtml(CString sHtmlStr)
 {
+	vector<HyperLink> ageURL;
+
+	HyperLink hthisURL;
+	hthisURL.str_Hyperlink= m_pChannelItem->cItemLink;
+	CTPWebHost m_host(sHtmlStr,ageURL,hthisURL);
+	for( size_t i = 0 ; i < ageURL.size() ; i++ )
+	{
+	}
 	return TRUE;
 }
 

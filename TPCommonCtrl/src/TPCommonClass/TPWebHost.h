@@ -9,10 +9,11 @@
 				nie173@msn.com
 	Created:	03/05/2004
   ########################################################################*/
-#include <vector>
+#pragma once
+
 using namespace std;
-//#include "URLSturct_.h"
-//URLSturct_.h
+#include <vector>
+
 
 //超连接数据结构
 
