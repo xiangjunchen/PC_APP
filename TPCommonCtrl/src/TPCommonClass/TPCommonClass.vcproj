@@ -398,6 +398,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TPWebHost.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TPWinShellInterface.cpp"
 				>
 			</File>
@@ -521,6 +525,10 @@
 			</File>
 			<File
 				RelativePath=".\TPUdpSocket.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPWebHost.h"
 				>
 			</File>
 			<File
