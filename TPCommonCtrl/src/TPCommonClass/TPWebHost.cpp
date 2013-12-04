@@ -11,7 +11,6 @@
   ########################################################################*/
 
 #include "stdafx.h"
-#include "TPWebHost.h"
 
 //¹¹Ôìº¯Êý
 CTPWebHost::CTPWebHost(const CString& m_str_webcode ,  vector<HyperLink>& m_vec_All_URL ,HyperLink& str_URL)
@@ -246,6 +245,8 @@ void CTPWebHost::OnGetHtmlURL(const CString& str_htmlcode, vector<HyperLink>& m_
 		tag0=str_htmlcode.Find(_L("href="),tag0);
 		if(tag0!=-1)
 		{tag0 +=5;}
+		if(tag0 <= -1)	continue;
+
 		tag1=str_htmlcode.Find(_L(">"),tag0);
 		iLinkTextpos = tag1;
 		tag1 -=tag0;
@@ -360,15 +361,15 @@ CString CTPWebHost::OnGetLinkText(int iIn,const CString& htmlcode)
 			{
 				iSafety++;
 				//
+				ipos1 = -1;
 				ipos1 = str_return.Find(_L("<"),0);
-				ipos2 = str_return.Find(_L(">"),ipos1);
-				if(ipos1>-1&&ipos2>-1)
+				if(ipos1 > -1)
 				{
-					str_return.Delete(ipos1,ipos2-ipos1+1);
-				}
-				else
-				{
-                    ipos1 =-1;
+					ipos2 = str_return.Find(_L(">"),ipos1);
+					if(ipos2>-1)
+					{
+						str_return.Delete(ipos1,ipos2-ipos1+1);
+					}
 				}
 			}
 		}
