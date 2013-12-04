@@ -124,6 +124,52 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
 	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
 
+	//////////////////////////////////////////////////////////////////////////
+	
+	CStdioFile sFile;
+	CString sFileName = _T("E:\\PC_APP.git\\trunk\\Unicode Debug\\temp.html"),str_FlagTemp;
+//  	sFile.Open(sFileName,CFile::modeRead);
+//  	while(sFile.ReadString(str_FlagTemp))
+//  	{
+//  		char *pStr = str_FlagTemp.GetBuffer(str_FlagTemp.GetLength()); //取得str对象的原始字符串
+//  		int nBufferSize = MultiByteToWideChar(CP_UTF8, 0, pStr, -1, NULL, 0); //取得所需缓存的多少
+//  		WCHAR *pBuffer = (WCHAR*)malloc(nBufferSize * sizeof(WCHAR));//申请缓存空间
+//  		MultiByteToWideChar(CP_UTF8, 0, pStr, -1 , pBuffer, nBufferSize*sizeof(WCHAR));//转码
+//  		//MessageBoxW(NULL, pBuffer, L"Text", MB_OK); //显示
+//  		free(pBuffer); //释放缓存
+//  	}
+// 	char *pStr = str_FlagTemp.GetBuffer(str_FlagTemp.GetLength()); //取得str对象的原始字符串
+// 	int nBufferSize = MultiByteToWideChar(CP_UTF8, 0, pStr, -1, NULL, 0); //取得所需缓存的多少
+// 	WCHAR *pBuffer = (WCHAR*)malloc(nBufferSize * sizeof(WCHAR));//申请缓存空间
+// 	MultiByteToWideChar(CP_UTF8, 0, pStr, -1 , pBuffer, nBufferSize*sizeof(WCHAR));//转码
+// 	//MessageBoxW(NULL, pBuffer, L"Text", MB_OK); //显示
+// 	free(pBuffer); //释放缓存
+
+//  	CFile file;
+//  		if(!file.Open(sFileName,CFile::modeRead |CFile::shareDenyNone)) 	
+//  		{
+//  			return FALSE;
+//  		}
+//  		DWORD  dwBuflength = (DWORD)file.GetLength();
+//  		LPBYTE pReadBuf = new BYTE[dwBuflength+2];
+//  		ZeroMemory(pReadBuf,dwBuflength+2);
+//  		file.Read(pReadBuf,dwBuflength+2);
+//  		if(pReadBuf)
+//  		{
+//  			char *pStr = (char*)pReadBuf;
+//  			//str_FlagTemp.GetBuffer(str_FlagTemp.GetLength()); //取得str对象的原始字符串
+//  			int nBufferSize = MultiByteToWideChar(CP_UTF8, 0, pStr, -1, NULL, 0); //取得所需缓存的多少
+//  			WCHAR *pBuffer = (WCHAR*)malloc(nBufferSize * sizeof(WCHAR));//申请缓存空间
+//  			MultiByteToWideChar(CP_UTF8, 0, pStr, -1 , pBuffer, nBufferSize*sizeof(WCHAR));//转码
+//  			//MessageBoxW(NULL, pBuffer, L"Text", MB_OK); //显示
+// 			CString sTemp ;
+// 			sTemp = pBuffer;
+// 			AfxMessageBox(sTemp);
+// 
+//  			free(pBuffer); //释放缓存
+//  		}
+	//////////////////////////////////////////////////////////////////////////
+
 	for (int l = 0 ; l < stuChannel.aChannelItemAll.GetSize(); l++)
 	{
 		TPChannelItem *pItemInfo = NULL;

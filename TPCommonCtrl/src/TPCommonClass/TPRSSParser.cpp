@@ -301,10 +301,52 @@ int CTPArticleParser::GetItemInfo(TPChannelItem *&pInfo)
 	stuDownload.SetHttpUrl(m_pChannelItem->cItemLink, cXMLPath);
 	stuDownload.Download();
 
-	//ParserChannel(cXMLPath);
+	ParserHtml(GetHtmlString(cXMLPath));
 
 	pInfo = m_pChannelItem;
 	return 1;
+}
+BOOL	CTPArticleParser::ParserHtml(CString sHtmlStr)
+{
+	return TRUE;
+}
+
+CString CTPArticleParser::GetHtmlString(const TCHAR *cFileName)
+{
+	CString sHtmlStr = _T("");
+	CFile file;
+	try
+	{
+		if(!file.Open(cFileName,CFile::modeRead |CFile::shareDenyNone)) 	
+		{
+			return sHtmlStr;
+		}
+		DWORD  dwBuflength = (DWORD)file.GetLength();
+		LPBYTE pReadBuf = new BYTE[dwBuflength+2];
+		ZeroMemory(pReadBuf,dwBuflength+2);
+		file.Read(pReadBuf,dwBuflength+2);
+		if(pReadBuf)
+		{
+			char *pStr = (char*)pReadBuf;
+			int nBufferSize = MultiByteToWideChar(CP_UTF8, 0, pStr, -1, NULL, 0); //取得所需缓存的多少
+			WCHAR *pBuffer = (WCHAR*)malloc(nBufferSize * sizeof(WCHAR));//申请缓存空间
+			MultiByteToWideChar(CP_UTF8, 0, pStr, -1 , pBuffer, nBufferSize*sizeof(WCHAR));//转码
+			sHtmlStr = pBuffer;
+			free(pBuffer); //释放缓存
+		}
+		delete pReadBuf;
+		pReadBuf = NULL;
+		file.Close();
+	}
+	catch (CFileException* e)
+	{
+		file.Close();
+		TCHAR szError[1024];
+		e->GetErrorMessage(szError, 1024);
+		CString str = szError;
+		return sHtmlStr;
+	}
+	return sHtmlStr;
 }
 
 BOOL CTPArticleParser::ReleaseItemInfo()

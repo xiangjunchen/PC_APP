@@ -43,6 +43,8 @@ private:
 	//BOOL ParserImageNode(MSXML2::IXMLDOMNodePtr ChildNode);
 	//BOOL ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode);
 
-	BOOL ReleaseItemInfo();
+	BOOL	ParserHtml(CString sHtmlStr);
+	CString GetHtmlString(const TCHAR *cFileName);
+	BOOL	ReleaseItemInfo();
 
 };
