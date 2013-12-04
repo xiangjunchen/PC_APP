@@ -20,6 +20,10 @@
 #include <Wininet.h>
 #include <afxpriv.h>
 
+//vector需要，不能放到namespace _tp_commonclass中
+#include <vector>
+using namespace std;
+//
 #include   <Winnetwk.h> 
 #pragma   comment(lib, "Mpr.lib") 
 //end
@@ -29,8 +33,10 @@
 #include "TPTcpSocket.h"
 #include "TPNetInterface.h"
 
+
 namespace _tp_commonclass
 {
+
 #include "TPCommonClassExp.h"
 };
 

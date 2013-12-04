@@ -10,9 +10,9 @@
 	Created:	03/05/2004
   ########################################################################*/
 #pragma once
-
-using namespace std;
-#include <vector>
+// #include <iostream>
+//#include <vector>
+//using namespace std;
 
 
 //超连接数据结构
