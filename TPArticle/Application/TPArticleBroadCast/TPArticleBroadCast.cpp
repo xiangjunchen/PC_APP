@@ -110,7 +110,7 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 
 	//////////////////////////////////////////////////////////////////////////rss test
 
-	TCHAR cAddress[] = _T("http://www.huxiu.com/rss/0.xml");//http://www.36kr.com/feed
+	TCHAR cAddress[] = _T("http://www.36kr.com/feed");//_T("http://www.huxiu.com/rss/0.xml");//
 	TPChannelBase *pChannelInfo = NULL;
 	CTPChannelParser stuParser;
 	stuParser.SetChannelAddress(cAddress);
@@ -128,7 +128,7 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 	{
 		TPChannelItem *pItemInfo = NULL;
 		CTPArticleParser stuArticle;
-		stuArticle.SetItemAddress(stuChannel.aChannelItemAll[l]->cItemLink);
+		stuArticle.SetChannelItem(stuChannel.aChannelItemAll[l]);
 		stuArticle.GetItemInfo(pItemInfo);
 
 	}

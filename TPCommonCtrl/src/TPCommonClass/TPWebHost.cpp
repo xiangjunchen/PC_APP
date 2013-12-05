@@ -12,6 +12,8 @@
 
 #include "stdafx.h"
 
+TCHAR *sz_SpecChar[][2] = { {_L("&lt"), _L("<")}, {_L("&gt"),_L(">")}};
+
 //构造函数
 CTPWebHost::CTPWebHost(const CString& m_str_webcode ,  vector<HyperLink>& m_vec_All_URL ,HyperLink& str_URL)
 {
@@ -442,6 +444,18 @@ void CTPWebHost::OnReturnFrameURL(const CString& str_htmlcode ,vector<HyperLink>
 	   }
    }
 }
+void CTPWebHost::ReplaceSpecChar(CString &sHtml)
+{
+	AfxMessageBox(sHtml);
+  	int nSpec = sizeof(sz_SpecChar)/sizeof(TCHAR);
+ 	for (int l = 0 ; l < nSpec; l++)
+ 	{
+ 		sHtml.Replace(sz_SpecChar[l][0] , sz_SpecChar[l][1]);
+ 	}
+	AfxMessageBox(sHtml);
+
+}
+
 
 //====================================================
 //URL模板,有4个通配符,$ 表示 一个数字,^ 表示一串数字,# 表示一个字符,!表示一串字符 文本

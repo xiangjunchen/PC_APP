@@ -32,7 +32,7 @@
 #define MB_POSTMESSAGE    0x04000000L
 
 #define MAX_INT64  0x7fffffffffffffff
-
+#define TP_MAX_BUFFER (1024 * 1024 * 10)
 typedef CArray<CSize , CSize &>       CTPSizeArray;
 typedef CArray<int,    int    >       CTPIntArray;
 typedef CArray<void *,void *&>        CTPWndList;
@@ -840,21 +840,21 @@ inline GUID TP_GetGuidByFileName(CString sText)
 	return guidBaseUser;
 }
 //TP_Str
-inline int		TP_StrLen(const TCHAR *cStr,	size_t nMaxSize = MAX_PATH)
+inline int		TP_StrLen(const TCHAR *cStr,	size_t nMaxSize = TP_MAX_BUFFER)
 {
-	if(NULL == cStr)				{ASSERT(0);}
+	if(NULL == cStr)				{return -1;}
 
 	return _tcsnlen(cStr, nMaxSize);
 }
 inline void    TP_StrCpy(TCHAR *&cDst, TCHAR *cSrc, size_t nSrcSize , BOOL bNewBuf = TRUE)
 {
-	if(NULL == cSrc)			{	ASSERT(0); return;				}
+	if(NULL == cSrc)			{	/*ASSERT(0); */return;				}
 	if(bNewBuf && cDst)			{	delete []cDst;  cDst = NULL;	}
 	if(NULL == cDst)			{   cDst = new TCHAR[nSrcSize + 1]; ZeroMemory(cDst,sizeof(TCHAR)*(nSrcSize + 1));}
 
 	_tcsncpy_s(cDst , (nSrcSize + 1), cSrc , nSrcSize);
 }
-inline int		TP_StrCmp(TCHAR *cS1, TCHAR *cS2, size_t nMaxSize = MAX_PATH)
+inline int		TP_StrCmp(TCHAR *cS1, TCHAR *cS2, size_t nMaxSize = TP_MAX_BUFFER)
 {
 	if(NULL == cS1 || NULL == cS2)	{ASSERT(0);}
 
@@ -872,10 +872,10 @@ inline CString TP_GetWindowsSysPath(TP_WINDOWSPATH_TYPE eType)
 }
 inline BOOL	   TP_WriteStrToFile(const TCHAR *cChar, CFile &cFileWrite)
 {
-	if(cChar == NULL)	{ASSERT(0);	return FALSE;}
-
 	DWORD dwSize = (TP_StrLen(cChar) + 1) * sizeof(TCHAR);
 	cFileWrite.Write(&dwSize,sizeof(DWORD));
+
+	if(cChar == NULL)	{/*ASSERT(0);	*/return FALSE;}
 	cFileWrite.Write(cChar, dwSize);
 	return TRUE;
 }
@@ -883,13 +883,27 @@ inline BOOL	   TP_ReadStrFromFile(TCHAR *&cChar, CFile &cFileRead)
 {
 	DWORD dwSize = 0;
 	cFileRead.Read(&dwSize,sizeof(DWORD));
-	if(dwSize <= 0)		{ASSERT(0);	return FALSE;}
+	if(dwSize <= 0)		{/*ASSERT(0);*/	return FALSE;}
 
 	cChar = new TCHAR[dwSize/sizeof(TCHAR)];//×Ö·û¸öÊý
 	ZeroMemory(cChar,dwSize);
 	cFileRead.Read(cChar,dwSize);
 	return TRUE;
 }
+inline void  TP_GetValidFileName(CString &sClipName)
+{
+	sClipName.Replace(_T('\''), _T('-'));
+	sClipName.Replace(_T('#'), _T('-'));
+	sClipName.Replace(_T(';'), _T('-'));
+	sClipName.Replace(_T('~'), _T('-'));
+	sClipName.Replace(_T('^'), _T('-'));
+	sClipName.Replace(_T('!'), _T('-'));
+	sClipName.Replace(_T('"'), _T('-'));
+	sClipName.Replace(_T('>'), _T('-'));
+	sClipName.Replace(_T('<'), _T('-'));
+	sClipName.Replace(_T('/'), _T('-'));
+	sClipName.Replace(_T('|'), _T('-'));
+}  
 class CTraceEx
 {
 public:

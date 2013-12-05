@@ -146,5 +146,6 @@ CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
 	{
 		ASSERT(0);
 	}
+	TP_GetValidFileName(sFileName);
 	return sFileName;
 }

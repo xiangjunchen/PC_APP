@@ -27,8 +27,9 @@ typedef struct tagHyperLinkTag{
 	//link text;
 	CString str_HyperlinkText;
 }HyperLink;
-
 #endif
+
+
 class CTPWebHost
 {
 public:
@@ -39,6 +40,9 @@ public:
    CTPWebHost( const CString& m_str_webcode ,  vector<HyperLink>& m_vec_All_URL  ,HyperLink& str_URL);
    //是否有框架或跳转
    BOOL mb_ifFream;
+
+public:
+	static void ReplaceSpecChar(CString &sHtml);
 protected:
 
 	//返回所有合法链接 参数说明

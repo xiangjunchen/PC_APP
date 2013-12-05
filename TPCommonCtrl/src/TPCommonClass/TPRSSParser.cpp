@@ -150,10 +150,10 @@ BOOL CTPChannelParser::ParserChannelNode(MSXML2::IXMLDOMNodePtr ChildNode)
 			{
 				ParserItemNode(ChildNode);
 			}
-			else
-			{
-				ASSERT(0);
-			}
+// 			else
+// 			{
+// 				ASSERT(0);
+// 			}
 		}
 	}
 	return TRUE;
@@ -192,10 +192,10 @@ BOOL CTPChannelParser::ParserImageNode(MSXML2::IXMLDOMNodePtr ChildNode)
 			{
 				TP_StrCpy(m_pChannelInfo->stuChannelImage.cImageLink, bNodeText, nLength);
 			}
-			else
-			{
-				ASSERT(0);
-			}
+// 			else
+// 			{
+// 				ASSERT(0);
+// 			}
 		}
 	}	
 	return TRUE;
@@ -240,10 +240,10 @@ BOOL CTPChannelParser::ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode)
 			{
 				TP_StrCpy(pstuChannelItem->cItemPubDate, bNodeText, nLength);
 			}
-			else
-			{
-				ASSERT(0);
-			}
+// 			else
+// 			{
+// 				ASSERT(0);
+// 			}
 		}
 		m_pChannelInfo->aChannelItem.Add(pstuChannelItem);
 	}	
@@ -277,15 +277,20 @@ CTPArticleParser::~CTPArticleParser(void)
 {
 	ReleaseItemInfo();
 }
-int	CTPArticleParser::SetItemAddress(TCHAR *cAddress)
+int	CTPArticleParser::SetChannelItem(TPChannelItem *pChannelItem)
 {
 	ReleaseItemInfo();
 
-	int nLen = TP_StrLen(cAddress);
+	int nLen = TP_StrLen(pChannelItem->cItemLink);
 	if(nLen <= 0)	return 0;
 
-	m_pChannelItem = new TPChannelItem;
-	TP_StrCpy(m_pChannelItem->cItemLink, cAddress, nLen);
+	m_pChannelItem = pChannelItem ;
+// 	m_pChannelItem = new TPChannelItem;
+// 	TP_StrCpy(m_pChannelItem->cItemLink, pChannelItem->cItemLink, nLen);
+	CString sDescription = m_pChannelItem->cItemDescription;
+	
+	CTPWebHost::ReplaceSpecChar(sDescription);
+	
 	return 1;
 }
 int CTPArticleParser::GetItemInfo(TPChannelItem *&pInfo)
