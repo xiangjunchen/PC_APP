@@ -69,8 +69,50 @@ END_MESSAGE_MAP()
 
 
 // CTPBaseTestDlg message handlers 
+#define CInt64Array CArray<int,int >
 
+void TP_GetOffsetDiv(CString &sHtml)
+{
+	CString sDivStart = _T("a");
+	CString sDivEnd   = _T("b");
+	CInt64Array		aStart;
+	int iMark  = sHtml.Find(_T("a"),0);
+	int iStart = iMark;
+	int iEnd   = iMark;
+	int iLast = 0;
+	CString sOut ;
+	while(iEnd >= 0)
+	{
+		iEnd = sHtml.Find(sDivEnd, iEnd);
+		iStart = 0;
+		while(iMark < iEnd)
+		{
+			iStart = sHtml.Find(sDivStart, iStart);
+			if(iStart < 0 || iStart > iEnd)	break;
 
+			BOOL bFind = FALSE;
+			for (int l = 0; l < aStart.GetSize(); l++)
+			{
+				if(aStart[l]==iStart)
+				{
+					bFind = TRUE;
+					break;
+				}
+			}
+			if(!bFind)
+				iLast = iStart;
+
+			iStart ++;
+		}
+		if(iLast <= iMark)
+			break;
+
+		iEnd++;
+		aStart.Add(iLast);
+	}
+	sOut = sHtml.Mid(iMark, iEnd - iMark+1);
+	return ;
+}
 BOOL CTPBaseTestDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
@@ -101,6 +143,10 @@ BOOL CTPBaseTestDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	CString sText = _T("<div ---><div><div></div><div></div></div>over");
+	int iLeng = sText.GetLength();
+	CString sHtml = _T("aaabbaababbbecbfcd");
+	TP_GetOffsetDiv(sHtml);
 
 	//CString sPath = TP_GetWindowsSysPath(TP_WINDOWSPATH_PERSONAL);
 	return TRUE;  // return TRUE  unless you set the focus to a control
