@@ -271,13 +271,14 @@ BOOL CTPChannelParser::ReleaseChannelInfo()
 CTPArticleParser::CTPArticleParser(void)
 {
 	m_pChannelItem = NULL;
+	m_cKeyDiv      = NULL;
 }
 
 CTPArticleParser::~CTPArticleParser(void)
 {
 	ReleaseItemInfo();
 }
-int	CTPArticleParser::SetChannelItem(TPChannelItem *pChannelItem)
+int	CTPArticleParser::SetChannelItem(TPChannelItem *pChannelItem, TCHAR *cKeyDiv)
 {
 	ReleaseItemInfo();
 
@@ -285,12 +286,9 @@ int	CTPArticleParser::SetChannelItem(TPChannelItem *pChannelItem)
 	if(nLen <= 0)	return 0;
 
 	m_pChannelItem = pChannelItem ;
+	m_cKeyDiv	   = cKeyDiv;
 // 	m_pChannelItem = new TPChannelItem;
 // 	TP_StrCpy(m_pChannelItem->cItemLink, pChannelItem->cItemLink, nLen);
-	CString sDescription = m_pChannelItem->cItemDescription;
-	
-	CTPWebHost::ReplaceSpecChar(sDescription);
-	
 	return 1;
 }
 int CTPArticleParser::GetItemInfo(TPChannelItem *&pInfo)
@@ -311,10 +309,15 @@ int CTPArticleParser::GetItemInfo(TPChannelItem *&pInfo)
 	pInfo = m_pChannelItem;
 	return 1;
 }
+
 BOOL	CTPArticleParser::ParserHtml(CString sHtmlStr)
 {
-	vector<HyperLink> ageURL;
+	if(NULL == m_cKeyDiv)	{ASSERT(0);return FALSE;}
 
+	int iMark  = sHtmlStr.Find(m_cKeyDiv,0);
+	CString sArticle = CTPWebHost::GetKeyDivRange(_T("<div"), _T("</div>"), iMark, sHtmlStr);
+	AfxMessageBox(sArticle); 
+	vector<HyperLink> ageURL;
 	HyperLink hthisURL;
 	hthisURL.str_Hyperlink= m_pChannelItem->cItemLink;
 	CTPWebHost m_host(sHtmlStr,ageURL,hthisURL);

@@ -67,8 +67,9 @@ public:
 	~CTPArticleParser(void);
 
 	TPChannelItem 	*m_pChannelItem;
+	TCHAR			*m_cKeyDiv;
 public:
-	int	SetChannelItem(TPChannelItem *pChannelItem);
+	int	SetChannelItem(TPChannelItem *pChannelItem, TCHAR *cKeyDiv);
 	int GetItemInfo(TPChannelItem *&pInfo);
 
 private:
