@@ -446,13 +446,13 @@ void CTPWebHost::OnReturnFrameURL(const CString& str_htmlcode ,vector<HyperLink>
 }
 void CTPWebHost::ReplaceSpecChar(CString &sHtml)
 {
-	AfxMessageBox(sHtml);
-  	int nSpec = sizeof(sz_SpecChar)/sizeof(TCHAR);
- 	for (int l = 0 ; l < nSpec; l++)
- 	{
- 		sHtml.Replace(sz_SpecChar[l][0] , sz_SpecChar[l][1]);
- 	}
-	AfxMessageBox(sHtml);
+	//AfxMessageBox(sHtml);
+ // 	int nSpec = sizeof(sz_SpecChar[][2])/sizeof(TCHAR);
+ //	for (int l = 0 ; l < nSpec; l++)
+ //	{
+ //		sHtml.Replace(sz_SpecChar[l][0] , sz_SpecChar[l][1]);
+ //	}
+	//AfxMessageBox(sHtml);
 
 }
 
