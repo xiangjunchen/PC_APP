@@ -455,7 +455,46 @@ void CTPWebHost::ReplaceSpecChar(CString &sHtml)
 	//AfxMessageBox(sHtml);
 
 }
+CString CTPWebHost::GetKeyDivRange(const CString sKeyStart, const CString sKeyEnd, const int iMark, CString sHtml)
+{
+	CInt64Array		aStart;
+// 	int iMark  = sHtml.Find(sKeyStart,0);
+	int iStart = iMark;
+	int iEnd   = iMark;
+	int iLast = 0;
+	CString sOut ;
+	while(iEnd >= 0)
+	{
+		iEnd = sHtml.Find(sKeyEnd, iEnd);
+		iStart = 0;
+		while(iMark < iEnd)
+		{
+			iStart = sHtml.Find(sKeyStart, iStart);
+			if(iStart < 0 || iStart > iEnd)	break;
 
+			BOOL bFind = FALSE;
+			for (int l = 0; l < aStart.GetSize(); l++)
+			{
+				if(aStart[l]==iStart)
+				{
+					bFind = TRUE;
+					break;
+				}
+			}
+			if(!bFind)
+				iLast = iStart;
+
+			iStart ++;
+		}
+		if(iLast <= iMark)
+			break;
+
+		iEnd++;
+		aStart.Add(iLast);
+	}
+	sOut = sHtml.Mid(iMark, iEnd - iMark+sKeyEnd.GetLength());
+	return sOut;
+}
 
 //====================================================
 //URL模板,有4个通配符,$ 表示 一个数字,^ 表示一串数字,# 表示一个字符,!表示一串字符 文本

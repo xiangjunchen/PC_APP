@@ -43,6 +43,7 @@ public:
 
 public:
 	static void ReplaceSpecChar(CString &sHtml);
+	static CString GetKeyDivRange(const CString sKeyStart, const CString sKeyEnd, int iMark, CString sHtml);
 protected:
 
 	//返回所有合法链接 参数说明
