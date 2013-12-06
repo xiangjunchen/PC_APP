@@ -455,7 +455,7 @@ void CTPWebHost::ReplaceSpecChar(CString &sHtml)
 	//AfxMessageBox(sHtml);
 
 }
-CString CTPWebHost::GetKeyDivRange(const CString sKeyStart, const CString sKeyEnd, const int iMark, CString sHtml)
+CString CTPWebHost::GetTagRangeStr(const CString sKeyStart, const CString sKeyEnd, const int iMark, CString sHtml)
 {
 	CInt64Array		aStart;
 // 	int iMark  = sHtml.Find(sKeyStart,0);
