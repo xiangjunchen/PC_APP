@@ -39,7 +39,7 @@
 
 
 
-
+#include <afxhtml.h> // chtmlview
 
 
 

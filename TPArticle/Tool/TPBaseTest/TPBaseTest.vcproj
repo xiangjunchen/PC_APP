@@ -214,6 +214,10 @@
 				RelativePath=".\TPBaseTestDlg.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\TPHtmlCtrl.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -238,6 +242,10 @@
 			</File>
 			<File
 				RelativePath=".\TPBaseTestDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPHtmlCtrl.h"
 				>
 			</File>
 		</Filter>

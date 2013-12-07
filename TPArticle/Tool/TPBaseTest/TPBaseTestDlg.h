@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+class CTPHtmlCtrl;
 
 // CTPBaseTestDlg dialog
 class CTPBaseTestDlg : public CDialog
@@ -18,6 +18,7 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
+	CTPHtmlCtrl *m_pHtmlCtrl;
 
 // Implementation
 protected:

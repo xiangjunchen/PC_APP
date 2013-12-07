@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "TPBaseTest.h"
 #include "TPBaseTestDlg.h"
-
+#include "TPHtmlCtrl.h"
 
 
 #ifdef _DEBUG
@@ -53,6 +53,7 @@ CTPBaseTestDlg::CTPBaseTestDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CTPBaseTestDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_pHtmlCtrl = NULL;
 }
 
 void CTPBaseTestDlg::DoDataExchange(CDataExchange* pDX)
@@ -143,12 +144,28 @@ BOOL CTPBaseTestDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-	CString sText = _T("<div ---><div><div></div><div></div></div>over");
-	int iLeng = sText.GetLength();
-	CString sHtml = _T("aaabbaababbbecbfcd");
-	TP_GetOffsetDiv(sHtml);
+// 	CString sText = _T("<div ---><div><div></div><div></div></div>over");
+// 	int iLeng = sText.GetLength();
+// 	CString sHtml = _T("aaabbaababbbecbfcd");
+// 	TP_GetOffsetDiv(sHtml);
 
 	//CString sPath = TP_GetWindowsSysPath(TP_WINDOWSPATH_PERSONAL);
+
+
+	CRect rc;
+	GetDlgItem(IDC_STATIC_HTML)->GetWindowRect(&rc);
+	this->ScreenToClient(&rc);
+
+	m_pHtmlCtrl = new CTPHtmlCtrl;
+	m_pHtmlCtrl->Create(NULL,						 // class name
+		NULL,										 // title
+		(WS_CHILD | WS_VISIBLE ),					 // style
+		rc,											 // rectangle
+		this,									     // parent
+		IDC_STATIC_HTML,										 // control ID
+		NULL);									 // frame/doc context not used
+	m_pHtmlCtrl->Navigate2(_T("\\about.htm"));
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
