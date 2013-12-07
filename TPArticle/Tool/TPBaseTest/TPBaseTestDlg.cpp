@@ -66,6 +66,8 @@ BEGIN_MESSAGE_MAP(CTPBaseTestDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_BUTTON1, &CTPBaseTestDlg::OnBnClickedButton1)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -150,21 +152,7 @@ BOOL CTPBaseTestDlg::OnInitDialog()
 // 	TP_GetOffsetDiv(sHtml);
 
 	//CString sPath = TP_GetWindowsSysPath(TP_WINDOWSPATH_PERSONAL);
-
-
-	CRect rc;
-	GetDlgItem(IDC_STATIC_HTML)->GetWindowRect(&rc);
-	this->ScreenToClient(&rc);
-
-	m_pHtmlCtrl = new CTPHtmlCtrl;
-	m_pHtmlCtrl->Create(NULL,						 // class name
-		NULL,										 // title
-		(WS_CHILD | WS_VISIBLE ),					 // style
-		rc,											 // rectangle
-		this,									     // parent
-		IDC_STATIC_HTML,										 // control ID
-		NULL);									 // frame/doc context not used
-	m_pHtmlCtrl->Navigate2(_T("\\about.htm"));
+	AdjustHtml();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -180,6 +168,31 @@ void CTPBaseTestDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	{
 		CDialog::OnSysCommand(nID, lParam);
 	}
+}
+void CTPBaseTestDlg::AdjustHtml()
+{
+
+	CRect rc;
+	GetDlgItem(IDC_STATIC_HTML)->GetWindowRect(&rc);
+	this->ScreenToClient(&rc);
+
+	if(NULL == m_pHtmlCtrl)
+	{
+		m_pHtmlCtrl = new CTPHtmlCtrl;
+		m_pHtmlCtrl->Create(NULL,						 // class name
+			NULL,										 // title
+			(WS_CHILD | WS_VISIBLE ),					 // style
+			rc,											 // rectangle
+			this,									     // parent
+			IDC_STATIC_HTML,										 // control ID
+			NULL);									 // frame/doc context not used
+	}
+	else
+	{
+		m_pHtmlCtrl->MoveWindow(rc);
+	}
+	m_pHtmlCtrl->Navigate2(_T("\\about.htm"));
+
 }
 
 // If you add a minimize button to your dialog, you will need the code below
@@ -218,3 +231,28 @@ HCURSOR CTPBaseTestDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+void CTPBaseTestDlg::OnBnClickedButton1()
+{
+	// TODO: Add your control notification handler code here
+	CWnd *pWNd = GetDlgItem(IDC_STATIC_HTML);
+	CRect rtThis ;
+	GetWindowRect(&rtThis);
+	m_pHtmlCtrl->ShowWindow(SW_HIDE);
+	if(pWNd)
+	{
+		CRect rtHtml;
+		pWNd->GetWindowRect(&rtHtml);
+		pWNd->MoveWindow(rtHtml.left, rtHtml.top, rtThis.Width(), rtHtml.Height());
+	}
+	AdjustHtml();
+	m_pHtmlCtrl->ShowWindow(SW_SHOW);
+}
+
+void CTPBaseTestDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+
+	// TODO: Add your message handler code here
+}

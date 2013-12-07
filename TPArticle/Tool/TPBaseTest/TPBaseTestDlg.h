@@ -19,6 +19,7 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 	CTPHtmlCtrl *m_pHtmlCtrl;
+	void	AdjustHtml();
 
 // Implementation
 protected:
@@ -30,4 +31,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

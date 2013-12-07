@@ -20,6 +20,20 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
+
+public:
+	afx_msg int  OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT msg);
+	// override to trap "app:" pseudo protocol
+	virtual void OnBeforeNavigate2( LPCTSTR lpszURL,
+		DWORD nFlags,
+		LPCTSTR lpszTargetFrameName,
+		CByteArray& baPostedData,
+		LPCTSTR lpszHeaders,
+		BOOL* pbCancel );
+
+	// override to handle links to "app:mumble...". lpszWhere will be "mumble"
+	virtual void OnAppCmd(LPCTSTR lpszWhere);
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
