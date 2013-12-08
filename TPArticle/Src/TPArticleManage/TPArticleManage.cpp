@@ -71,12 +71,31 @@ LRESULT  TP_DelChannelInfo(GUID guidRes)
 	g_stuArticleIOPluginInterface.stuChannelInterface.TP_DelChannelInfo(guidRes);
 	return S_OK;
 }
+LRESULT  TP_GetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade, TPArticleData &stuArticleData) 
+{
+	g_stuArticleIOPluginInterface.stuArticleInterface.TP_GetArticleInfo(guidRes,eClipGrade,stuArticleData);
+	return S_OK;
+}
+LRESULT  TP_SetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade, TPArticleData &stuArticleData)
+{
+	g_stuArticleIOPluginInterface.stuArticleInterface.TP_SetArticleInfo(guidRes,eClipGrade,stuArticleData);
+	return S_OK;
+}
+
+LRESULT  TP_DelArticleInfo(GUID guidRes)
+{
+	g_stuArticleIOPluginInterface.stuArticleInterface.TP_DelArticleInfo(guidRes);
+	return S_OK;
+}
 LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)
 {
 	pInterface->stuChannelInterface.TP_GetChannelInfo = TP_GetChannelInfo;
 	pInterface->stuChannelInterface.TP_SetChannelInfo = TP_SetChannelInfo;
 	pInterface->stuChannelInterface.TP_DelChannelInfo = TP_DelChannelInfo;
 
+	pInterface->stuArticleInterfce.TP_GetArticleInfo = TP_GetArticleInfo;
+	pInterface->stuArticleInterfce.TP_SetArticleInfo = TP_SetArticleInfo;
+	pInterface->stuArticleInterfce.TP_DelArticleInfo = TP_DelArticleInfo;
 	return S_OK;
 }
 void TP_GetManageProcess(TPArticleManageProcess *pstuProcess)

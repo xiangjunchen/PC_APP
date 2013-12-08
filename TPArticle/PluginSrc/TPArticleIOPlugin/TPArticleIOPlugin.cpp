@@ -18,10 +18,12 @@ LRESULT TP_GetProcessName(LPTSTR &strManageName)
 
 LRESULT  TP_GetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData) 
 {
+	g_stuArticleDataBase.ReadArticle(guidRes, stuArtData);
 	return S_OK;
 }
 LRESULT  TP_SetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData)
 {
+	g_stuArticleDataBase.WriteArticle(guidRes, stuArtData);
 	return S_OK;
 }
 
@@ -37,7 +39,6 @@ LRESULT  TP_GetChannelInfo(GUID guidRes,TPChannelData &stuChannelData)
 }
 LRESULT  TP_SetChannelInfo(GUID guidRes,TPChannelData &stuChannelData)
 {
-	CString sFileName = _T("");
 	g_stuArticleDataBase.WriteChannel(guidRes, stuChannelData);
 	return S_OK;
 }

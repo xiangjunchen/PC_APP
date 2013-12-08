@@ -58,9 +58,9 @@ typedef struct _tagTPResBaseInfo
 
 typedef struct _tagTPPictureItem
 {
-	LPBYTE     pIconBuf; //图标
+	//LPBYTE     pIconBuf; //图标
 	SIZE       szIcon;   //图标尺寸
-	LPTSTR	   sPicPath; //图标路径
+	TCHAR      *cPicPath;//图标路径 
 	_tagTPPictureItem()
 	{
 		Reset();
@@ -71,10 +71,29 @@ typedef struct _tagTPPictureItem
 	}
 	void Reset()
 	{
-		sPicPath = NULL;
-		if(pIconBuf){delete pIconBuf; pIconBuf = NULL;}
+		cPicPath = NULL;
+//		if(pIconBuf){delete pIconBuf; pIconBuf = NULL;}
 		szIcon = CSize(0,0);
 	}
+	void SaveFile(CFile &cFileWrite)
+	{
+		cFileWrite.Write(&szIcon,sizeof(SIZE));
+		TP_WriteStrToFile(cPicPath, cFileWrite);
+	}
+	void ReadFile(CFile &cFileRead)
+	{
+		Release();
+
+		cFileRead.Read(&szIcon,sizeof(SIZE));
+		TP_ReadStrFromFile(cPicPath, cFileRead);
+	}
+	void Release()
+	{
+		if(cPicPath)  {delete cPicPath ; cPicPath = NULL;}
+
+		Reset();
+	}
+
 }TPPictureItem;
 typedef CArray<TPPictureItem *, TPPictureItem *&>  CTPPictureItemArray;
 
@@ -98,21 +117,35 @@ typedef struct _tagTPCommentData : public TPResBaseInfo
 
 }TPCommentData;
 
+#define TP_ARTICLE_VERSION1		1  //
+#define TP_ARTICLE_VERSION		TP_ARTICLE_VERSION1
+
+
 typedef struct _tagTPArticleData : public TPResBaseInfo
 {
-	GUID			guidChannel;
-	TCHAR		    *cText;     //正文
-	INT64			lCommentSize;
-	TPChannelItem		 stuChannelItem;
-	CTPPictureItemArray  aPictureItem;
+	TCHAR					*cText;     //正文
+	INT64					lCommentSize;
+	TPChannelItem			stuChannelItem;
+	CTPPictureItemArray		aPictureItem;
 	_tagTPArticleData()
 	{
+		Reset();
+	}
+	~_tagTPArticleData()
+	{
+		Release();
+	}
+	void Release()
+	{
+		if(cText)	{delete cText; cText = NULL;}
+		stuChannelItem.Release();
+		ReleasPicture();
+
 		Reset();
 	}
 	void Reset()
 	{
 		eResType = TP_RES_ARTICLE;
-		guidChannel = GUID_NULL;
 		cText    = NULL;
 		lCommentSize = 0;
 		stuChannelItem.Reset();
@@ -215,9 +248,15 @@ typedef struct _tagTPChannelInterface
 }TPChannelInterface;
 typedef struct _tagTPArticleInterface
 {
+	LRESULT  (*TP_GetArticleInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade, TPArticleData &stuArticleData); //
+	LRESULT  (*TP_SetArticleInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade, TPArticleData &stuArticleData); //
+	LRESULT  (*TP_DelArticleInfo)(GUID guidRes);
+
 	_tagTPArticleInterface()
 	{
-
+		TP_GetArticleInfo = NULL;
+		TP_SetArticleInfo = NULL;
+		TP_DelArticleInfo = NULL;
 	}
 }TPArticleInterface;
 typedef struct _tagTPCommentInterface

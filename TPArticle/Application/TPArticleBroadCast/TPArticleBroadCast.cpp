@@ -110,6 +110,7 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 
 	//////////////////////////////////////////////////////////////////////////rss test
 
+	DWORD dwTick = GetTickCount();
 	TCHAR cAddress[] = _T("http://www.huxiu.com/rss/0.xml");//;//_T("http://www.36kr.com/feed")
 	//TCHAR cAddress[] = _T("http://www.36kr.com/feed");//;//
 	TCHAR cKeyDiv [] = _T("<div class=\"neirong-box\" id=\"neirong_box\">");
@@ -127,6 +128,12 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
 	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
 
+	dwTick = GetTickCount() - dwTick;
+	CString sTick = _T("");
+	sTick.Format(_T("%d ms"), dwTick);
+	AfxMessageBox(sTick);
+	dwTick = GetTickCount();
+
 	for (int l = 0 ; l < stuChannel.aChannelItemAll.GetSize(); l++)
 	{
 		TCHAR *cItemText = NULL;
@@ -136,13 +143,16 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 		stuArticleParser.GetItemInfo(cItemText);
 
 		TPArticleData stuArticle;
-		CoCreateGuid(&stuChannel.guidRes);
+		CoCreateGuid(&stuArticle.guidRes);
 		stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
-		stuArticle.cText = cItemText;
-
-		break;
-
+		TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
+		g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
+		g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
 	}
+	dwTick = GetTickCount() - dwTick;
+	sTick = _T("");
+	sTick.Format(_T("%d ms"), dwTick);
+	AfxMessageBox(sTick);
 	//////////////////////////////////////////////////////////////////////////
 	InitContextMenuManager();
 

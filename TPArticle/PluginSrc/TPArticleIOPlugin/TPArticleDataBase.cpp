@@ -8,6 +8,72 @@ CTPArticleDataBase::CTPArticleDataBase(void)
 CTPArticleDataBase::~CTPArticleDataBase(void)
 {
 }
+LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TPArticleData &stuArticleData)
+{
+	DWORD dwSize = 0;
+	CString  sFileName = GetResFilePath(TP_RES_ARTICLE, &stuArticleData);
+	CTPMemFile hMemFile;
+	hMemFile.ReadFile(sFileName);
+	DWORD dwTemp = 0;
+	//
+	stuArticleData.Release();
+	hMemFile.Read(&stuArticleData.dwVersion,sizeof(DWORD));
+	hMemFile.Read(&stuArticleData.dwState,sizeof(DWORD));
+	hMemFile.Read(&stuArticleData.guidRes,sizeof(GUID));				
+	hMemFile.Read(&stuArticleData.guidNode,sizeof(GUID));				
+	hMemFile.Read(&stuArticleData.guidDBType,sizeof(GUID));				
+	hMemFile.Read(&stuArticleData.tmCreate,sizeof(SYSTEMTIME));				
+	hMemFile.Read(&stuArticleData.tmModify,sizeof(SYSTEMTIME));				
+	hMemFile.Read(&stuArticleData.tmRead,sizeof(SYSTEMTIME));				
+	hMemFile.Read(&stuArticleData.eResType,sizeof(ULONGLONG));			
+
+	TP_ReadStrFromFile(stuArticleData.cText, hMemFile);
+	hMemFile.Read(&stuArticleData.lCommentSize,sizeof(INT64));				
+	stuArticleData.stuChannelItem.ReadFile(hMemFile);
+	hMemFile.Read(&dwSize,sizeof(int));			
+	for(DWORD l = 0 ; l < dwSize; l++)
+	{
+		TPPictureItem *pItem = new TPPictureItem;
+		pItem->ReadFile(hMemFile);
+		stuArticleData.aPictureItem.Add(pItem);
+	}
+	//
+	hMemFile.Close();
+	return S_OK;
+}
+LRESULT CTPArticleDataBase::WriteArticle(GUID guidRes,TPArticleData &stuArticleData)
+{
+	DWORD dwSize = 0;
+	CString  sFileName = GetResFilePath(TP_RES_ARTICLE, &stuArticleData);
+	CTPMemFile hMemFile;
+	//
+	stuArticleData.dwVersion = TP_ARTICLE_VERSION;
+	hMemFile.Write(&stuArticleData.dwVersion,sizeof(DWORD));
+	hMemFile.Write(&stuArticleData.dwState,sizeof(DWORD));
+	hMemFile.Write(&stuArticleData.guidRes,sizeof(GUID));				
+	hMemFile.Write(&stuArticleData.guidNode,sizeof(GUID));				
+	hMemFile.Write(&stuArticleData.guidDBType,sizeof(GUID));				
+	hMemFile.Write(&stuArticleData.tmCreate,sizeof(SYSTEMTIME));				
+	hMemFile.Write(&stuArticleData.tmModify,sizeof(SYSTEMTIME));				
+	hMemFile.Write(&stuArticleData.tmRead,sizeof(SYSTEMTIME));				
+	hMemFile.Write(&stuArticleData.eResType,sizeof(ULONGLONG));			
+
+	TP_WriteStrToFile(stuArticleData.cText, hMemFile);
+	hMemFile.Write(&stuArticleData.lCommentSize,sizeof(INT64));				
+	stuArticleData.stuChannelItem.SaveFile(hMemFile);
+	hMemFile.Write(&dwSize,sizeof(int));			
+	for(DWORD l = 0 ; l < dwSize; l++)
+	{
+		TPPictureItem *pItem = new TPPictureItem;
+		pItem->SaveFile(hMemFile);
+		stuArticleData.aPictureItem.Add(pItem);
+	}
+	//
+	hMemFile.WriteFile(sFileName);
+	hMemFile.Close();
+	return S_OK;
+}
+
 LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelData)
 {
 	DWORD dwSize = 0;
