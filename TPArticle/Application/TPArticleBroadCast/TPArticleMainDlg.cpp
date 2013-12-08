@@ -202,4 +202,6 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
 	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
 
+	if(cAddress)	{delete cAddress; cAddress = NULL;}
+	if(cKeyDiv)		{delete cKeyDiv; cKeyDiv = NULL;}
 }
