@@ -71,6 +71,8 @@ LRESULT CTPArticleDataBase::WriteArticle(GUID guidRes,TPArticleData &stuArticleD
 	//
 	hMemFile.WriteFile(sFileName);
 	hMemFile.Close();
+
+	m_aArticleFileName.SetAt(TP_GuidToString(&guidRes), sFileName);
 	return S_OK;
 }
 
@@ -111,6 +113,8 @@ LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelDa
 
 	//
 	hMemFile.Close();
+	m_aChannelFileName.SetAt(TP_GuidToString(&guidRes), sFileName);
+
 	return S_OK;
 }
 LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelData)

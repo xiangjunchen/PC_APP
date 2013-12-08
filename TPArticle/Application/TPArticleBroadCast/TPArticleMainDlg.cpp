@@ -268,6 +268,7 @@ void CTPArticleMainDlg::OnCbnSelChannelList()
 
 			TPArticleData stuArticle;
 			CoCreateGuid(&stuArticle.guidRes);
+			stuArticle.guidNode = stuChannel.guidRes;
 			stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
 			TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
 			g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
@@ -313,7 +314,11 @@ void CTPArticleMainDlg::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 				int iCurIndex = pNMLV ->iItem;
 				if(iCurIndex >= 0 && iCurIndex < m_pArticleList ->GetItemCount())
 				{
-					m_pArticleList->GetItemData(iCurIndex);
+					//m_pArticleList->GetItemData(iCurIndex);
+					TPArticleData stuArticle;
+					g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(m_aArticleList[iCurIndex],TP_GRADE_ALL,stuArticle);
+					AfxMessageBox(stuArticle.cText);
+
 				}
 			}
 		}

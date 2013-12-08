@@ -123,8 +123,10 @@ LRESULT CTPMemFile::WriteFile(LPCTSTR sFileName)
 	catch (...)
 	{
 		ASSERT(0);
+		return S_FALSE;
 	}	
 	cFile.Close();
+
 	return S_OK;
 }
 void CTPMemFile::Close()
