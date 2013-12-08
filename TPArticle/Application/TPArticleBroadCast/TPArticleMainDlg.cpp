@@ -53,7 +53,7 @@ IMPLEMENT_DYNAMIC(CTPArticleMainDlg, CTPDialog)
 CTPArticleMainDlg::CTPArticleMainDlg(CWnd* pParent /*=NULL*/)
 	: CTPDialog(CTPArticleMainDlg::IDD, pParent)
 {
-
+	m_pChannelList = NULL;
 }
 
 CTPArticleMainDlg::~CTPArticleMainDlg()
@@ -68,6 +68,7 @@ void CTPArticleMainDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CTPArticleMainDlg, CTPDialog)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BUTTON_ADDCHANNEL, &CTPArticleMainDlg::OnBnClickedButtonAddchannel)
 END_MESSAGE_MAP()
 
 
@@ -78,8 +79,9 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	CTPDialog::OnInitDialog();
 
 	// TODO:  Add extra initialization here
-
-	//TP_InitArticleCenter();
+	m_pChannelList = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLIST);
+	m_pChannelList->AddString(_T("TEst"));
+	TP_InitArticleCenter();
 
 	////////////////////////////////////////////////////////////////////////////rss test
 
@@ -154,4 +156,39 @@ void CTPArticleMainDlg::OnDestroy()
 	TP_ReleaseArticleCenter();
 
 	// TODO: Add your message handler code here
+}
+
+void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
+{
+	CString sChannelUrl = _T(""), sChannelKeyDiv = _T("");
+	GetDlgItem(IDC_EDIT_CHANNELURL)->GetWindowText(sChannelUrl);
+	GetDlgItem(IDC_EDIT_CHANNELKEYDIV)->GetWindowText(sChannelKeyDiv);
+	sChannelUrl = sChannelUrl.Trim();
+	sChannelKeyDiv = sChannelKeyDiv.Trim();
+	if(sChannelUrl.IsEmpty() || sChannelKeyDiv.IsEmpty())
+	{
+		AfxMessageBox(_T("Add Failed!"));
+		return ;
+	}
+
+	TCHAR *cAddress = NULL;
+	TP_StrCpy(cAddress, sChannelUrl.GetBuffer(), sChannelUrl.GetLength());//_T("http://www.huxiu.com/rss/0.xml");//;//_T("http://www.36kr.com/feed")
+	//TCHAR cAddress[] = _T("http://www.36kr.com/feed");//;//
+	TCHAR *cKeyDiv = NULL;
+	TP_StrCpy(cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
+	//TCHAR cKeyDiv [] = sChannelKeyDiv.GetBuffer();//_T("<div class=\"neirong-box\" id=\"neirong_box\">");
+	//TCHAR cKeyDiv [] = _T("<div class=\"mainContent sep-10\">");
+	TPChannelBase *pChannelInfo = NULL;
+	CTPChannelParser stuChannelParser;
+	stuChannelParser.SetChannelAddress(cAddress);
+	stuChannelParser.GetChannelInfo(pChannelInfo);
+
+	TPChannelData stuChannel;
+	CoCreateGuid(&stuChannel.guidRes);
+	stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
+	stuChannel.stuChannelBase = *pChannelInfo;
+	stuChannel.AppendUpdateItem();
+	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
+	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
+
 }
