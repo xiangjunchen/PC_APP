@@ -392,11 +392,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TPArticleIOPluginud.def"
+				RelativePath=".\TPArticleIOPluginApi.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\TPMemFile.cpp"
+				RelativePath=".\TPArticleIOPluginud.def"
 				>
 			</File>
 		</Filter>
@@ -426,11 +426,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\Include\TPArticleIOPluginDefine.h"
+				RelativePath=".\TPArticleIOPluginApi.h"
 				>
 			</File>
 			<File
-				RelativePath=".\TPMemFile.h"
+				RelativePath="..\..\Include\TPArticleIOPluginDefine.h"
 				>
 			</File>
 		</Filter>

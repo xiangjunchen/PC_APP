@@ -80,9 +80,20 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 
 	// TODO:  Add extra initialization here
 	m_pChannelList = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLIST);
-	m_pChannelList->AddString(_T("TEst"));
+
 	TP_InitArticleCenter();
 
+	GUID guidNode = GUID_NULL;
+	TPResDataArray aResData;
+	g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
+	for (int l = 0 ; l < aResData.GetSize(); l++)
+	{
+		TPChannelData stuChannel;
+		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
+
+		m_pChannelList->AddString(stuChannel.stuChannelBase.cChannelTitle);	
+	}
+	
 	////////////////////////////////////////////////////////////////////////////rss test
 
 	//DWORD dwTick = GetTickCount();

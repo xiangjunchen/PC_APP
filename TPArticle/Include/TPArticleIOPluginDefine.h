@@ -26,6 +26,202 @@ typedef CArray<GUID,GUID &> CGUIDArray;
 #define  TP_CHANNEL_SPORT			0x00000008
 #define  TP_CHANNEL_LIFE			0x00000010
 
+#define  HRESDATA void *
+typedef CArray<void *,void *&> HRESDATALIST;
+
+typedef struct stu_TPResData
+{
+	HRESDATA       hResData;
+	HRESDATA       hResCache;
+	TP_RES_TYPE    eResType;
+	DWORD          dwOperateFlag;
+	GUID           guidRes;		
+	GUID           guidNode;
+	ULONGLONG      eNodeType; 
+	GUID           guidDBType; 
+	GUID           guidReturn;
+
+	WPARAM         wParam;	
+	LPARAM         lParam;	
+	GUID           guidParam;
+	UINT           uState;
+	LPARAM		   lEffParam;
+	DWORD		   dwVideoStandard;
+	stu_TPResData()
+	{
+		Reset();
+	}
+	void Reset()
+	{	
+		hResData      = NULL;
+		hResCache     = NULL;
+		eResType      = TP_RES_UNKNOW;
+		dwOperateFlag = 0;
+		guidRes       = GUID_NULL;			
+		guidNode      = GUID_NULL;
+		guidDBType    = GUID_NULL;
+		guidReturn    = GUID_NULL;
+		eNodeType     = 0;
+		wParam        = NULL;
+		guidParam     = GUID_NULL;
+		lParam        = NULL;
+		uState        = 0;
+		lEffParam	  = NULL;
+		dwVideoStandard	= 0;
+	}
+	stu_TPResData(GUID guidDBType,GUID guidCatalog,ULONGLONG eNodeType,TP_RES_TYPE eResType,GUID guidRes, GUID guidReturn)
+	{
+		this ->hResData       = NULL;
+		this ->hResCache      = NULL;
+		this ->eResType       = eResType;
+		this ->dwOperateFlag  = dwOperateFlag;
+		this ->guidRes        = guidRes;
+		this ->guidNode       = guidCatalog;
+		this ->guidDBType     = guidDBType;
+		this ->guidReturn     = guidReturn;
+		this ->eNodeType      = eNodeType;
+		this ->lParam         = NULL;
+		this ->wParam         = NULL;
+		this ->uState         = 0;
+		this ->guidParam      = GUID_NULL;
+		this ->dwVideoStandard = 0;
+	}
+	stu_TPResData(GUID guidDBType,GUID guidCatalog,TP_RES_TYPE eResType,GUID guidRes,DWORD dwOperateFlag)
+	{
+		this ->hResData       = NULL;
+		this ->hResCache      = NULL;
+		this ->eResType       = eResType;
+		this ->dwOperateFlag  = dwOperateFlag;
+		this ->guidRes        = guidRes;
+		this ->guidNode       = guidCatalog;
+		this ->guidDBType     = guidDBType;
+		this ->guidReturn     = GUID_NULL;
+		this ->eNodeType      = 0;
+		this ->lParam         = NULL;
+		this ->wParam         = NULL;
+		this ->uState         = 0;
+		this ->guidParam      = GUID_NULL;
+		this ->dwVideoStandard = 0;
+	}
+	stu_TPResData(GUID guidDBType,HRESDATA hResData,TP_RES_TYPE eResType,GUID guidRes)
+	{
+		this ->hResData       = hResData;
+		this ->hResCache      = NULL;
+		this ->eResType       = eResType;
+		this ->dwOperateFlag  = 0;
+		this ->guidRes        = guidRes;
+		this ->guidNode       = GUID_NULL;
+		this ->guidDBType     = guidDBType;
+		this ->guidReturn     = GUID_NULL;
+		this ->eNodeType      = 0;
+		this ->lParam         = NULL;
+		this ->wParam         = NULL;
+		this ->uState         = 0;
+		this ->guidParam      = GUID_NULL;
+		this ->dwVideoStandard = 0;
+	}
+	stu_TPResData(GUID guidDBType,HRESDATA hResData,TP_RES_TYPE eResType,GUID guidRes,HRESDATA hResCache)
+	{
+		this ->hResData       = hResData;
+		this ->hResCache      = hResCache;
+		this ->eResType       = eResType;
+		this ->dwOperateFlag  = 0;
+		this ->guidRes        = guidRes;
+		this ->guidNode       = GUID_NULL;
+		this ->guidDBType     = guidDBType;
+		this ->guidReturn     = GUID_NULL;
+		this ->eNodeType      = 0;
+		this ->lParam         = NULL;
+		this ->wParam         = NULL;
+		this ->uState         = 0;
+		this ->guidParam      = GUID_NULL;
+		this ->dwVideoStandard = 0;
+	}
+	void Copyto(stu_TPResData *pResData)
+	{
+		pResData->eResType     = eResType;
+		pResData->guidNode     = guidNode;
+		pResData->guidRes      = guidRes;
+		pResData->hResCache    = hResCache;
+		pResData->hResData     = hResData;
+		pResData->eNodeType    = eNodeType;
+		pResData->guidDBType   = guidDBType;		
+		pResData->guidReturn   = guidReturn;
+		pResData->lParam       = lParam;
+		pResData->wParam       = wParam;
+		pResData ->uState      = uState;
+		pResData->guidParam    = guidParam;
+		pResData->dwVideoStandard = dwVideoStandard;
+	}
+	bool  operator < (const stu_TPResData &stuTemp) const
+	{
+		int nComparePre = memcmp(&guidDBType,&stuTemp.guidDBType,sizeof(GUID));
+		if (nComparePre != 0)
+			return nComparePre<0;
+		else
+			return memcmp(&guidRes,&stuTemp.guidRes,sizeof(GUID))<0;
+	}
+
+}TPResData;
+typedef CArray<TPResData ,TPResData &> TPResDataArray;
+
+typedef struct stu_TPResGuid
+{ 
+	TP_RES_TYPE    eResType;
+	GUID           guidRes;		 
+	GUID           guidDBType; 	
+	stu_TPResGuid()
+	{
+		eResType      = TP_RES_UNKNOW;
+		guidRes       = GUID_NULL;			
+		guidDBType    = GUID_NULL;
+	}
+	stu_TPResGuid(GUID guidDBType1,TP_RES_TYPE eResType1,GUID guidRes1)
+	{
+		eResType      = eResType1;
+		guidRes       = guidRes1;			
+		guidDBType    = guidDBType1;
+	}
+	stu_TPResGuid(GUID guidDBType1, GUID guidRes1)
+	{
+		eResType      = TP_RES_UNKNOW;
+		guidRes       = guidRes1;			
+		guidDBType    = guidDBType1;
+	}
+	void SetAt(GUID guidDBType1, GUID guidRes1)
+	{		 
+		guidRes       = guidRes1;			
+		guidDBType    = guidDBType1;
+	}
+	stu_TPResGuid & operator= (stu_TPResGuid stuTemp)
+	{
+		eResType      = stuTemp.eResType;
+		guidRes       = stuTemp.guidRes;			
+		guidDBType    = stuTemp.guidDBType;
+		return *this;
+	} 
+	BOOL  operator != (stu_TPResGuid &stuTemp)
+	{
+		if(guidDBType != stuTemp.guidDBType) return TRUE;
+		if(guidRes    != stuTemp.guidRes)    return TRUE;
+		return FALSE;
+	}
+	BOOL  operator == (stu_TPResGuid &stuTemp)
+	{
+		if(guidDBType != stuTemp.guidDBType) return FALSE;
+		if(guidRes    != stuTemp.guidRes)    return FALSE;
+		return TRUE;
+	}
+	BOOL SameGuid(GUID guidDBType1, GUID guidRes1)
+	{
+		if(guidDBType != guidDBType1) return FALSE;
+		if(guidRes    != guidRes1)    return FALSE;
+		return TRUE;
+	}
+}TPResGuid;
+typedef CArray<TPResGuid ,TPResGuid &> TPResGuidArray;
+
+
 typedef struct _tagTPResBaseInfo
 {
 	DWORD		dwVersion;
@@ -169,11 +365,11 @@ typedef struct _tagTPArticleData : public TPResBaseInfo
 typedef struct _tagTPChannelData : public TPResBaseInfo
 {
 	TP_CHANNEL_NODETYPE		eNodeType;
-	int					lUpdateInterval;		//刷新间隔时间（单位是分）
-	int					lSaveNum;				//保存条目数
+	int						lUpdateInterval;		//刷新间隔时间（单位是分）
+	int						lSaveNum;				//保存条目数
 
-	TPChannelBase		stuChannelBase;
-	CTPChannelItemArray	aChannelItemAll;
+	TPChannelBase			stuChannelBase;
+	CTPChannelItemArray		aChannelItemAll;
 	_tagTPChannelData()
 	{
 		Reset();
@@ -234,6 +430,15 @@ typedef struct _tagTPChannelNode : public TPResBaseInfo
 	}
 }TPChannelNode;
 //Manage interface 
+typedef struct _tagTPChannelNodeInterface
+{
+	LRESULT  (*TP_GetChildRes)(GUID guidRes, TPResDataArray &hChildRes);
+	//LRESULT  (*TP_GetChildRes)(HRESDATA hCatalogData,TPResDataArray &hChildRes,DWORD eLockType);
+	_tagTPChannelNodeInterface()
+	{
+
+	}
+}TPChannelNodeInterface;
 typedef struct _tagTPChannelInterface
 {
 	LRESULT  (*TP_GetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
@@ -278,6 +483,7 @@ typedef struct _tagTPArticleManageInterface
 {
 	TCHAR cManageName[PATH_MAX];
 
+	TPChannelNodeInterface	stuChannelNodeInterface;
 	TPChannelInterface		stuChannelInterface;
 	TPArticleInterface      stuArticleInterfce; 
 	TPCommentInterface      stuCommentInterfce; 
@@ -308,6 +514,16 @@ typedef struct _tagTPChannelPluginInterface
 
 }TPChannelPluginInterface;
 
+typedef struct _tagTPChannelNodePluginInterface
+{
+	LRESULT  (*TP_GetChildRes)(GUID guidRes, TPResDataArray &hChildRes);
+	_tagTPChannelNodePluginInterface()
+	{
+		TP_GetChildRes = NULL;
+	}
+
+}TPChannelNodePluginInterface;
+
 typedef struct _tagTPCommentPluginInterface
 {
 	LRESULT  (*TP_GetCommentInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPCommentData &stuCommentData); //
@@ -320,9 +536,10 @@ typedef struct _tagTPArticleIOPluginInterface
 {
 	TCHAR cPluginName[PATH_MAX];
 
-	TPArticlePluginInterface	stuArticleInterface;
-	TPChannelPluginInterface	stuChannelInterface;
-	TPCommentPluginInterface	stuCommentInterface;
+	TPArticlePluginInterface		stuArticleInterface;
+	TPChannelNodePluginInterface	stuChannelNodeInterface;
+	TPChannelPluginInterface		stuChannelInterface;
+	TPCommentPluginInterface		stuCommentInterface;
 	_tagTPArticleIOPluginInterface()
 	{
 		ZeroMemory(this,sizeof(_tagTPArticleIOPluginInterface));

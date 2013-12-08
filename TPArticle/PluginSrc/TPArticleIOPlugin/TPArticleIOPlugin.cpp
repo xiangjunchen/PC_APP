@@ -62,6 +62,12 @@ LRESULT  TP_DelCommentInfo(GUID guidRes)
 	return S_OK;
 }
 
+LRESULT  TP_GetChildRes(GUID guidRes, TPResDataArray &hChildRes)
+{
+	g_stuArticleDataBase.GetChannelRes(guidRes, hChildRes);
+	return S_OK;
+}
+
 LRESULT TP_GetPlugInFunction(TPArticleIOPluginInterface *pInterface)
 {
 	//Article
@@ -69,7 +75,12 @@ LRESULT TP_GetPlugInFunction(TPArticleIOPluginInterface *pInterface)
 	pInterface->stuArticleInterface.TP_SetArticleInfo = TP_SetArticleInfo;
 	pInterface->stuArticleInterface.TP_DelArticleInfo = TP_DelArticleInfo;
 
-	//Column
+	//ChannelNode
+ 	pInterface->stuChannelNodeInterface.TP_GetChildRes = TP_GetChildRes;
+// 	pInterface->stuChannelNodeInterface.TP_SetChannelInfo = TP_SetChannelInfo;
+// 	pInterface->stuChannelNodeInterface.TP_DelChannelInfo = TP_DelChannelInfo;
+
+	//Channel
 	pInterface->stuChannelInterface.TP_GetChannelInfo = TP_GetChannelInfo;
 	pInterface->stuChannelInterface.TP_SetChannelInfo = TP_SetChannelInfo;
 	pInterface->stuChannelInterface.TP_DelChannelInfo = TP_DelChannelInfo;

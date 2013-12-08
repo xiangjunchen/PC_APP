@@ -1,5 +1,78 @@
 #include "StdAfx.h"
+void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile)
+{
+	WIN32_FIND_DATA findData;
+	HANDLE          hFind   = FindFirstFile(strPath + strFile ,&findData);
+	if(hFind != INVALID_HANDLE_VALUE)
+	{
+		if(bPath && (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')			
+			aFile.Add(strPath + _L("\\") + findData.cFileName);
+		else if(!bPath && !((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+			aFile.Add(strPath + _L("\\") + findData.cFileName);
 
+		while(FindNextFile(hFind,&findData))
+		{
+			if(bPath && (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')
+				aFile.Add(strPath + _L("\\") + findData.cFileName);
+			else if(!bPath && !((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+				aFile.Add(strPath + _L("\\") + findData.cFileName);
+		}
+		FindClose(hFind);
+	}
+}
+void   TP_FindFileOnly(CString strPath,CStringArray &aFile)
+{
+	WIN32_FIND_DATA findData;
+	HANDLE          hFind   = FindFirstFile(strPath + _L("\\*.*") ,&findData);
+	if(hFind != INVALID_HANDLE_VALUE)
+	{
+		if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+			aFile.Add(strPath + _L("\\") + findData.cFileName);
+
+		while(FindNextFile(hFind,&findData))
+		{		
+			if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+				aFile.Add(strPath + _L("\\") + findData.cFileName);
+		}
+		FindClose(hFind);
+	}
+}
+
+void   File_FindFile(CString strPath,CString sType,CStringArray &aFile)
+{
+	WIN32_FIND_DATA findData;
+	HANDLE          hFind   = FindFirstFile(strPath + _L("\\*.") + sType ,&findData);
+	if(hFind != INVALID_HANDLE_VALUE)
+	{
+		if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')
+		{			
+		}
+		else if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+			aFile.Add(strPath + _L("\\") + findData.cFileName);
+
+		while(FindNextFile(hFind,&findData))
+		{
+			if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')
+			{		
+			}
+			else if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+				aFile.Add(strPath + _L("\\") + findData.cFileName);
+		}
+		FindClose(hFind);
+	}
+}
+BOOL TP_FindFile(CString& sFindPath)
+{
+	WIN32_FIND_DATA findData;
+	HANDLE          hFind   = FindFirstFile(sFindPath,&findData);
+	if(hFind != INVALID_HANDLE_VALUE)
+	{
+		FindClose(hFind);
+		return TRUE;
+	}
+
+	return FALSE;
+}
 CTPArticleDataBase::CTPArticleDataBase(void)
 {
 	m_sLocalDataPath = _T("");
@@ -11,7 +84,7 @@ CTPArticleDataBase::~CTPArticleDataBase(void)
 LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TPArticleData &stuArticleData)
 {
 	DWORD dwSize = 0;
-	CString  sFileName = GetResFilePath(TP_RES_ARTICLE, &stuArticleData);
+	CString  sFileName = GetResFilePath(guidRes, TP_RES_ARTICLE, &stuArticleData);
 	CTPMemFile hMemFile;
 	hMemFile.ReadFile(sFileName);
 	DWORD dwTemp = 0;
@@ -44,7 +117,7 @@ LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TPArticleData &stuArticleDa
 LRESULT CTPArticleDataBase::WriteArticle(GUID guidRes,TPArticleData &stuArticleData)
 {
 	DWORD dwSize = 0;
-	CString  sFileName = GetResFilePath(TP_RES_ARTICLE, &stuArticleData);
+	CString  sFileName = GetResFilePath(guidRes, TP_RES_ARTICLE, &stuArticleData);
 	CTPMemFile hMemFile;
 	//
 	stuArticleData.dwVersion = TP_ARTICLE_VERSION;
@@ -77,7 +150,8 @@ LRESULT CTPArticleDataBase::WriteArticle(GUID guidRes,TPArticleData &stuArticleD
 LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelData)
 {
 	DWORD dwSize = 0;
-	CString  sFileName = GetResFilePath(TP_RES_CHANNEL, &stuChannelData);
+	CString  sFileName = GetResFilePath(guidRes, TP_RES_CHANNEL, &stuChannelData);
+
 	CTPMemFile hMemFile;
 	hMemFile.ReadFile(sFileName);
 	DWORD dwTemp = 0;
@@ -114,7 +188,7 @@ LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelDa
 LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelData)
 {
 	DWORD dwSize = 0;
-	CString  sFileName = GetResFilePath(TP_RES_CHANNEL, &stuChannelData);
+	CString  sFileName = GetResFilePath(guidRes, TP_RES_CHANNEL, &stuChannelData);
 	CTPMemFile hMemFile;
 	//
 	stuChannelData.dwVersion = TP_CHANNEL_VERSION;
@@ -146,6 +220,27 @@ LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelD
 	hMemFile.Close();
 	return S_OK;
 }
+LRESULT CTPArticleDataBase::GetChannelRes(GUID guidRes, TPResDataArray &hChildRes)
+{
+	CString sChannelNodePath = GetLocalDataPath() + _T("\\Channel\\");
+	if(!PathFileExists(sChannelNodePath)) return S_FALSE;
+
+	CString      sFileName = _T("");
+	CStringArray aFile;
+	File_FindFile(sChannelNodePath,_T("chl"),aFile);
+	for (int l = 0 ; l < aFile.GetSize(); l++)
+	{
+		sFileName = PathFindFileName(aFile[l]);
+		if(sFileName.Right(4).CompareNoCase(ResTypeToExt(TP_RES_CHANNEL))==0)
+		{
+			TPResData stuResData;
+			stuResData.guidRes = TP_GuidFromString(sFileName.Left(36));
+			hChildRes.Add(stuResData);
+		}		
+	}
+
+	return S_OK;
+}
 CString CTPArticleDataBase::GetLocalDataPath()
 {
 	if(!m_sLocalDataPath.IsEmpty())	return m_sLocalDataPath;
@@ -172,7 +267,7 @@ CString CTPArticleDataBase::ResTypeToFolderName(TP_RES_TYPE eResType)
 	else									ASSERT(0);
 	return _T("");
 }
-CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
+CString CTPArticleDataBase::GetResFilePath(GUID guidRes,TP_RES_TYPE eResType,void *pData)
 {
 	CString sFileName = GetLocalDataPath();
 	if(!pData)	{ASSERT(0);return sFileName;}
@@ -181,14 +276,14 @@ CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
 	if(eResType & TP_RES_CHANNELNODE)
 	{
 		TPChannelNode *pNode = (TPChannelNode *)pData;
-		sGuidRes = TP_UuidToString(&pNode->guidRes);
+		sGuidRes = TP_UuidToString(&guidRes);
 		sGuidNode = TP_UuidToString(&pNode->guidNode) ;
 		sName	= pNode->cNodeName;
 	}
 	else if(eResType & TP_RES_CHANNEL)
 	{
 		TPChannelData *pChannelData = (TPChannelData *)pData;
-		sGuidRes = TP_UuidToString(&pChannelData->guidRes);
+		sGuidRes = TP_UuidToString(&guidRes);
 		sGuidNode = TP_UuidToString(&pChannelData->guidNode) ;
 		sName	= pChannelData->stuChannelBase.cChannelTitle;
 
@@ -196,7 +291,7 @@ CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
 	else if(eResType & TP_RES_ARTICLE)
 	{
 		TPArticleData *pArticleData = (TPArticleData *)pData;
-		sGuidRes = TP_UuidToString(&pArticleData->guidRes);
+		sGuidRes = TP_UuidToString(&guidRes);
 		sGuidNode = TP_UuidToString(&pArticleData->guidNode) ;
 		sName	= pArticleData->stuChannelItem.cItemTitle;
 
@@ -211,5 +306,12 @@ CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
 	}	
 	TP_GetValidFileName(sName);
 	sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
+	if(!PathFileExists(sFileName))
+	{
+		CStringArray aFile;
+		File_FindFile(GetLocalDataPath(),TP_GuidToString(&guidRes),aFile);
+		ASSERT(aFile.GetSize() == 1);
+		sFileName = aFile[0];
+	}
 	return sFileName;
 }
