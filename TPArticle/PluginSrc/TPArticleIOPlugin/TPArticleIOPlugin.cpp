@@ -120,6 +120,7 @@ LRESULT TP_InitData(void *pData)
 		}
 
 	}
+	g_stuArticleDataBase.InitFileMap();
 	return S_OK;
 
 }

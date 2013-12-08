@@ -1,5 +1,7 @@
 #pragma once
 
+void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile);
+void    File_FindFile(CString strPath,CString sType,CStringArray &aFile);
 class CTPMemFile : public CMemFile
 {
 public:

@@ -1,5 +1,79 @@
 #include "StdAfx.h"
 
+void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile)
+{
+	WIN32_FIND_DATA findData;
+	HANDLE          hFind   = FindFirstFile(strPath + strFile ,&findData);
+	if(hFind != INVALID_HANDLE_VALUE)
+	{
+		if(bPath && (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')			
+			aFile.Add(strPath + _L("\\") + findData.cFileName);
+		else if(!bPath && !((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+			aFile.Add(strPath + _L("\\") + findData.cFileName);
+
+		while(FindNextFile(hFind,&findData))
+		{
+			if(bPath && (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')
+				aFile.Add(strPath + _L("\\") + findData.cFileName);
+			else if(!bPath && !((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+				aFile.Add(strPath + _L("\\") + findData.cFileName);
+		}
+		FindClose(hFind);
+	}
+}
+void   TP_FindFileOnly(CString strPath,CStringArray &aFile)
+{
+	WIN32_FIND_DATA findData;
+	HANDLE          hFind   = FindFirstFile(strPath + _L("\\*.*") ,&findData);
+	if(hFind != INVALID_HANDLE_VALUE)
+	{
+		if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+			aFile.Add(strPath + _L("\\") + findData.cFileName);
+
+		while(FindNextFile(hFind,&findData))
+		{		
+			if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+				aFile.Add(strPath + _L("\\") + findData.cFileName);
+		}
+		FindClose(hFind);
+	}
+}
+
+void   File_FindFile(CString strPath,CString sType,CStringArray &aFile)
+{
+	WIN32_FIND_DATA findData;
+	HANDLE          hFind   = FindFirstFile(strPath + _L("\\*") + sType ,&findData);
+	if(hFind != INVALID_HANDLE_VALUE)
+	{
+		if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')
+		{			
+		}
+		else if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+			aFile.Add(strPath + _L("\\") + findData.cFileName);
+
+		while(FindNextFile(hFind,&findData))
+		{
+			if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')
+			{		
+			}
+			else if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
+				aFile.Add(strPath + _L("\\") + findData.cFileName);
+		}
+		FindClose(hFind);
+	}
+}
+BOOL TP_FindFile(CString& sFindPath)
+{
+	WIN32_FIND_DATA findData;
+	HANDLE          hFind   = FindFirstFile(sFindPath,&findData);
+	if(hFind != INVALID_HANDLE_VALUE)
+	{
+		FindClose(hFind);
+		return TRUE;
+	}
+
+	return FALSE;
+}
 CTPMemFile::CTPMemFile(void)
 {
 }

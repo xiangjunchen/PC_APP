@@ -1,78 +1,5 @@
 #include "StdAfx.h"
-void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile)
-{
-	WIN32_FIND_DATA findData;
-	HANDLE          hFind   = FindFirstFile(strPath + strFile ,&findData);
-	if(hFind != INVALID_HANDLE_VALUE)
-	{
-		if(bPath && (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')			
-			aFile.Add(strPath + _L("\\") + findData.cFileName);
-		else if(!bPath && !((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
-			aFile.Add(strPath + _L("\\") + findData.cFileName);
 
-		while(FindNextFile(hFind,&findData))
-		{
-			if(bPath && (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')
-				aFile.Add(strPath + _L("\\") + findData.cFileName);
-			else if(!bPath && !((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
-				aFile.Add(strPath + _L("\\") + findData.cFileName);
-		}
-		FindClose(hFind);
-	}
-}
-void   TP_FindFileOnly(CString strPath,CStringArray &aFile)
-{
-	WIN32_FIND_DATA findData;
-	HANDLE          hFind   = FindFirstFile(strPath + _L("\\*.*") ,&findData);
-	if(hFind != INVALID_HANDLE_VALUE)
-	{
-		if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
-			aFile.Add(strPath + _L("\\") + findData.cFileName);
-
-		while(FindNextFile(hFind,&findData))
-		{		
-			if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
-				aFile.Add(strPath + _L("\\") + findData.cFileName);
-		}
-		FindClose(hFind);
-	}
-}
-
-void   File_FindFile(CString strPath,CString sType,CStringArray &aFile)
-{
-	WIN32_FIND_DATA findData;
-	HANDLE          hFind   = FindFirstFile(strPath + _L("\\*.") + sType ,&findData);
-	if(hFind != INVALID_HANDLE_VALUE)
-	{
-		if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')
-		{			
-		}
-		else if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
-			aFile.Add(strPath + _L("\\") + findData.cFileName);
-
-		while(FindNextFile(hFind,&findData))
-		{
-			if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && findData.cFileName[0] != '.')
-			{		
-			}
-			else if(!((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
-				aFile.Add(strPath + _L("\\") + findData.cFileName);
-		}
-		FindClose(hFind);
-	}
-}
-BOOL TP_FindFile(CString& sFindPath)
-{
-	WIN32_FIND_DATA findData;
-	HANDLE          hFind   = FindFirstFile(sFindPath,&findData);
-	if(hFind != INVALID_HANDLE_VALUE)
-	{
-		FindClose(hFind);
-		return TRUE;
-	}
-
-	return FALSE;
-}
 CTPArticleDataBase::CTPArticleDataBase(void)
 {
 	m_sLocalDataPath = _T("");
@@ -308,10 +235,58 @@ CString CTPArticleDataBase::GetResFilePath(GUID guidRes,TP_RES_TYPE eResType,voi
 	sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
 	if(!PathFileExists(sFileName))
 	{
-		CStringArray aFile;
-		File_FindFile(GetLocalDataPath(),TP_GuidToString(&guidRes),aFile);
-		ASSERT(aFile.GetSize() == 1);
-		sFileName = aFile[0];
+		CTPMapStringToString *p_aMap = GetMap(eResType);
+		if(p_aMap)
+		{
+			p_aMap->Lookup(sGuidRes, sFileName);
+		}
 	}
 	return sFileName;
 }
+
+LRESULT CTPArticleDataBase::InitFileMap()
+{
+	CString sChannelNodePath = GetLocalDataPath() + _T("\\Channel\\");
+	CString sArticlePath = GetLocalDataPath() + _T("\\Article\\");
+	if(!PathFileExists(sChannelNodePath) || !PathFileExists(sArticlePath)) return S_FALSE;
+
+	CString      sFileName = _T("");
+	CString      sExt      = _T("");
+	CStringArray aFile;
+	//Channel
+	sExt = ResTypeToExt(TP_RES_CHANNEL);
+	aFile.RemoveAll();
+	File_FindFile(sChannelNodePath,sExt,aFile);
+	m_aChannelFileName.RemoveAll();
+	for (int l = 0 ; l < aFile.GetSize(); l++)
+	{
+		sFileName = PathFindFileName(aFile[l]);
+		if(sFileName.Right(4).CompareNoCase(sExt)==0)
+		{
+			m_aChannelFileName.SetAtEx(sFileName.Left(36),aFile[l]);	
+		}		
+	}
+	//article
+	sExt = ResTypeToExt(TP_RES_ARTICLE);
+	aFile.RemoveAll();
+	File_FindFile(sArticlePath,sExt,aFile);
+	m_aArticleFileName.RemoveAll();
+	for (int l = 0 ; l < aFile.GetSize(); l++)
+	{
+		sFileName = PathFindFileName(aFile[l]);
+		if(sFileName.Right(4).CompareNoCase(sExt)==0)
+		{
+			m_aArticleFileName.SetAtEx(sFileName.Left(36),aFile[l]);	
+		}		
+	}
+	return S_OK;
+}
+CTPMapStringToString *CTPArticleDataBase::GetMap(TP_RES_TYPE eResType)
+{
+	CTPMapStringToString *p_aMap = NULL;
+	if(eResType & TP_RES_CHANNEL)			p_aMap = &m_aChannelFileName;
+	else if(eResType & TP_RES_ARTICLE)		p_aMap = &m_aArticleFileName;
+
+	return p_aMap;
+}
+
