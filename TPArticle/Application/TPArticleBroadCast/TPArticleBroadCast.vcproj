@@ -398,6 +398,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TPArticleMainDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TPImgPreviewWnd.cpp"
 				>
 			</File>
@@ -429,6 +433,10 @@
 			</File>
 			<File
 				RelativePath=".\TPArticleBroadCast.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPArticleMainDlg.h"
 				>
 			</File>
 			<File
@@ -472,5 +480,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="TPArticleBroadCast.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

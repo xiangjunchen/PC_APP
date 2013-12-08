@@ -24,6 +24,7 @@ typedef CArray<GUID,GUID &> CGUIDArray;
 #define  TP_CHANNEL_PERSON			0x00000002
 #define  TP_CHANNEL_TECH			0x00000004
 #define  TP_CHANNEL_SPORT			0x00000008
+#define  TP_CHANNEL_LIFE			0x00000010
 
 typedef struct _tagTPResBaseInfo
 {

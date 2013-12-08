@@ -7,6 +7,7 @@
 #include "TPArticleBroadCast.h"
 #include "MainFrm.h"
 #include "TPImgPreviewWnd.h"
+#include "TPArticleMainDlg.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -36,44 +37,6 @@ CTPArticleBroadCastApp theApp;
 
 
 // CTPArticleBroadCastApp initialization
-HMODULE g_hArticleManage = NULL;  
-TPArticleManageProcess   g_stuPress;
-TPArticleManageInterface g_stuArticleInterface;
-LRESULT TP_InitArticleCenter()
-{
-	CString sFile   = _T("TPArticleManage");
-#ifdef _DEBUG
-	g_hArticleManage = ::LoadLibrary((CString)sFile + _T("ud.dll"));
-#else
-	g_hArticleManage = ::LoadLibrary((CString)sFile + _T("u.dll"));
-#endif
-	if(g_hArticleManage == NULL){ASSERT(0); return S_FALSE;}
-
-	void (*TP_GetManageProcess)(TPArticleManageProcess * ) = NULL;
-	TP_GetManageProcess = (void (* )(TPArticleManageProcess *)) ::GetProcAddress(g_hArticleManage,"TP_GetManageProcess");
-	if(TP_GetManageProcess == NULL)
-	{
-		ASSERT(0);
-		::FreeLibrary(g_hArticleManage);
-		g_hArticleManage = NULL;
-		return S_FALSE;
-	}
-	TP_GetManageProcess(&g_stuPress);	
-	g_stuPress.TP_GetManageFunction(&g_stuArticleInterface);
-	g_stuPress.TP_InitData(NULL);
-	return S_OK;
-}
-LRESULT TP_ReleaseArticleCenter()
-{
-	g_stuPress.TP_ReleaseData(NULL);
-	if(g_hArticleManage)
-	{
-		::FreeLibrary(g_hArticleManage);
-		g_hArticleManage = NULL;
-		return S_OK;
-	}
-	return S_FALSE;
-}
 
 BOOL CTPArticleBroadCastApp::InitInstance()
 {
@@ -106,54 +69,7 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
 
-	TP_InitArticleCenter();
 
-	//////////////////////////////////////////////////////////////////////////rss test
-
-	DWORD dwTick = GetTickCount();
-	TCHAR cAddress[] = _T("http://www.huxiu.com/rss/0.xml");//;//_T("http://www.36kr.com/feed")
-	//TCHAR cAddress[] = _T("http://www.36kr.com/feed");//;//
-	TCHAR cKeyDiv [] = _T("<div class=\"neirong-box\" id=\"neirong_box\">");
-	//TCHAR cKeyDiv [] = _T("<div class=\"mainContent sep-10\">");
-	TPChannelBase *pChannelInfo = NULL;
-	CTPChannelParser stuChannelParser;
-	stuChannelParser.SetChannelAddress(cAddress);
-	stuChannelParser.GetChannelInfo(pChannelInfo);
-
-	TPChannelData stuChannel;
-	CoCreateGuid(&stuChannel.guidRes);
-	stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
-	stuChannel.stuChannelBase = *pChannelInfo;
-	stuChannel.AppendUpdateItem();
-	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
-	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
-
-	dwTick = GetTickCount() - dwTick;
-	CString sTick = _T("");
-	sTick.Format(_T("%d ms"), dwTick);
-	AfxMessageBox(sTick);
-	dwTick = GetTickCount();
-
-	for (int l = 0 ; l < stuChannel.aChannelItemAll.GetSize(); l++)
-	{
-		TCHAR *cItemText = NULL;
-		TPChannelItem *pItemInfo = NULL;
-		CTPArticleParser stuArticleParser;
-		stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], cKeyDiv);
-		stuArticleParser.GetItemInfo(cItemText);
-
-		TPArticleData stuArticle;
-		CoCreateGuid(&stuArticle.guidRes);
-		stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
-		TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
-		g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
-		g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
-	}
-	dwTick = GetTickCount() - dwTick;
-	sTick = _T("");
-	sTick.Format(_T("%d ms"), dwTick);
-	AfxMessageBox(sTick);
-	//////////////////////////////////////////////////////////////////////////
 	InitContextMenuManager();
 
 	InitKeyboardManager();
@@ -166,39 +82,27 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 
 	// To create the main window, this code creates a new frame window
 	// object and then sets it as the application's main window object
-	CMainFrame* pFrame = new CMainFrame;
-	if (!pFrame)
-		return FALSE;
-	m_pMainWnd = pFrame;
-	// create and load the frame with its resources
-	pFrame->LoadFrame(IDR_MAINFRAME,
-		WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, NULL,
-		NULL);
-	
-	// The one and only window has been initialized, so show and update it
-	pFrame->ShowWindow(SW_SHOW);
-	pFrame->UpdateWindow();
+	//CMainFrame* pFrame = new CMainFrame;
+	//if (!pFrame)
+	//	return FALSE;
+	//m_pMainWnd = pFrame;
+	//// create and load the frame with its resources
+	//pFrame->LoadFrame(IDR_MAINFRAME,
+	//	WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, NULL,
+	//	NULL);
+	//
+	//// The one and only window has been initialized, so show and update it
+	//pFrame->ShowWindow(SW_SHOW);
+	//pFrame->UpdateWindow();
 	// call DragAcceptFiles only if there's a suffix
 	//  In an SDI app, this should occur after ProcessShellCommand
 
-	//TP_InitCtrl();
-	//////////////////////////////////////////////////////////////////////////ctrl test
-// 	CTPImgPreviewWnd *m_pImgPreWnd = new CTPImgPreviewWnd;
-// 	m_pImgPreWnd->Create(0,pFrame,0);
-// 
-// 	if(m_pImgPreWnd)
-// 	{
-// 		m_pImgPreWnd->SetLayeredWindowAttributes(0,150,2);
-// 		m_pImgPreWnd->ShowWindow(SW_SHOW);
-// 		m_pImgPreWnd->PreviewImg();		
-// 	}
+	TP_InitCtrl();
+  	CTPArticleMainDlg dlg;
+  	m_pMainWnd = &dlg;
+  	INT_PTR nResponse = dlg.DoModal();
 
-
-	//////////////////////////////////////////////////////////////////////////
-	//
-
-
-	return TRUE;
+	return FALSE;
 }
 
 
@@ -271,7 +175,6 @@ void CTPArticleBroadCastApp::SaveCustomState()
 int CTPArticleBroadCastApp::ExitInstance()
 {
 	// TODO: Add your specialized code here and/or call the base class
-
-	TP_ReleaseArticleCenter();
+	TP_ReleaseCtrl();
 	return CWinAppEx::ExitInstance();
 }

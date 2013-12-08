@@ -6,7 +6,7 @@
  
 // CTPHtmlCtrl html view
 
-class CTPHtmlCtrl : public CHtmlView
+class AFX_EXT_CLASS CTPHtmlCtrl : public CHtmlView
 {
 	DECLARE_DYNCREATE(CTPHtmlCtrl)
 

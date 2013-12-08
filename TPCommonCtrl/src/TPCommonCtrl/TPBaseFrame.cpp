@@ -1387,7 +1387,7 @@ void CTPBaseFrame::PaintFrameNS(CDC *pDC)
 		if(m_uState&STATE_ACTIVATE) iIndex = BORDER_RIGHT_A;
 		else                        iIndex  = BORDER_RIGHT_N;
 		rtTemp = CRect(rtWnd.right - m_pResources[iIndex]->Width(),0,rtWnd.right,rtWnd.bottom);
-		TP_TileDIBLine(&memDC,m_pResources[iIndex]->GetByte(),m_pResources[iIndex]->Width(),m_pResources[iIndex]->Height(),rtTemp,TRUE);
+ 		TP_TileDIBLine(&memDC,m_pResources[iIndex]->GetByte(),m_pResources[iIndex]->Width(),m_pResources[iIndex]->Height(),rtTemp,TRUE);
 	}
 	if(m_uState&STATE_ACTIVATE) iIndex = BORDER_TOP_A;
 	else                        iIndex = BORDER_TOP_N;
