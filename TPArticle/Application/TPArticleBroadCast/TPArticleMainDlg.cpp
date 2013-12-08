@@ -69,6 +69,7 @@ void CTPArticleMainDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CTPArticleMainDlg, CTPDialog)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BUTTON_ADDCHANNEL, &CTPArticleMainDlg::OnBnClickedButtonAddchannel)
+	ON_CBN_SELENDOK(IDC_COMBO_CHANNELLIST, &CTPArticleMainDlg::OnCbnSelChannelList)
 END_MESSAGE_MAP()
 
 
@@ -86,11 +87,11 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	GUID guidNode = GUID_NULL;
 	TPResDataArray aResData;
 	g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
-	for (int l = 0 ; l < aResData.GetSize(); l++)
+	for (int l = aResData.GetSize() - 1; l >= 0; l--)
 	{
 		TPChannelData stuChannel;
 		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
-
+		m_aChannelList.Add(stuChannel.guidRes);
 		m_pChannelList->AddString(stuChannel.stuChannelBase.cChannelTitle);	
 	}
 	
@@ -204,4 +205,21 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 
 	if(cAddress)	{delete cAddress; cAddress = NULL;}
 	if(cKeyDiv)		{delete cKeyDiv; cKeyDiv = NULL;}
+}
+void CTPArticleMainDlg::OnCbnSelChannelList()
+{
+	if(m_pChannelList)
+	{
+		int iSel = m_pChannelList->GetCurSel();
+		if(iSel<0 || m_aChannelList.GetSize() <= iSel) return;
+
+		TPChannelData stuChannel;
+		//CoCreateGuid(&stuChannel.guidRes);
+		//stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
+		//stuChannel.stuChannelBase = *pChannelInfo;
+		//stuChannel.AppendUpdateItem();
+		//g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
+		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(m_aChannelList[iSel],stuChannel);
+		AfxMessageBox(stuChannel.stuChannelBase.cChannelTitle);
+	}
 }

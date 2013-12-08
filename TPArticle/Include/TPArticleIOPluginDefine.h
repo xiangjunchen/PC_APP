@@ -405,7 +405,11 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 		aChannelItemAll.Append(stuChannelBase.aChannelItem);
 		stuChannelBase.aChannelItem.RemoveAll();//需要清除掉，不然aChannelItemAll，stuChannelBase.aChannelItem会同时释放
 	}
+protected:
+	_tagTPChannelData& operator = (const _tagTPChannelData & stuSrc);
+	_tagTPChannelData(const _tagTPChannelData & stuSrc);
 }TPChannelData;
+typedef CArray<TPChannelData ,TPChannelData &> TPChannelDataArray;
 
 typedef struct _tagTPChannelNode : public TPResBaseInfo
 {

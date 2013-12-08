@@ -16,6 +16,7 @@ public:
 
 public:
 	CTPComboBox *m_pChannelList;
+	CGuidArray   m_aChannelList;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -24,4 +25,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedButtonAddchannel();
+	afx_msg void OnCbnSelChannelList();
 };
