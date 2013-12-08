@@ -101,10 +101,9 @@ typedef struct _tagTPCommentData : public TPResBaseInfo
 typedef struct _tagTPArticleData : public TPResBaseInfo
 {
 	GUID			guidChannel;
-	LPTSTR			sName;  
-	LPTSTR			sTitle;    //标题
-	LPTSTR			sText;     //正文
+	TCHAR		    *cText;     //正文
 	INT64			lCommentSize;
+	TPChannelItem		 stuChannelItem;
 	CTPPictureItemArray  aPictureItem;
 	_tagTPArticleData()
 	{
@@ -114,10 +113,9 @@ typedef struct _tagTPArticleData : public TPResBaseInfo
 	{
 		eResType = TP_RES_ARTICLE;
 		guidChannel = GUID_NULL;
-		sName    = NULL;
-		sTitle   = NULL;  
-		sText    = NULL;   
+		cText    = NULL;
 		lCommentSize = 0;
+		stuChannelItem.Reset();
 		aPictureItem.RemoveAll();
 	}
 	void ReleasPicture()

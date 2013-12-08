@@ -115,9 +115,9 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 	TCHAR cKeyDiv [] = _T("<div class=\"neirong-box\" id=\"neirong_box\">");
 	//TCHAR cKeyDiv [] = _T("<div class=\"mainContent sep-10\">");
 	TPChannelBase *pChannelInfo = NULL;
-	CTPChannelParser stuParser;
-	stuParser.SetChannelAddress(cAddress);
-	stuParser.GetChannelInfo(pChannelInfo);
+	CTPChannelParser stuChannelParser;
+	stuChannelParser.SetChannelAddress(cAddress);
+	stuChannelParser.GetChannelInfo(pChannelInfo);
 
 	TPChannelData stuChannel;
 	CoCreateGuid(&stuChannel.guidRes);
@@ -129,10 +129,18 @@ BOOL CTPArticleBroadCastApp::InitInstance()
 
 	for (int l = 0 ; l < stuChannel.aChannelItemAll.GetSize(); l++)
 	{
+		TCHAR *cItemText = NULL;
 		TPChannelItem *pItemInfo = NULL;
-		CTPArticleParser stuArticle;
-		stuArticle.SetChannelItem(stuChannel.aChannelItemAll[l], cKeyDiv);
-		stuArticle.GetItemInfo(pItemInfo);
+		CTPArticleParser stuArticleParser;
+		stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], cKeyDiv);
+		stuArticleParser.GetItemInfo(cItemText);
+
+		TPArticleData stuArticle;
+		CoCreateGuid(&stuChannel.guidRes);
+		stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
+		stuArticle.cText = cItemText;
+
+		break;
 
 	}
 	//////////////////////////////////////////////////////////////////////////

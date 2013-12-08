@@ -118,7 +118,6 @@ CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
 		sGuidRes = TP_UuidToString(&pNode->guidRes);
 		sGuidNode = TP_UuidToString(&pNode->guidNode) ;
 		sName	= pNode->cNodeName;
-		sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
 	}
 	else if(eResType & TP_RES_CHANNEL)
 	{
@@ -126,7 +125,6 @@ CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
 		sGuidRes = TP_UuidToString(&pChannelData->guidRes);
 		sGuidNode = TP_UuidToString(&pChannelData->guidNode) ;
 		sName	= pChannelData->stuChannelBase.cChannelTitle;
-		sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
 
 	}
 	else if(eResType & TP_RES_ARTICLE)
@@ -134,8 +132,7 @@ CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
 		TPArticleData *pArticleData = (TPArticleData *)pData;
 		sGuidRes = TP_UuidToString(&pArticleData->guidRes);
 		sGuidNode = TP_UuidToString(&pArticleData->guidNode) ;
-		sName	= pArticleData->sName;
-		sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
+		sName	= pArticleData->stuChannelItem.cItemTitle;
 
 	}
 	else if(eResType & TP_RES_COMMENT)
@@ -145,7 +142,8 @@ CString CTPArticleDataBase::GetResFilePath(TP_RES_TYPE eResType,void *pData)
 	else
 	{
 		ASSERT(0);
-	}
-	TP_GetValidFileName(sFileName);
+	}	
+	TP_GetValidFileName(sName);
+	sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
 	return sFileName;
 }

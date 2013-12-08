@@ -189,7 +189,7 @@ void CTPBaseTestDlg::AdjustHtml()
 	}
 	else
 	{
-		m_pHtmlCtrl->MoveWindow(rc);
+		m_pHtmlCtrl->MoveWindow(rc,FALSE);
 	}
 	m_pHtmlCtrl->Navigate2(_T("\\about.htm"));
 
@@ -243,6 +243,7 @@ void CTPBaseTestDlg::OnBnClickedButton1()
 	{
 		CRect rtHtml;
 		pWNd->GetWindowRect(&rtHtml);
+		this->ScreenToClient(&rtHtml);
 		pWNd->MoveWindow(rtHtml.left, rtHtml.top, rtThis.Width(), rtHtml.Height());
 	}
 	AdjustHtml();
@@ -252,6 +253,23 @@ void CTPBaseTestDlg::OnBnClickedButton1()
 void CTPBaseTestDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
+
+	CWnd *pWNd = GetDlgItem(IDC_STATIC_HTML);
+	CRect rtThis ;
+	GetWindowRect(&rtThis);
+	if(m_pHtmlCtrl)
+	{
+		//m_pHtmlCtrl->ShowWindow(SW_HIDE);
+		if(pWNd)
+		{
+			CRect rtHtml;
+			pWNd->GetWindowRect(&rtHtml);
+			this->ScreenToClient(&rtHtml);
+			pWNd->MoveWindow(rtHtml.left, rtHtml.top, rtThis.Width()-40, rtHtml.Height());
+		}
+		AdjustHtml();
+		//m_pHtmlCtrl->ShowWindow(SW_SHOW);
+	}
 
 
 	// TODO: Add your message handler code here

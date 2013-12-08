@@ -68,9 +68,10 @@ public:
 
 	TPChannelItem 	*m_pChannelItem;
 	TCHAR			*m_cKeyDiv;
+	TCHAR			*m_cItemText;
 public:
 	int	SetChannelItem(TPChannelItem *pChannelItem, TCHAR *cKeyDiv);
-	int GetItemInfo(TPChannelItem *&pInfo);
+	int GetItemInfo(TCHAR *&cItemText);
 
 private:
 	//BOOL ParserChannel(const TCHAR *cFileName);
@@ -78,7 +79,7 @@ private:
 	//BOOL ParserImageNode(MSXML2::IXMLDOMNodePtr ChildNode);
 	//BOOL ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode);
 
-	BOOL	ParserHtml(CString sHtmlStr);
+	BOOL	ParserHtml(CString &sHtmlStr);
 	CString GetHtmlString(const TCHAR *cFileName);
 	BOOL	ReleaseItemInfo();
 

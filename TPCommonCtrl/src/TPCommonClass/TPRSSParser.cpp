@@ -272,6 +272,7 @@ CTPArticleParser::CTPArticleParser(void)
 {
 	m_pChannelItem = NULL;
 	m_cKeyDiv      = NULL;
+	m_cItemText	   = NULL;
 }
 
 CTPArticleParser::~CTPArticleParser(void)
@@ -291,7 +292,7 @@ int	CTPArticleParser::SetChannelItem(TPChannelItem *pChannelItem, TCHAR *cKeyDiv
 // 	TP_StrCpy(m_pChannelItem->cItemLink, pChannelItem->cItemLink, nLen);
 	return 1;
 }
-int CTPArticleParser::GetItemInfo(TPChannelItem *&pInfo)
+int CTPArticleParser::GetItemInfo(TCHAR *&cItemText)
 {
 	if(!m_pChannelItem || TP_StrLen(m_pChannelItem->cItemLink) <= 0)	return 0;
 
@@ -304,26 +305,29 @@ int CTPArticleParser::GetItemInfo(TPChannelItem *&pInfo)
 	stuDownload.SetHttpUrl(m_pChannelItem->cItemLink, cXMLPath);
 	stuDownload.Download();
 
-	ParserHtml(GetHtmlString(cXMLPath));
+	CString sArticle = GetHtmlString(cXMLPath);
+	ParserHtml(sArticle);
 
-	pInfo = m_pChannelItem;
+	int nLength = sArticle.GetLength();
+	TP_StrCpy(m_cItemText, sArticle.GetBuffer(),sArticle.GetLength());
+	//sArticle.ReleaseBuffer();
+	cItemText = m_cItemText;
 	return 1;
 }
 
-BOOL	CTPArticleParser::ParserHtml(CString sHtmlStr)
+BOOL	CTPArticleParser::ParserHtml(CString &sHtmlStr)
 {
 	if(NULL == m_cKeyDiv)	{ASSERT(0);return FALSE;}
 
 	int iMark  = sHtmlStr.Find(m_cKeyDiv,0);
-	CString sArticle = CTPWebHost::GetTagRangeStr(_T("<div"), _T("</div>"), iMark, sHtmlStr);
-	AfxMessageBox(sArticle); 
-	vector<HyperLink> ageURL;
-	HyperLink hthisURL;
-	hthisURL.str_Hyperlink= m_pChannelItem->cItemLink;
-	CTPWebHost m_host(sHtmlStr,ageURL,hthisURL);
-	for( size_t i = 0 ; i < ageURL.size() ; i++ )
-	{
-	}
+	sHtmlStr = CTPWebHost::GetTagRangeStr(_T("<div"), _T("</div>"), iMark, sHtmlStr);
+//	AfxMessageBox(sArticle); 
+// 	vector<HyperLink> ageURL;
+// 	HyperLink hthisURL;
+// 	hthisURL.str_Hyperlink= m_pChannelItem->cItemLink;
+// 	CTPWebHost m_host(sHtmlStr,ageURL,hthisURL);
+// 	for( size_t i = 0 ; i < ageURL.size() ; i++ )
+// 	{
 	return TRUE;
 }
 
@@ -367,11 +371,16 @@ CString CTPArticleParser::GetHtmlString(const TCHAR *cFileName)
 
 BOOL CTPArticleParser::ReleaseItemInfo()
 {
-	if(m_pChannelItem)
+	if(m_cItemText)
 	{
-		delete m_pChannelItem;
-		m_pChannelItem = NULL;
+		delete m_cItemText;
+		m_cItemText = NULL;
 	}
+// 	if(m_pChannelItem)
+// 	{
+// 		delete m_pChannelItem;
+// 		m_pChannelItem = NULL;
+// 	}
 	return TRUE;
 }
 
