@@ -54,6 +54,8 @@ CTPArticleMainDlg::CTPArticleMainDlg(CWnd* pParent /*=NULL*/)
 	: CTPDialog(CTPArticleMainDlg::IDD, pParent)
 {
 	m_pChannelList = NULL;
+	m_pArticleList = NULL;
+	m_pHtmlCtrl    = NULL;
 }
 
 CTPArticleMainDlg::~CTPArticleMainDlg()
@@ -70,18 +72,47 @@ BEGIN_MESSAGE_MAP(CTPArticleMainDlg, CTPDialog)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BUTTON_ADDCHANNEL, &CTPArticleMainDlg::OnBnClickedButtonAddchannel)
 	ON_CBN_SELENDOK(IDC_COMBO_CHANNELLIST, &CTPArticleMainDlg::OnCbnSelChannelList)
+	ON_CBN_SELENDOK(IDC_LIST_ARTICLE, &CTPArticleMainDlg::OnCbnSelArticleList)
+	ON_NOTIFY(NM_CLICK,IDC_LIST_ARTICLE,OnNMClick)
+	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
 END_MESSAGE_MAP()
 
 
 // CTPArticleMainDlg message handlers
+void CTPArticleMainDlg::AdjustHtml()
+{
+	CRect rc;
+	GetDlgItem(IDC_STATIC_ARTICLETEXT)->GetWindowRect(&rc);
+	this->ScreenToClient(&rc);
 
+	if(NULL == m_pHtmlCtrl)
+	{
+		m_pHtmlCtrl = new CTPHtmlCtrl;
+		m_pHtmlCtrl->Create(NULL,						 // class name
+			NULL,										 // title
+			(WS_CHILD | WS_VISIBLE ),					 // style
+			rc,											 // rectangle
+			this,									     // parent
+			IDC_STATIC_ARTICLETEXT,										 // control ID
+			NULL);									 // frame/doc context not used
+	}
+	else
+	{
+		m_pHtmlCtrl->MoveWindow(rc,FALSE);
+	}
+	m_pHtmlCtrl->Navigate2(_T("\\about.htm"));
+
+}
 BOOL CTPArticleMainDlg::OnInitDialog()
 {
 	CTPDialog::OnInitDialog();
 
 	// TODO:  Add extra initialization here
 	m_pChannelList = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLIST);
+	m_pArticleList = (CTPListCtrl *)GetDlgItem(IDC_LIST_ARTICLE); 
+	m_pArticleList->InsertColumn(0, _T("Article Title"), LVCFMT_LEFT,500);	
 
+	AdjustHtml();
 	TP_InitArticleCenter();
 
 	GUID guidNode = GUID_NULL;
@@ -165,6 +196,12 @@ void CTPArticleMainDlg::OnDestroy()
 {
 	CTPDialog::OnDestroy();
 
+	if(m_pHtmlCtrl)
+	{
+		delete m_pHtmlCtrl;
+		m_pHtmlCtrl = NULL;
+	}
+
 	TP_ReleaseArticleCenter();
 
 	// TODO: Add your message handler code here
@@ -197,6 +234,7 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 
 	TPChannelData stuChannel;
 	CoCreateGuid(&stuChannel.guidRes);
+	TP_StrCpy(stuChannel.cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
 	stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
 	stuChannel.stuChannelBase = *pChannelInfo;
 	stuChannel.AppendUpdateItem();
@@ -214,12 +252,73 @@ void CTPArticleMainDlg::OnCbnSelChannelList()
 		if(iSel<0 || m_aChannelList.GetSize() <= iSel) return;
 
 		TPChannelData stuChannel;
-		//CoCreateGuid(&stuChannel.guidRes);
-		//stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
-		//stuChannel.stuChannelBase = *pChannelInfo;
-		//stuChannel.AppendUpdateItem();
-		//g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
 		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(m_aChannelList[iSel],stuChannel);
-		AfxMessageBox(stuChannel.stuChannelBase.cChannelTitle);
+		//AfxMessageBox(stuChannel.stuChannelBase.cChannelTitle);
+
+		//update
+		m_aArticleList.RemoveAll();
+		m_pArticleList->DeleteAllItems();
+		for (int l = stuChannel.aChannelItemAll.GetSize() - 1; l >= 0 ;  l--)
+		{
+			TCHAR *cItemText = NULL;
+			TPChannelItem *pItemInfo = NULL;
+			CTPArticleParser stuArticleParser;
+			stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], stuChannel.cKeyDiv);
+			stuArticleParser.GetItemInfo(cItemText);
+
+			TPArticleData stuArticle;
+			CoCreateGuid(&stuArticle.guidRes);
+			stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
+			TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
+			g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
+			//g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
+
+			m_aArticleList.Add(stuArticle.guidRes);
+			m_pArticleList->InsertItem(l,stuChannel.aChannelItemAll[l]->cItemTitle);
+			//m_pArticleList ->SetItemData(l,(DWORD_PTR)pDataStu);
+
+		}
+		//for(INT l=0;l<m_pstuTeamLogin->aTeam.GetSize();l++)
+
+		//{
+		//	TCHAR *cItemText = NULL;
+		//	TPChannelItem *pItemInfo = NULL;
+		//	CTPArticleParser stuArticleParser;
+		//	stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], cKeyDiv);
+		//	stuArticleParser.GetItemInfo(cItemText);
+
+		//	TPArticleData stuArticle;
+		//	CoCreateGuid(&stuArticle.guidRes);
+		//	stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
+		//	TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
+		//	g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
+		//	g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
+		//}
+		//}
 	}
+}
+void CTPArticleMainDlg::OnCbnSelArticleList()
+{
+	ASSERT(0);
+}
+void CTPArticleMainDlg::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	if(m_pArticleList)
+	{
+		LPNMITEMACTIVATE pNMLV = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+		if(pNMLV)
+		{
+			if(m_pArticleList)
+			{
+				int iCurIndex = pNMLV ->iItem;
+				if(iCurIndex >= 0 && iCurIndex < m_pArticleList ->GetItemCount())
+				{
+					m_pArticleList->GetItemData(iCurIndex);
+				}
+			}
+		}
+
+	}
+
+	*pResult = 0;	
 }

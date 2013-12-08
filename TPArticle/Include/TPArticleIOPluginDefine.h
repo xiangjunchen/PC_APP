@@ -367,7 +367,7 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	TP_CHANNEL_NODETYPE		eNodeType;
 	int						lUpdateInterval;		//刷新间隔时间（单位是分）
 	int						lSaveNum;				//保存条目数
-
+	TCHAR					*cKeyDiv;
 	TPChannelBase			stuChannelBase;
 	CTPChannelItemArray		aChannelItemAll;
 	_tagTPChannelData()
@@ -381,6 +381,7 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	void Reset()
 	{
 		TPResBaseInfo::Reset();
+		cKeyDiv     = NULL;
 		eResType	= TP_RES_CHANNEL;
 		eNodeType = TP_CHANNEL_UNKNOW;
 		lUpdateInterval = 60;  
@@ -390,6 +391,7 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	}
 	void Release()
 	{
+		if(cKeyDiv)	{delete cKeyDiv; cKeyDiv = NULL;}
 		stuChannelBase.Release();
 		for (int l=0;l<aChannelItemAll.GetSize();l++)	
 		{

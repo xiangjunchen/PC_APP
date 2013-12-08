@@ -10,6 +10,8 @@
 
 #include "TPCommonInclude.h"
 
+#include <afxhtml.h>
+
 namespace _tp_commonctrl
 {
 	#include "TPCommonCtrlExp.h"	

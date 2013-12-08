@@ -40,4 +40,5 @@
 #include "TPStatusBar.h"
 #include "TPFrameWnd.h"
 #include "TPRichEditCtrl.h"
+#include "TPHtmlCtrl.h"
 

@@ -97,6 +97,7 @@ LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelDa
 	hMemFile.Read(&stuChannelData.eNodeType,sizeof(ULONGLONG));			
 	hMemFile.Read(&stuChannelData.lUpdateInterval,sizeof(int));			
 	hMemFile.Read(&stuChannelData.lSaveNum,sizeof(int));			
+	TP_ReadStrFromFile(stuChannelData.cKeyDiv, hMemFile);
 
 	stuChannelData.stuChannelBase.ReadFile(hMemFile);
 
@@ -131,7 +132,8 @@ LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelD
 
 	hMemFile.Write(&stuChannelData.eNodeType,sizeof(ULONGLONG));			
 	hMemFile.Write(&stuChannelData.lUpdateInterval,sizeof(int));			
-	hMemFile.Write(&stuChannelData.lSaveNum,sizeof(int));			
+	hMemFile.Write(&stuChannelData.lSaveNum,sizeof(int));	
+	TP_WriteStrToFile(stuChannelData.cKeyDiv, hMemFile);
 
 	stuChannelData.stuChannelBase.SaveFile(hMemFile);
 

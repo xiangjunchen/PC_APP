@@ -70,7 +70,6 @@
 using namespace _tp_commonctrl;
 
 #include "TPCommonCtrlDefine.h"
-#include <afxhtml.h>
 
 
 
