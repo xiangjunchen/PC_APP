@@ -115,16 +115,17 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	AdjustHtml();
 	TP_InitArticleCenter();
 
-	GUID guidNode = GUID_NULL;
+	GUID guidNode = guidBaseUser;
 	TPResDataArray aResData;
 	g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
-	for (int l = aResData.GetSize() - 1; l >= 0; l--)
+	for (int l = 0 ; l < aResData.GetSize(); l++)
 	{
 		TPChannelData stuChannel;
 		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
 		m_aChannelList.Add(stuChannel.guidRes);
-		m_pChannelList->AddString(stuChannel.stuChannelBase.cChannelTitle);	
+		m_pChannelList->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
 	}
+	
 	
 	////////////////////////////////////////////////////////////////////////////rss test
 
@@ -234,6 +235,7 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 
 	TPChannelData stuChannel;
 	CoCreateGuid(&stuChannel.guidRes);
+	stuChannel.guidNode = guidBaseUser;
 	TP_StrCpy(stuChannel.cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
 	stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
 	stuChannel.stuChannelBase = *pChannelInfo;
