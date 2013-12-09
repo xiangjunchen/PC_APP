@@ -268,7 +268,7 @@ void CTPArticleMainDlg::OnCbnSelChannelList()
 		//update
 		m_aArticleList.RemoveAll();
 		m_pArticleList->DeleteAllItems();
-		int iIndex = 0;
+		int iIndex = 0; 
 		for (int l = stuChannel.aChannelItemAll.GetSize() - 1; l >= 0 ;  l--)
 		{
 			TPArticleData stuArticle;
