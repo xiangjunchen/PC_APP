@@ -1277,6 +1277,7 @@ _CrtSetReportMode */
 
 typedef struct _tagTPChannelItem
 {
+	GUID     guidItem;
 	TCHAR	*cItemTitle;
 	TCHAR	*cItemLink;
 	TCHAR	*cItemDescription;
@@ -1291,6 +1292,7 @@ typedef struct _tagTPChannelItem
 	}
 	void Reset()
 	{
+		guidItem   = GUID_NULL;
 		cItemTitle = NULL;
 		cItemLink = NULL;
 		cItemDescription = NULL;
@@ -1307,6 +1309,7 @@ typedef struct _tagTPChannelItem
 	{
 		Release();
 
+		guidItem = oTher.guidItem;
 		TP_StrCpy(cItemTitle, oTher.cItemTitle, TP_StrLen(oTher.cItemTitle));
 		TP_StrCpy(cItemLink, oTher.cItemLink, TP_StrLen(oTher.cItemLink));
 		TP_StrCpy(cItemDescription, oTher.cItemDescription, TP_StrLen(oTher.cItemDescription));
@@ -1315,6 +1318,7 @@ typedef struct _tagTPChannelItem
 	}
 	void SaveFile(CFile &cFileWrite)
 	{
+		cFileWrite.Write(&guidItem,sizeof(GUID));				
 		TP_WriteStrToFile(cItemTitle, cFileWrite);
 		TP_WriteStrToFile(cItemLink,  cFileWrite);
 		TP_WriteStrToFile(cItemDescription,  cFileWrite);
@@ -1324,6 +1328,7 @@ typedef struct _tagTPChannelItem
 	{
 		Release();
 
+		cFileRead.Read(&guidItem,sizeof(GUID));				
 		TP_ReadStrFromFile(cItemTitle, cFileRead);
 		TP_ReadStrFromFile(cItemLink, cFileRead);
 		TP_ReadStrFromFile(cItemDescription, cFileRead);

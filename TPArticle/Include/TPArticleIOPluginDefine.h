@@ -1,5 +1,8 @@
 #pragma once
 
+// {ADD19005-9FCA-4f77-BE80-E6DCF34DEA5A}
+const GUID guidBaseArticle = { 0xadd19005, 0x9fca, 0x4f77, { 0xbe, 0x80, 0xe6, 0xdc, 0xf3, 0x4d, 0xea, 0x5a } };
+
 #include "..\..\Include\TPCommonInclude.h"
 typedef CArray<GUID,GUID &> CGUIDArray;
 

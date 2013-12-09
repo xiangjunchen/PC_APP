@@ -244,6 +244,7 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 	if(cAddress)	{delete cAddress; cAddress = NULL;}
 	if(cKeyDiv)		{delete cKeyDiv; cKeyDiv = NULL;}
 }
+
 void CTPArticleMainDlg::OnCbnSelChannelList()
 {
 	if(m_pChannelList)
@@ -270,24 +271,30 @@ void CTPArticleMainDlg::OnCbnSelChannelList()
 		int iIndex = 0;
 		for (int l = stuChannel.aChannelItemAll.GetSize() - 1; l >= 0 ;  l--)
 		{
-			TCHAR *cItemText = NULL;
-			TPChannelItem *pItemInfo = NULL;
-			CTPArticleParser stuArticleParser;
-			stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], stuChannel.cKeyDiv);
-			stuArticleParser.GetItemInfo(cItemText);
-
 			TPArticleData stuArticle;
-			CoCreateGuid(&stuArticle.guidRes);
-			stuArticle.guidNode = stuChannel.guidRes;
-			stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
-			TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
-			g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
-			//g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
+			GUID guidItem = stuChannel.aChannelItemAll[l]->guidItem;
+			if((guidItem != GUID_NULL) && S_OK == g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(guidItem,TP_GRADE_ALL,stuArticle))
+			{
+			}
+			else
+			{
+				TCHAR *cItemText = NULL;
+				TPChannelItem *pItemInfo = NULL;
+				CTPArticleParser stuArticleParser;
+				stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], stuChannel.cKeyDiv);
+				stuArticleParser.GetItemInfo(cItemText);
+				ASSERT(TP_StrLen(cItemText) > 50);
 
+				CoCreateGuid(&stuArticle.guidRes);
+				stuArticle.guidNode = stuChannel.guidRes;
+				stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
+				TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
+				g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
+				stuChannel.aChannelItemAll[l]->guidItem = stuArticle.guidRes;
+			}
 			m_aArticleList.Add(stuArticle.guidRes);
-			m_pArticleList->InsertItem(iIndex++,stuChannel.aChannelItemAll[l]->cItemTitle);
+			m_pArticleList->InsertItem(iIndex++,stuArticle.stuChannelItem.cItemTitle);
 			//m_pArticleList ->SetItemData(l,(DWORD_PTR)pDataStu);
-
 		}
 		g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(m_aChannelList[iSel],stuChannel);
 	}

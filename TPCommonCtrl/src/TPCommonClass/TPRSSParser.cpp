@@ -319,8 +319,12 @@ BOOL	CTPArticleParser::ParserHtml(CString &sHtmlStr)
 {
 	if(NULL == m_cKeyDiv)	{ASSERT(0);return FALSE;}
 
+	CString sTemp = sHtmlStr;
+	sHtmlStr = sTemp;
+	ASSERT(sHtmlStr.GetLength() > 50);
 	int iMark  = sHtmlStr.Find(m_cKeyDiv,0);
 	sHtmlStr = CTPWebHost::GetTagRangeStr(_T("<div"), _T("</div>"), iMark, sHtmlStr);
+	ASSERT(sHtmlStr.GetLength() > 50);
 //	AfxMessageBox(sArticle); 
 // 	vector<HyperLink> ageURL;
 // 	HyperLink hthisURL;
