@@ -227,17 +227,17 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 	TP_StrCpy(cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
 	//TCHAR cKeyDiv [] = sChannelKeyDiv.GetBuffer();//_T("<div class=\"neirong-box\" id=\"neirong_box\">");
 	//TCHAR cKeyDiv [] = _T("<div class=\"mainContent sep-10\">");
-	TPChannelBase *pChannelInfo = NULL;
-	CTPChannelParser stuChannelParser;
-	stuChannelParser.SetChannelAddress(cAddress);
-	stuChannelParser.GetChannelInfo(pChannelInfo);
+ 	TPChannelBase *pChannelInfo = NULL;
+ 	CTPChannelParser stuChannelParser;
+ 	stuChannelParser.SetChannelAddress(cAddress);
+ 	stuChannelParser.GetChannelInfo(pChannelInfo);
 
 	TPChannelData stuChannel;
 	CoCreateGuid(&stuChannel.guidRes);
 	TP_StrCpy(stuChannel.cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
 	stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
 	stuChannel.stuChannelBase = *pChannelInfo;
-	stuChannel.AppendUpdateItem();
+//	stuChannel.AppendUpdateItem();
 	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
 	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
 
@@ -255,9 +255,19 @@ void CTPArticleMainDlg::OnCbnSelChannelList()
 		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(m_aChannelList[iSel],stuChannel);
 		//AfxMessageBox(stuChannel.stuChannelBase.cChannelTitle);
 
+		TPChannelBase *pChannelInfo = NULL;
+		CTPChannelParser stuChannelParser;
+		stuChannelParser.SetChannelAddress(stuChannel.stuChannelBase.cChannelAddress);
+		stuChannelParser.GetChannelInfo(pChannelInfo);
+		if(!pChannelInfo || pChannelInfo->aChannelItem.GetSize() <= 0)	{ASSERT(0); return ;}
+
+		stuChannel.stuChannelBase = *pChannelInfo;
+		stuChannel.AppendUpdateItem();
+
 		//update
 		m_aArticleList.RemoveAll();
 		m_pArticleList->DeleteAllItems();
+		int iIndex = 0;
 		for (int l = stuChannel.aChannelItemAll.GetSize() - 1; l >= 0 ;  l--)
 		{
 			TCHAR *cItemText = NULL;
@@ -275,27 +285,11 @@ void CTPArticleMainDlg::OnCbnSelChannelList()
 			//g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
 
 			m_aArticleList.Add(stuArticle.guidRes);
-			m_pArticleList->InsertItem(l,stuChannel.aChannelItemAll[l]->cItemTitle);
+			m_pArticleList->InsertItem(iIndex++,stuChannel.aChannelItemAll[l]->cItemTitle);
 			//m_pArticleList ->SetItemData(l,(DWORD_PTR)pDataStu);
 
 		}
-		//for(INT l=0;l<m_pstuTeamLogin->aTeam.GetSize();l++)
-
-		//{
-		//	TCHAR *cItemText = NULL;
-		//	TPChannelItem *pItemInfo = NULL;
-		//	CTPArticleParser stuArticleParser;
-		//	stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], cKeyDiv);
-		//	stuArticleParser.GetItemInfo(cItemText);
-
-		//	TPArticleData stuArticle;
-		//	CoCreateGuid(&stuArticle.guidRes);
-		//	stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
-		//	TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
-		//	g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
-		//	g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
-		//}
-		//}
+		g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(m_aChannelList[iSel],stuChannel);
 	}
 }
 void CTPArticleMainDlg::OnCbnSelArticleList()

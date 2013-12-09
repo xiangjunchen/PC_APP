@@ -404,8 +404,37 @@ typedef struct _tagTPChannelData : public TPResBaseInfo
 	}
 	void AppendUpdateItem()
 	{
-		aChannelItemAll.Append(stuChannelBase.aChannelItem);
-		stuChannelBase.aChannelItem.RemoveAll();//需要清除掉，不然aChannelItemAll，stuChannelBase.aChannelItem会同时释放
+		int nUpdate = stuChannelBase.aChannelItem.GetSize();
+		int nAllSize = aChannelItemAll.GetSize();
+		for (int i = nAllSize - 1; i >= 0; i--)
+		{
+			if(nAllSize - i > nUpdate)	break;
+
+			int l = 0;
+			for (; l < stuChannelBase.aChannelItem.GetSize(); l++)
+			{
+				if(aChannelItemAll[i]->IsEqual(stuChannelBase.aChannelItem[l]))
+					break;
+			}
+			if(l < stuChannelBase.aChannelItem.GetSize())
+			{
+				int iRemoveCount = 0;
+				for (int k = stuChannelBase.aChannelItem.GetSize() - 1; k >= 0; k--)
+				{
+					delete stuChannelBase.aChannelItem[k];
+					stuChannelBase.aChannelItem[k] = NULL;
+					stuChannelBase.aChannelItem.RemoveAt(k);
+					if(l == k)
+						break;
+				}
+				break;
+			}
+		}
+ 		for (int l = stuChannelBase.aChannelItem.GetSize() - 1 ; l >= 0; l--)
+ 		{
+			aChannelItemAll.Add(stuChannelBase.aChannelItem[l]);
+			stuChannelBase.aChannelItem.RemoveAt(l);//需要清除掉，不然aChannelItemAll，stuChannelBase.aChannelItem会同时释放
+ 		}
 	}
 protected:
 	_tagTPChannelData& operator = (const _tagTPChannelData & stuSrc);
