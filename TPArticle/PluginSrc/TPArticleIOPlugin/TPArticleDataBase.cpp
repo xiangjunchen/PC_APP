@@ -155,23 +155,23 @@ LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelD
 }
 LRESULT CTPArticleDataBase::GetChannelRes(GUID guidRes, TPResDataArray &hChildRes)
 {
-	CString sChannelNodePath = GetLocalDataPath() + _T("\\Channel\\");
-	if(!PathFileExists(sChannelNodePath)) return S_FALSE;
-
-	CString      sFileName = _T("");
-	CStringArray aFile;
-	File_FindFile(sChannelNodePath,_T("chl"),aFile);
-	for (int l = 0 ; l < aFile.GetSize(); l++)
+	hChildRes.RemoveAll();
+	CString sCatalog  = TP_UuidToString(&guidRes);
+	CString sFileName,sGuid;
+	POSITION posGet = NULL;
+	m_aChannelFileName.Lock();
+	posGet = m_aChannelFileName.GetStartPosition();
+	while (posGet)
 	{
-		sFileName = PathFindFileName(aFile[l]);
-		if(sFileName.Right(4).CompareNoCase(ResTypeToExt(TP_RES_CHANNEL))==0)
+		m_aChannelFileName.GetNextAssoc(posGet,sGuid,sFileName);
+		if(sFileName.Find(sCatalog)>0) 
 		{
-			TPResData stuResData;
-			stuResData.guidRes = TP_GuidFromString(sFileName.Left(36));
-			hChildRes.Add(stuResData);
-		}		
+			TPResData stuRes;
+			stuRes.guidRes = TP_UuidFromString(sGuid);
+			hChildRes.Add(stuRes);
+		}
 	}
-
+	m_aChannelFileName.Unlock();
 	return S_OK;
 }
 CString CTPArticleDataBase::GetLocalDataPath()

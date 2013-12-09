@@ -24,6 +24,8 @@
 #define IDC_LIST_ARTICLE                1004
 #define IDC_STATIC_                     1005
 #define IDC_STATIC_ARTICLETEXT          1005
+#define IDC_COMBO_CHANNELLISTPUBLIC     1006
+#define IDC_BUTTON_ADDCHANNEL2          1007
 
 // Next default values for new objects
 // 

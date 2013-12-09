@@ -53,6 +53,7 @@ IMPLEMENT_DYNAMIC(CTPArticleMainDlg, CTPDialog)
 CTPArticleMainDlg::CTPArticleMainDlg(CWnd* pParent /*=NULL*/)
 	: CTPDialog(CTPArticleMainDlg::IDD, pParent)
 {
+	m_pChannelListPublic = NULL;
 	m_pChannelList = NULL;
 	m_pArticleList = NULL;
 	m_pHtmlCtrl    = NULL;
@@ -75,6 +76,7 @@ BEGIN_MESSAGE_MAP(CTPArticleMainDlg, CTPDialog)
 	ON_CBN_SELENDOK(IDC_LIST_ARTICLE, &CTPArticleMainDlg::OnCbnSelArticleList)
 	ON_NOTIFY(NM_CLICK,IDC_LIST_ARTICLE,OnNMClick)
 	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
+	ON_BN_CLICKED(IDC_BUTTON_ADDCHANNEL2, &CTPArticleMainDlg::OnBnClickedButtonAddchannel2)
 END_MESSAGE_MAP()
 
 
@@ -109,14 +111,26 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 
 	// TODO:  Add extra initialization here
 	m_pChannelList = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLIST);
+	m_pChannelListPublic = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLISTPUBLIC);
 	m_pArticleList = (CTPListCtrl *)GetDlgItem(IDC_LIST_ARTICLE); 
 	m_pArticleList->InsertColumn(0, _T("Article Title"), LVCFMT_LEFT,500);	
 
 	AdjustHtml();
 	TP_InitArticleCenter();
 
-	GUID guidNode = guidBaseUser;
+	GUID guidNode = guidRecommendChannel;
 	TPResDataArray aResData;
+	g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
+	for (int l = 0 ; l < aResData.GetSize(); l++)
+	{
+		TPChannelData stuChannel;
+		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
+		m_aChannelListPublic.Add(stuChannel.guidRes);
+		m_pChannelListPublic->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
+	}	
+	
+	guidNode = guidBaseUser;
+	aResData.RemoveAll();
 	g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
 	for (int l = 0 ; l < aResData.GetSize(); l++)
 	{
@@ -215,36 +229,8 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 	GetDlgItem(IDC_EDIT_CHANNELKEYDIV)->GetWindowText(sChannelKeyDiv);
 	sChannelUrl = sChannelUrl.Trim();
 	sChannelKeyDiv = sChannelKeyDiv.Trim();
-	if(sChannelUrl.IsEmpty() || sChannelKeyDiv.IsEmpty())
-	{
-		AfxMessageBox(_T("Add Failed!"));
-		return ;
-	}
 
-	TCHAR *cAddress = NULL;
-	TP_StrCpy(cAddress, sChannelUrl.GetBuffer(), sChannelUrl.GetLength());//_T("http://www.huxiu.com/rss/0.xml");//;//_T("http://www.36kr.com/feed")
-	//TCHAR cAddress[] = _T("http://www.36kr.com/feed");//;//
-	TCHAR *cKeyDiv = NULL;
-	TP_StrCpy(cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
-	//TCHAR cKeyDiv [] = sChannelKeyDiv.GetBuffer();//_T("<div class=\"neirong-box\" id=\"neirong_box\">");
-	//TCHAR cKeyDiv [] = _T("<div class=\"mainContent sep-10\">");
- 	TPChannelBase *pChannelInfo = NULL;
- 	CTPChannelParser stuChannelParser;
- 	stuChannelParser.SetChannelAddress(cAddress);
- 	stuChannelParser.GetChannelInfo(pChannelInfo);
-
-	TPChannelData stuChannel;
-	CoCreateGuid(&stuChannel.guidRes);
-	stuChannel.guidNode = guidBaseUser;
-	TP_StrCpy(stuChannel.cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
-	stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
-	stuChannel.stuChannelBase = *pChannelInfo;
-//	stuChannel.AppendUpdateItem();
-	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
-	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
-
-	if(cAddress)	{delete cAddress; cAddress = NULL;}
-	if(cKeyDiv)		{delete cKeyDiv; cKeyDiv = NULL;}
+	AddChannel(guidRecommendChannel,sChannelUrl,sChannelKeyDiv );
 }
 
 void CTPArticleMainDlg::OnCbnSelChannelList()
@@ -329,4 +315,50 @@ void CTPArticleMainDlg::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 
 	*pResult = 0;	
+}
+
+void CTPArticleMainDlg::OnBnClickedButtonAddchannel2()
+{
+	if(m_pChannelListPublic)
+	{
+		int iSel = m_pChannelListPublic->GetCurSel();
+		if(iSel<0 || m_aChannelListPublic.GetSize() <= iSel) return;
+
+		TPChannelData stuChannel;
+		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(m_aChannelListPublic[iSel],stuChannel);
+		AddChannel(guidBaseUser, stuChannel.stuChannelBase.cChannelAddress,stuChannel.cKeyDiv);
+	}
+}
+void CTPArticleMainDlg::AddChannel(GUID guidChannelNode,CString sChannelUrl,CString sChannelKeyDiv)
+{
+	if(sChannelUrl.IsEmpty() || sChannelKeyDiv.IsEmpty())
+	{
+		AfxMessageBox(_T("Add Failed!"));
+		return ;
+	}
+
+	TCHAR *cAddress = NULL;
+	TP_StrCpy(cAddress, sChannelUrl.GetBuffer(), sChannelUrl.GetLength());//_T("http://www.huxiu.com/rss/0.xml");//;//_T("http://www.36kr.com/feed")
+	//TCHAR cAddress[] = _T("http://www.36kr.com/feed");//;//
+	TCHAR *cKeyDiv = NULL;
+	TP_StrCpy(cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
+	//TCHAR cKeyDiv [] = sChannelKeyDiv.GetBuffer();//_T("<div class=\"neirong-box\" id=\"neirong_box\">");
+	//TCHAR cKeyDiv [] = _T("<div class=\"mainContent sep-10\">");
+	TPChannelBase *pChannelInfo = NULL;
+	CTPChannelParser stuChannelParser;
+	stuChannelParser.SetChannelAddress(cAddress);
+	stuChannelParser.GetChannelInfo(pChannelInfo);
+
+	TPChannelData stuChannel;
+	CoCreateGuid(&stuChannel.guidRes);
+	stuChannel.guidNode = guidChannelNode;
+	TP_StrCpy(stuChannel.cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
+	stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
+	stuChannel.stuChannelBase = *pChannelInfo;
+	//	stuChannel.AppendUpdateItem();
+	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
+	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
+
+	if(cAddress)	{delete cAddress; cAddress = NULL;}
+	if(cKeyDiv)		{delete cKeyDiv; cKeyDiv = NULL;}
 }

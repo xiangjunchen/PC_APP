@@ -15,11 +15,15 @@ public:
 	enum { IDD = IDD_TPARTICLEMAINDLG };
 
 public:
+	CTPComboBox *m_pChannelListPublic;
+	CGuidArray   m_aChannelListPublic;
+
 	CTPComboBox *m_pChannelList;
 	CTPListCtrl *m_pArticleList;
 	CTPHtmlCtrl *m_pHtmlCtrl;
 	CGuidArray   m_aChannelList;
 	CGuidArray   m_aArticleList;
+	void AddChannel(GUID guidChannelNode,CString sChannelUrl,CString sChannelKeyDiv);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -33,4 +37,5 @@ public:
 	afx_msg void OnCbnSelArticleList();
 	afx_msg void OnNMClick(NMHDR *pNMHDR, LRESULT *pResult);
 
+	afx_msg void OnBnClickedButtonAddchannel2();
 };
