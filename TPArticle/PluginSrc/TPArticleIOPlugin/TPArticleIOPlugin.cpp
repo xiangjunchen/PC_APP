@@ -105,6 +105,15 @@ LRESULT TP_InitData(void *pData)
 		if(!PathFileExists(sFilePersonal + _T("\\Channel")))
 		{
 			::CreateDirectory(sFilePersonal + _T("\\Channel"),NULL);
+			CString sDefaultChannel = TP_GetSysPath() + _T("\\Default\\Channel\\");
+			CStringArray aFile;
+			File_FindFile(sDefaultChannel,g_stuArticleDataBase.ResTypeToExt(TP_RES_CHANNEL),aFile);
+			for (int l = 0; l < aFile.GetSize(); l++)
+			{
+				CString sFileName = PathFindFileName(aFile[l]);
+				sFileName = sFilePersonal + _T("\\Channel\\") + sFileName;
+				::CopyFile(aFile[l], sFileName,TRUE);
+			}
 		}
 		if(!PathFileExists(sFilePersonal + _T("\\ChannelNode")))
 		{

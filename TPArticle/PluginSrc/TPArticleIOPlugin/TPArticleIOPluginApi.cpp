@@ -1,5 +1,17 @@
 #include "StdAfx.h"
 
+CString TP_GetSysPath()
+{
+	CString sPatch;
+	TCHAR cPath[MAX_PATH];
+	::GetModuleFileName(NULL,cPath,MAX_PATH);
+	PathRemoveFileSpec(cPath);	
+	sPatch  = cPath;
+	sPatch  = sPatch.Left(sPatch.ReverseFind('\\'));
+	sPatch += _T("\\Sys");
+	return sPatch;
+}
+
 void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile)
 {
 	WIN32_FIND_DATA findData;
