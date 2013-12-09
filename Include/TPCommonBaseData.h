@@ -1329,6 +1329,12 @@ typedef struct _tagTPChannelItem
 		TP_ReadStrFromFile(cItemDescription, cFileRead);
 		TP_ReadStrFromFile(cItemPubDate, cFileRead);
 	}
+	BOOL IsEqual(_tagTPChannelItem *poTher)
+	{
+		if((TP_StrCmp(poTher->cItemLink,cItemLink) == 0) && (TP_StrCmp(poTher->cItemTitle,cItemTitle)  == 0) && (TP_StrCmp(poTher->cItemPubDate,cItemPubDate) == 0))
+			return TRUE;
+		return FALSE;
+	}
 }TPChannelItem;
 typedef CArray<TPChannelItem *, TPChannelItem *&>	CTPChannelItemArray;
 
