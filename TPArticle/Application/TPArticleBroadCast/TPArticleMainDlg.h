@@ -15,6 +15,9 @@ public:
 	enum { IDD = IDD_TPARTICLEMAINDLG };
 
 public:
+	CTPComboBox *m_pChannelNodeListPublic;
+	CGuidArray   m_aChannelNodeListPublic;
+
 	CTPComboBox *m_pChannelListPublic;
 	CGuidArray   m_aChannelListPublic;
 

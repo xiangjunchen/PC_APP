@@ -1,7 +1,7 @@
 #pragma once
 
-const GUID guidRecommendChannel = { 0xA78AFD2D, 0x9fca, 0x4f77, { 0xbe, 0x80, 0xe6, 0xdc, 0xf3, 0x4d, 0xea, 0x5a } };
-const GUID guidBaseUser			= { 0xA78AFFFF, 0x9fca, 0x4f77, { 0xbe, 0x80, 0xe6, 0xdc, 0xf3, 0x4d, 0xeb, 0x5b } };
+const GUID guidPublicChannelNode   = { 0xA78AFD2D, 0x9fca, 0x4f77, { 0xbe, 0x80, 0xe6, 0xdc, 0xf3, 0x4d, 0xea, 0x5a } };
+const GUID guidPrivateChannelNode  = { 0xA78AFFFF, 0x9fca, 0x4f77, { 0xbe, 0x80, 0xe6, 0xdc, 0xf3, 0x4d, 0xeb, 0x5b } };
 
 #include "..\..\Include\TPCommonInclude.h"
 typedef CArray<GUID,GUID &> CGUIDArray;
@@ -445,14 +445,18 @@ protected:
 }TPChannelData;
 typedef CArray<TPChannelData ,TPChannelData &> TPChannelDataArray;
 
-typedef struct _tagTPChannelNode : public TPResBaseInfo
+#define TP_CHANNELNODE_VERSION1		1  //
+#define TP_CHANNELNODE_VERSION		TP_CHANNELNODE_VERSION1
+
+typedef struct _tagTPChannelNodeData : public TPResBaseInfo
 {
-	TCHAR *cNodeName;
-	_tagTPChannelNode()
+	TCHAR					*cNodeName;
+	TP_CHANNEL_NODETYPE		eNodeType;
+	_tagTPChannelNodeData()
 	{
 		Reset();
 	}
-	~_tagTPChannelNode()
+	~_tagTPChannelNodeData()
 	{
 		Release();
 	}
@@ -460,21 +464,27 @@ typedef struct _tagTPChannelNode : public TPResBaseInfo
 	{
 		TPResBaseInfo::Reset();
 		cNodeName = NULL;
+		eNodeType = TP_CHANNEL_UNKNOW;
 	}
 	void Release()
 	{
 		if(cNodeName)	{delete cNodeName; cNodeName = NULL;}
 		Reset();
 	}
-}TPChannelNode;
+}TPChannelNodeData;
 //Manage interface 
 typedef struct _tagTPChannelNodeInterface
 {
-	LRESULT  (*TP_GetChildRes)(GUID guidRes, TPResDataArray &hChildRes);
-	//LRESULT  (*TP_GetChildRes)(HRESDATA hCatalogData,TPResDataArray &hChildRes,DWORD eLockType);
+	LRESULT  (*TP_GetChannelNodeInfo)(GUID guidRes,TPChannelNodeData &stuChannelData); //
+	LRESULT  (*TP_SetChannelNodeInfo)(GUID guidRes,TPChannelNodeData &stuChannelData); //
+	LRESULT  (*TP_DelChannelNodeInfo)(GUID guidRes);
+	LRESULT  (*TP_GetChannelNodeChild)(GUID guidRes, TPResDataArray &hChildRes);
+	//LRESULT  (*TP_GetChannelNodeChild)(HRESDATA hCatalogData,TPResDataArray &hChildRes,DWORD eLockType);
 	_tagTPChannelNodeInterface()
 	{
-
+		TP_GetChannelNodeInfo = NULL;
+		TP_SetChannelNodeInfo = NULL;
+		TP_DelChannelNodeInfo = NULL;
 	}
 }TPChannelNodeInterface;
 typedef struct _tagTPChannelInterface
@@ -554,10 +564,13 @@ typedef struct _tagTPChannelPluginInterface
 
 typedef struct _tagTPChannelNodePluginInterface
 {
-	LRESULT  (*TP_GetChildRes)(GUID guidRes, TPResDataArray &hChildRes);
+	LRESULT  (*TP_GetChannelNodeInfo)(GUID guidRes,TPChannelNodeData &stuChannelNode); //
+	LRESULT  (*TP_SetChannelNodeInfo)(GUID guidRes,TPChannelNodeData &stuChannelNode); //
+	LRESULT  (*TP_DelChannelNodeInfo)(GUID guidRes);
+	LRESULT  (*TP_GetChannelNodeChild)(GUID guidRes, TPResDataArray &hChildRes);
 	_tagTPChannelNodePluginInterface()
 	{
-		TP_GetChildRes = NULL;
+		TP_GetChannelNodeChild = NULL;
 	}
 
 }TPChannelNodePluginInterface;

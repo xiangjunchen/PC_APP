@@ -32,6 +32,22 @@ LRESULT  TP_DelArticleInfo(GUID guidRes)
 	return S_OK;
 }
 
+LRESULT  TP_GetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode) 
+{
+	g_stuArticleDataBase.ReadChannelNode(guidRes, stuChannelNode);
+	return S_OK;
+}
+LRESULT  TP_SetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode)
+{
+	g_stuArticleDataBase.WriteChannelNode(guidRes, stuChannelNode);
+	return S_OK;
+}
+
+LRESULT  TP_DelChannelNodeInfo(GUID guidRes)
+{
+	return S_OK;
+}
+
 LRESULT  TP_GetChannelInfo(GUID guidRes,TPChannelData &stuChannelData) 
 {
 	g_stuArticleDataBase.ReadChannel(guidRes, stuChannelData);
@@ -62,9 +78,9 @@ LRESULT  TP_DelCommentInfo(GUID guidRes)
 	return S_OK;
 }
 
-LRESULT  TP_GetChildRes(GUID guidRes, TPResDataArray &hChildRes)
+LRESULT  TP_GetChannelNodeChild(GUID guidRes, TPResDataArray &hChildRes)
 {
-	g_stuArticleDataBase.GetChannelRes(guidRes, hChildRes);
+	g_stuArticleDataBase.GetChannelNodeChild(guidRes, hChildRes);
 	return S_OK;
 }
 
@@ -76,9 +92,10 @@ LRESULT TP_GetPlugInFunction(TPArticleIOPluginInterface *pInterface)
 	pInterface->stuArticleInterface.TP_DelArticleInfo = TP_DelArticleInfo;
 
 	//ChannelNode
- 	pInterface->stuChannelNodeInterface.TP_GetChildRes = TP_GetChildRes;
-// 	pInterface->stuChannelNodeInterface.TP_SetChannelInfo = TP_SetChannelInfo;
-// 	pInterface->stuChannelNodeInterface.TP_DelChannelInfo = TP_DelChannelInfo;
+ 	pInterface->stuChannelNodeInterface.TP_GetChannelNodeChild = TP_GetChannelNodeChild;
+ 	pInterface->stuChannelNodeInterface.TP_GetChannelNodeInfo = TP_GetChannelNodeInfo;
+ 	pInterface->stuChannelNodeInterface.TP_SetChannelNodeInfo = TP_SetChannelNodeInfo;
+	pInterface->stuChannelNodeInterface.TP_DelChannelNodeInfo = TP_DelChannelNodeInfo;
 
 	//Channel
 	pInterface->stuChannelInterface.TP_GetChannelInfo = TP_GetChannelInfo;
@@ -118,6 +135,20 @@ LRESULT TP_InitData(void *pData)
 		if(!PathFileExists(sFilePersonal + _T("\\ChannelNode")))
 		{
 			::CreateDirectory(sFilePersonal + _T("\\ChannelNode"),NULL);
+
+			TCHAR szSport[MAX_PATH] = _T("体育");
+			TP_CHANNEL_NODETYPE eNodeType = TP_CHANNEL_SYSTEM|TP_CHANNEL_SPORT;
+			g_stuArticleDataBase.CreateDefChannelNode(szSport, eNodeType,guidPublicChannelNode);
+
+			TCHAR szTech[MAX_PATH] = _T("科技");
+			eNodeType = TP_CHANNEL_SYSTEM|TP_CHANNEL_TECH;
+			g_stuArticleDataBase.CreateDefChannelNode(szTech, eNodeType,guidPublicChannelNode);
+
+			TCHAR szUser[MAX_PATH];
+			ULONG uLength = MAX_PATH;	
+ 			::GetUserName(szUser,&uLength);
+			eNodeType = TP_CHANNEL_PERSON;
+			g_stuArticleDataBase.CreateDefChannelNode(szUser, eNodeType,guidPrivateChannelNode);
 		}
 		if(!PathFileExists(sFilePersonal + _T("\\Article")))
 		{

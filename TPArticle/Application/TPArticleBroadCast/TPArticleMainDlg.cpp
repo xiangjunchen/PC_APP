@@ -53,6 +53,7 @@ IMPLEMENT_DYNAMIC(CTPArticleMainDlg, CTPDialog)
 CTPArticleMainDlg::CTPArticleMainDlg(CWnd* pParent /*=NULL*/)
 	: CTPDialog(CTPArticleMainDlg::IDD, pParent)
 {
+	m_pChannelNodeListPublic = NULL;
 	m_pChannelListPublic = NULL;
 	m_pChannelList = NULL;
 	m_pArticleList = NULL;
@@ -112,34 +113,47 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	// TODO:  Add extra initialization here
 	m_pChannelList = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLIST);
 	m_pChannelListPublic = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLISTPUBLIC);
+	m_pChannelNodeListPublic = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELNODELISTPUBLIC);
 	m_pArticleList = (CTPListCtrl *)GetDlgItem(IDC_LIST_ARTICLE); 
 	m_pArticleList->InsertColumn(0, _T("Article Title"), LVCFMT_LEFT,500);	
 
 	AdjustHtml();
 	TP_InitArticleCenter();
 
-	GUID guidNode = guidRecommendChannel;
+	//channelNode
+	GUID guidNode = guidPublicChannelNode;
 	TPResDataArray aResData;
-	g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
+	g_stuArticleInterface.stuChannelNodeInterface.TP_GetChannelNodeChild(guidNode, aResData);
 	for (int l = 0 ; l < aResData.GetSize(); l++)
 	{
-		TPChannelData stuChannel;
-		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
-		m_aChannelListPublic.Add(stuChannel.guidRes);
-		m_pChannelListPublic->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
+		TPChannelNodeData stuChannelNode;
+		g_stuArticleInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(aResData[l].guidRes,stuChannelNode);
+		m_aChannelNodeListPublic.Add(stuChannelNode.guidRes);
+		m_pChannelNodeListPublic->InsertString(l, stuChannelNode.cNodeName);	
 	}	
-	
-	guidNode = guidBaseUser;
-	aResData.RemoveAll();
-	g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
-	for (int l = 0 ; l < aResData.GetSize(); l++)
-	{
-		TPChannelData stuChannel;
-		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
-		m_aChannelList.Add(stuChannel.guidRes);
-		m_pChannelList->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
-	}
-	
+	//channel
+	//guidNode = guidPublicChannelNode;
+	//aResData.RemoveAll();
+	//g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
+	//for (int l = 0 ; l < aResData.GetSize(); l++)
+	//{
+	//	TPChannelData stuChannel;
+	//	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
+	//	m_aChannelListPublic.Add(stuChannel.guidRes);
+	//	m_pChannelListPublic->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
+	//}	
+	////article
+	//guidNode = guidPrivateChannelNode;
+	//aResData.RemoveAll();
+	//g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
+	//for (int l = 0 ; l < aResData.GetSize(); l++)
+	//{
+	//	TPChannelData stuChannel;
+	//	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
+	//	m_aChannelList.Add(stuChannel.guidRes);
+	//	m_pChannelList->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
+	//}
+	//
 	
 	////////////////////////////////////////////////////////////////////////////rss test
 
@@ -230,7 +244,7 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 	sChannelUrl = sChannelUrl.Trim();
 	sChannelKeyDiv = sChannelKeyDiv.Trim();
 
-	AddChannel(guidRecommendChannel,sChannelUrl,sChannelKeyDiv );
+	AddChannel(guidPublicChannelNode,sChannelUrl,sChannelKeyDiv );
 }
 
 void CTPArticleMainDlg::OnCbnSelChannelList()
@@ -326,7 +340,7 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel2()
 
 		TPChannelData stuChannel;
 		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(m_aChannelListPublic[iSel],stuChannel);
-		AddChannel(guidBaseUser, stuChannel.stuChannelBase.cChannelAddress,stuChannel.cKeyDiv);
+		AddChannel(guidPrivateChannelNode, stuChannel.stuChannelBase.cChannelAddress,stuChannel.cKeyDiv);
 	}
 }
 void CTPArticleMainDlg::AddChannel(GUID guidChannelNode,CString sChannelUrl,CString sChannelKeyDiv)

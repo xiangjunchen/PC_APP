@@ -87,16 +87,36 @@ LRESULT  TP_DelArticleInfo(GUID guidRes)
 	g_stuArticleIOPluginInterface.stuArticleInterface.TP_DelArticleInfo(guidRes);
 	return S_OK;
 }
-LRESULT  TP_GetChildRes(GUID guidRes, TPResDataArray &hChildRes)
+LRESULT  TP_GetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode) 
 {
-	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChildRes(guidRes, hChildRes);
+	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(guidRes,stuChannelNode);
+	return S_OK;
+}
+LRESULT  TP_SetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode)
+{
+	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_SetChannelNodeInfo(guidRes,stuChannelNode);
+	return S_OK;
+}
+
+LRESULT  TP_DelChannelNodeInfo(GUID guidRes)
+{
+	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_DelChannelNodeInfo(guidRes);
+	return S_OK;
+}
+
+LRESULT  TP_GetChannelNodeChild(GUID guidRes, TPResDataArray &hChildRes)
+{
+	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChannelNodeChild(guidRes, hChildRes);
 	return S_OK;
 }
 
 LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)
 {
 	//ChannelNode
-	pInterface->stuChannelNodeInterface.TP_GetChildRes = TP_GetChildRes;
+	pInterface->stuChannelNodeInterface.TP_GetChannelNodeChild = TP_GetChannelNodeChild;
+	pInterface->stuChannelNodeInterface.TP_GetChannelNodeInfo = TP_GetChannelNodeInfo;
+	pInterface->stuChannelNodeInterface.TP_SetChannelNodeInfo = TP_SetChannelNodeInfo;
+	pInterface->stuChannelNodeInterface.TP_DelChannelNodeInfo = TP_DelChannelNodeInfo;
 
 	//Channel
 	pInterface->stuChannelInterface.TP_GetChannelInfo = TP_GetChannelInfo;

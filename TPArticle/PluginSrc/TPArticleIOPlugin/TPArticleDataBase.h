@@ -15,11 +15,14 @@ private:
 
 public:
 	//ChannelNode
-	LRESULT GetChannelRes(GUID guidRes, TPResDataArray &hChildRes);
+	LRESULT ReadChannelNode(GUID guidRes,TPChannelNodeData &stuChannelNodeData);
+	LRESULT WriteChannelNode(GUID guidRes,TPChannelNodeData &stuChannelNodeData);
+	LRESULT GetChannelNodeChild(GUID guidRes, TPResDataArray &hChildRes);
+
 	//Channel
 	LRESULT ReadChannel(GUID guidRes,TPChannelData &stuChannelData);
 	LRESULT WriteChannel(GUID guidRes,TPChannelData &stuChannelData);
-
+	LRESULT GetChannelRes(GUID guidRes, TPResDataArray &hChildRes);
 	//Article
 	LRESULT ReadArticle(GUID guidRes,TPArticleData &stuArticleData);
 	LRESULT WriteArticle(GUID guidRes,TPArticleData &stuArticleData);
@@ -31,5 +34,6 @@ public:
 	CString GetResFilePath(GUID guidRes,TP_RES_TYPE eResType,void *pData);
 	CString ResTypeToExt(TP_RES_TYPE eResType);
 	CString ResTypeToFolderName(TP_RES_TYPE eResType);
+	BOOL    CreateDefChannelNode(TCHAR *cName, TP_CHANNEL_NODETYPE eNodeType, GUID guidNode);
 
 };
