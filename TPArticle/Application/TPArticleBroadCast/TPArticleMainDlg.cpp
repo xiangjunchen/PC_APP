@@ -79,6 +79,7 @@ BEGIN_MESSAGE_MAP(CTPArticleMainDlg, CTPDialog)
 	ON_NOTIFY(NM_CLICK,IDC_LIST_ARTICLE,OnNMClick)
 	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
 	ON_BN_CLICKED(IDC_BUTTON_ADDCHANNEL2, &CTPArticleMainDlg::OnBnClickedButtonAddchannel2)
+	ON_BN_CLICKED(IDC_BUTTON1, &CTPArticleMainDlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -327,10 +328,15 @@ void CTPArticleMainDlg::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 				{
 					//m_pArticleList->GetItemData(iCurIndex);
 					TPArticleData stuArticle;
-					g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(m_aArticleList[iCurIndex],TP_GRADE_ALL,stuArticle);
-					CString sFileName = g_stuArticleInterface.stuArticleInterfce.TP_GetCurArticleHtmlPath();
-					CTPArticleParser::SaveHtml(sFileName, stuArticle.cText);
-					AdjustHtml(sFileName);
+					if(S_OK == g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(m_aArticleList[iCurIndex],TP_GRADE_ALL,stuArticle))
+					{
+						TPChannelData stuChannel;
+						g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuArticle.guidNode,stuChannel);
+						CString sFileName = g_stuArticleInterface.stuArticleInterfce.TP_GetCurArticleHtmlPath();
+						CTPArticleParser::SaveHtml(sFileName, stuArticle.cText, stuArticle.stuChannelItem.cItemTitle,stuChannel.stuChannelBase.cChannelTitle,stuArticle.stuChannelItem.cItemPubDate);
+						AdjustHtml(sFileName);
+
+					}
 				}
 			}
 		}
@@ -413,4 +419,20 @@ void CTPArticleMainDlg::ResetChannelContent(GUID guidChannelNode, CTPComboBox *p
 		aChannelListPublic.Add(stuChannel.guidRes);
 		pChannel->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
 	}
+}
+void CTPArticleMainDlg::OnBnClickedButton1()
+{
+	ASSERT(0);
+	CRect rtMain;
+	GetWindowRect(&rtMain);
+	CRect rc;
+	GetDlgItem(IDC_STATIC_ARTICLETEXT)->GetWindowRect(&rc);
+	this->ScreenToClient(&rc);
+	rc.left = rtMain.left + 10;
+	rc.right = rtMain.right - 10;
+	GetDlgItem(IDC_STATIC_ARTICLETEXT)->MoveWindow(rc);
+	CString sFileName = g_stuArticleInterface.stuArticleInterfce.TP_GetCurArticleHtmlPath();
+
+	AdjustHtml(sFileName);
+
 }

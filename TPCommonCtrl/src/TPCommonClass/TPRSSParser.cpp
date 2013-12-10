@@ -344,7 +344,11 @@ BOOL	CTPArticleParser::ParserHtml(CString &sHtmlStr)
 // 	{
 	return TRUE;
 }
-CString CTPArticleParser::GetTemplateString(const TCHAR *cFileName, const TCHAR *cHtml)
+CString CTPArticleParser::GetTemplateString(const TCHAR *cFileName, 
+											const TCHAR *cHtmlBody, 
+											const TCHAR *cHtmlTitle,
+											const TCHAR *cHtmlAuthor,
+											const TCHAR *cPubData)
 {
 	CString sPatch = _T(""), sHtmlAll = _T("");
 	TCHAR cPath[MAX_PATH];
@@ -353,21 +357,41 @@ CString CTPArticleParser::GetTemplateString(const TCHAR *cFileName, const TCHAR 
 	sPatch  = cPath;
 	sPatch += _T("\\template1.html");
 	CString sTempHtml = GetHtmlString(sPatch);
-	int iBody = sTempHtml.Find(_T("</BODY>"));
+	int iHead = sTempHtml.Find(_T("</HEAD>"));
 	int iLength = sTempHtml.GetLength();
+	if(iHead > 0)
+	{
+		sHtmlAll  = sTempHtml.Left(iHead);
+		sHtmlAll += cHtmlTitle;
+		sHtmlAll += _T("<br><br>");
+		sHtmlAll += cHtmlAuthor;
+		sHtmlAll += _T("&nbsp&nbsp&nbsp");
+		sHtmlAll += cPubData;
+		sHtmlAll += _T("<br><br><br>");
+		sHtmlAll += sTempHtml.Right(iLength - iHead);
+	}
+	int iBody = sHtmlAll.Find(_T("</BODY>"));
+	iLength = sHtmlAll.GetLength();
 	if(iBody > 0)
 	{
-		sHtmlAll = sTempHtml.Left(iBody);
-		sHtmlAll += cHtml;
-		sHtmlAll += sTempHtml.Right(iLength - iBody);
+		CString sBodyStart = sHtmlAll.Left(iBody);
+		CString sBodyEnd = sHtmlAll.Right(iLength - iBody);
+		sHtmlAll = sBodyStart;
+		sHtmlAll += cHtmlBody;
+		sHtmlAll += sBodyEnd;
 	}		
 	return sHtmlAll;
 }
-BOOL CTPArticleParser::SaveHtml(const TCHAR *cFileName, const TCHAR *cHtml, BOOL bApplyTemplate)
+BOOL CTPArticleParser::SaveHtml(const TCHAR *cFileName, 
+								const TCHAR *cHtmlBody, 
+								const TCHAR *cHtmlTitle,
+								const TCHAR *cHtmlAuthor,
+								const TCHAR *cPubData,
+								BOOL bApplyTemplate)
 {
-	CString sHtmlAll = cHtml;
+	CString sHtmlAll = cHtmlBody;
 	if(bApplyTemplate)
-		sHtmlAll = GetTemplateString(cFileName, cHtml);
+		sHtmlAll = GetTemplateString(cFileName, cHtmlBody, cHtmlTitle, cHtmlAuthor, cPubData);
 	CFile file;
 	try
 	{

@@ -43,4 +43,5 @@ public:
 	afx_msg void OnNMClick(NMHDR *pNMHDR, LRESULT *pResult);
 
 	afx_msg void OnBnClickedButtonAddchannel2();
+	afx_msg void OnBnClickedButton1();
 };
