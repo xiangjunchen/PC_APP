@@ -74,6 +74,7 @@ BEGIN_MESSAGE_MAP(CTPArticleMainDlg, CTPDialog)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BUTTON_ADDCHANNEL, &CTPArticleMainDlg::OnBnClickedButtonAddchannel)
 	ON_CBN_SELENDOK(IDC_COMBO_CHANNELLIST, &CTPArticleMainDlg::OnCbnSelChannelList)
+	ON_CBN_SELENDOK(IDC_COMBO_CHANNELNODELISTPUBLIC, &CTPArticleMainDlg::OnCbnSelChannelNodeList)
 	ON_CBN_SELENDOK(IDC_LIST_ARTICLE, &CTPArticleMainDlg::OnCbnSelArticleList)
 	ON_NOTIFY(NM_CLICK,IDC_LIST_ARTICLE,OnNMClick)
 	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
@@ -120,7 +121,7 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	AdjustHtml();
 	TP_InitArticleCenter();
 
-	//channelNode
+	//public channelNode
 	GUID guidNode = guidPublicChannelNode;
 	TPResDataArray aResData;
 	g_stuArticleInterface.stuChannelNodeInterface.TP_GetChannelNodeChild(guidNode, aResData);
@@ -131,29 +132,11 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 		m_aChannelNodeListPublic.Add(stuChannelNode.guidRes);
 		m_pChannelNodeListPublic->InsertString(l, stuChannelNode.cNodeName);	
 	}	
-	//channel
-	//guidNode = guidPublicChannelNode;
-	//aResData.RemoveAll();
-	//g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
-	//for (int l = 0 ; l < aResData.GetSize(); l++)
-	//{
-	//	TPChannelData stuChannel;
-	//	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
-	//	m_aChannelListPublic.Add(stuChannel.guidRes);
-	//	m_pChannelListPublic->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
-	//}	
-	////article
-	//guidNode = guidPrivateChannelNode;
-	//aResData.RemoveAll();
-	//g_stuArticleInterface.stuChannelNodeInterface.TP_GetChildRes(guidNode, aResData);
-	//for (int l = 0 ; l < aResData.GetSize(); l++)
-	//{
-	//	TPChannelData stuChannel;
-	//	g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
-	//	m_aChannelList.Add(stuChannel.guidRes);
-	//	m_pChannelList->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
-	//}
-	//
+
+	//article
+	ResetChannelContent(guidPrivateChannelNode, m_pChannelList, m_aChannelList);
+
+	
 	
 	////////////////////////////////////////////////////////////////////////////rss test
 
@@ -244,7 +227,15 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 	sChannelUrl = sChannelUrl.Trim();
 	sChannelKeyDiv = sChannelKeyDiv.Trim();
 
-	AddChannel(guidPublicChannelNode,sChannelUrl,sChannelKeyDiv );
+	if(m_pChannelNodeListPublic)
+	{
+		int iSel = m_pChannelNodeListPublic->GetCurSel();
+		if(iSel<0 || m_aChannelNodeListPublic.GetSize() <= iSel) return;
+
+		TPChannelNodeData stuChannelNode;
+		g_stuArticleInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(m_aChannelNodeListPublic[iSel],stuChannelNode);
+		AddChannel(stuChannelNode,sChannelUrl,sChannelKeyDiv );
+	}
 }
 
 void CTPArticleMainDlg::OnCbnSelChannelList()
@@ -301,6 +292,21 @@ void CTPArticleMainDlg::OnCbnSelChannelList()
 		g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(m_aChannelList[iSel],stuChannel);
 	}
 }
+void CTPArticleMainDlg::OnCbnSelChannelNodeList()
+{
+	if(m_pChannelNodeListPublic)
+	{
+		int iSel = m_pChannelNodeListPublic->GetCurSel();
+		if(iSel<0 || m_aChannelNodeListPublic.GetSize() <= iSel) return;
+
+
+		TPChannelNodeData stuChannelNode;
+		g_stuArticleInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(m_aChannelNodeListPublic[iSel],stuChannelNode);
+		//AfxMessageBox(stuChannel.stuChannelBase.cChannelTitle);
+
+		ResetChannelContent(stuChannelNode.guidRes, m_pChannelListPublic, m_aChannelListPublic);
+	}
+}
 void CTPArticleMainDlg::OnCbnSelArticleList()
 {
 	ASSERT(0);
@@ -338,12 +344,18 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel2()
 		int iSel = m_pChannelListPublic->GetCurSel();
 		if(iSel<0 || m_aChannelListPublic.GetSize() <= iSel) return;
 
+		TPChannelNodeData stuChannelNode;
+		g_stuArticleInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(guidPrivateChannelNode,stuChannelNode);
+
 		TPChannelData stuChannel;
 		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(m_aChannelListPublic[iSel],stuChannel);
-		AddChannel(guidPrivateChannelNode, stuChannel.stuChannelBase.cChannelAddress,stuChannel.cKeyDiv);
+		AddChannel(stuChannelNode, stuChannel.stuChannelBase.cChannelAddress,stuChannel.cKeyDiv);
+
+		ResetChannelContent(guidPrivateChannelNode, m_pChannelList, m_aChannelList);
+
 	}
 }
-void CTPArticleMainDlg::AddChannel(GUID guidChannelNode,CString sChannelUrl,CString sChannelKeyDiv)
+void CTPArticleMainDlg::AddChannel(TPChannelNodeData &stuChannelNode,CString sChannelUrl,CString sChannelKeyDiv)
 {
 	if(sChannelUrl.IsEmpty() || sChannelKeyDiv.IsEmpty())
 	{
@@ -362,12 +374,18 @@ void CTPArticleMainDlg::AddChannel(GUID guidChannelNode,CString sChannelUrl,CStr
 	CTPChannelParser stuChannelParser;
 	stuChannelParser.SetChannelAddress(cAddress);
 	stuChannelParser.GetChannelInfo(pChannelInfo);
+	if(g_stuArticleInterface.stuChannelInterface.TP_IsChannelExist(stuChannelNode.guidRes, pChannelInfo))
+	{
+		AfxMessageBox(_T("Already exist!"));
+		return ;
+
+	}
 
 	TPChannelData stuChannel;
 	CoCreateGuid(&stuChannel.guidRes);
-	stuChannel.guidNode = guidChannelNode;
+	stuChannel.guidNode = stuChannelNode.guidRes;
 	TP_StrCpy(stuChannel.cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
-	stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
+	stuChannel.eNodeType = stuChannelNode.eNodeType;
 	stuChannel.stuChannelBase = *pChannelInfo;
 	//	stuChannel.AppendUpdateItem();
 	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
@@ -375,4 +393,19 @@ void CTPArticleMainDlg::AddChannel(GUID guidChannelNode,CString sChannelUrl,CStr
 
 	if(cAddress)	{delete cAddress; cAddress = NULL;}
 	if(cKeyDiv)		{delete cKeyDiv; cKeyDiv = NULL;}
+}
+void CTPArticleMainDlg::ResetChannelContent(GUID guidChannelNode, CTPComboBox *pChannel,	CGuidArray   &aChannelListPublic)
+{
+	pChannel->ResetContent();
+	aChannelListPublic.RemoveAll();
+
+	TPResDataArray aResData;
+	g_stuArticleInterface.stuChannelInterface.TP_GetChannelChild(guidChannelNode, aResData);
+	for (int l = 0 ; l < aResData.GetSize(); l++)
+	{
+		TPChannelData stuChannel;
+		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(aResData[l].guidRes,stuChannel);
+		aChannelListPublic.Add(stuChannel.guidRes);
+		pChannel->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
+	}
 }

@@ -109,6 +109,16 @@ LRESULT  TP_GetChannelNodeChild(GUID guidRes, TPResDataArray &hChildRes)
 	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChannelNodeChild(guidRes, hChildRes);
 	return S_OK;
 }
+LRESULT  TP_GetChannelChild(GUID guidRes, TPResDataArray &hChildRes)
+{
+	g_stuArticleIOPluginInterface.stuChannelInterface.TP_GetChannelChild(guidRes, hChildRes);
+	return S_OK;
+}
+BOOL  TP_IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo)
+{
+	g_stuArticleIOPluginInterface.stuChannelInterface.TP_IsChannelExist(guidChannelNode, pChannelInfo);
+	return S_OK;
+}
 
 LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)
 {
@@ -122,6 +132,8 @@ LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)
 	pInterface->stuChannelInterface.TP_GetChannelInfo = TP_GetChannelInfo;
 	pInterface->stuChannelInterface.TP_SetChannelInfo = TP_SetChannelInfo;
 	pInterface->stuChannelInterface.TP_DelChannelInfo = TP_DelChannelInfo;
+	pInterface->stuChannelInterface.TP_GetChannelChild = TP_GetChannelChild;
+	pInterface->stuChannelInterface.TP_IsChannelExist = TP_IsChannelExist;
 
 	//Article
 	pInterface->stuArticleInterfce.TP_GetArticleInfo = TP_GetArticleInfo;

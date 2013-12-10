@@ -20,9 +20,12 @@ public:
 	LRESULT GetChannelNodeChild(GUID guidRes, TPResDataArray &hChildRes);
 
 	//Channel
+	LRESULT ReadChannel(CString  sFileName,TPChannelData &stuChannelData);
 	LRESULT ReadChannel(GUID guidRes,TPChannelData &stuChannelData);
 	LRESULT WriteChannel(GUID guidRes,TPChannelData &stuChannelData);
-	LRESULT GetChannelRes(GUID guidRes, TPResDataArray &hChildRes);
+	LRESULT GetChannelChild(GUID guidRes, TPResDataArray &hChildRes);
+	BOOL    IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo);
+
 	//Article
 	LRESULT ReadArticle(GUID guidRes,TPArticleData &stuArticleData);
 	LRESULT WriteArticle(GUID guidRes,TPArticleData &stuArticleData);

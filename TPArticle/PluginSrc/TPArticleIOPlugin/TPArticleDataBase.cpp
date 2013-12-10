@@ -76,10 +76,11 @@ LRESULT CTPArticleDataBase::WriteArticle(GUID guidRes,TPArticleData &stuArticleD
 	return S_OK;
 }
 
-LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelData)
+LRESULT CTPArticleDataBase::ReadChannel(CString  sFileName,TPChannelData &stuChannelData)
 {
+	if(sFileName.IsEmpty())	return  S_FALSE;
+
 	DWORD dwSize = 0;
-	CString  sFileName = GetResFilePath(guidRes, TP_RES_CHANNEL, &stuChannelData);
 
 	CTPMemFile hMemFile;
 	hMemFile.ReadFile(sFileName);
@@ -113,7 +114,13 @@ LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelDa
 
 	//
 	hMemFile.Close();
+	return S_OK;
+}
+LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelData)
+{
+	CString  sFileName = GetResFilePath(guidRes, TP_RES_CHANNEL, &stuChannelData);
 
+	ReadChannel(sFileName, stuChannelData);
 	return S_OK;
 }
 LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelData)
@@ -227,7 +234,7 @@ LRESULT CTPArticleDataBase::GetChannelNodeChild(GUID guidRes, TPResDataArray &hC
 	m_aChannelNodeFileName.Unlock();
 	return S_OK;
 }
-LRESULT CTPArticleDataBase::GetChannelRes(GUID guidRes, TPResDataArray &hChildRes)
+LRESULT CTPArticleDataBase::GetChannelChild(GUID guidRes, TPResDataArray &hChildRes)
 {
 	hChildRes.RemoveAll();
 	CString sCatalog  = TP_UuidToString(&guidRes);
@@ -401,4 +408,27 @@ BOOL CTPArticleDataBase::CreateDefChannelNode(TCHAR *cName, TP_CHANNEL_NODETYPE 
 	TP_StrCpy(stuChannelNode.cNodeName, cName,MAX_PATH);
 	WriteChannelNode(stuChannelNode.guidRes, stuChannelNode);
 	return TRUE;
+}
+
+BOOL CTPArticleDataBase::IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo)
+{
+	CString sCatalog  = TP_UuidToString(&guidChannelNode);
+	CString sFileName,sGuid;
+	POSITION posGet = NULL;
+	m_aChannelFileName.Lock();
+	posGet = m_aChannelFileName.GetStartPosition();
+	while (posGet)
+	{
+		m_aChannelFileName.GetNextAssoc(posGet,sGuid,sFileName);
+		if(sFileName.Find(sCatalog)>0) 
+		{
+			TPChannelData stuChannel;
+			ReadChannel(sFileName, stuChannel);
+			if((TP_StrCmp(pChannelInfo->cChannelTitle, stuChannel.stuChannelBase.cChannelTitle) == 0)
+				|| (TP_StrCmp(pChannelInfo->cChannelLink, stuChannel.stuChannelBase.cChannelLink) == 0))
+				return TRUE;
+		}
+	}
+	m_aChannelFileName.Unlock();
+	return FALSE;
 }

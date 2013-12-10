@@ -492,6 +492,8 @@ typedef struct _tagTPChannelInterface
 	LRESULT  (*TP_GetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
 	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
 	LRESULT  (*TP_DelChannelInfo)(GUID guidRes);
+	LRESULT  (*TP_GetChannelChild)(GUID guidRes, TPResDataArray &hChildRes);
+	BOOL     (*TP_IsChannelExist)(GUID guidChannelNode, TPChannelBase *pChannelInfo);
 
 	_tagTPChannelInterface()
 	{
@@ -559,6 +561,8 @@ typedef struct _tagTPChannelPluginInterface
 	LRESULT  (*TP_GetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
 	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
 	LRESULT  (*TP_DelChannelInfo)(GUID guidRes);
+	LRESULT  (*TP_GetChannelChild)(GUID guidRes, TPResDataArray &hChildRes);
+	BOOL     (*TP_IsChannelExist)(GUID guidChannelNode, TPChannelBase *pChannelInfo);
 
 }TPChannelPluginInterface;
 
