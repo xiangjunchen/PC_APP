@@ -57,62 +57,51 @@ LRESULT TP_ReleaseData(void *pData)
 }
 LRESULT  TP_GetChannelInfo(GUID guidRes,TPChannelData &stuChannelData) 
 {
-	g_stuArticleIOPluginInterface.stuChannelInterface.TP_GetChannelInfo(guidRes,stuChannelData);
-	return S_OK;
+	return g_stuArticleIOPluginInterface.stuChannelInterface.TP_GetChannelInfo(guidRes,stuChannelData);
 }
 LRESULT  TP_SetChannelInfo(GUID guidRes,TPChannelData &stuChannelData)
 {
-	g_stuArticleIOPluginInterface.stuChannelInterface.TP_SetChannelInfo(guidRes,stuChannelData);
-	return S_OK;
+	return 	g_stuArticleIOPluginInterface.stuChannelInterface.TP_SetChannelInfo(guidRes,stuChannelData);
 }
 
 LRESULT  TP_DelChannelInfo(GUID guidRes)
 {
-	g_stuArticleIOPluginInterface.stuChannelInterface.TP_DelChannelInfo(guidRes);
-	return S_OK;
+	return g_stuArticleIOPluginInterface.stuChannelInterface.TP_DelChannelInfo(guidRes);
 }
 LRESULT  TP_GetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade, TPArticleData &stuArticleData) 
 {
-	g_stuArticleIOPluginInterface.stuArticleInterface.TP_GetArticleInfo(guidRes,eClipGrade,stuArticleData);
-	return S_OK;
+	return 	g_stuArticleIOPluginInterface.stuArticleInterface.TP_GetArticleInfo(guidRes,eClipGrade,stuArticleData);
 }
 LRESULT  TP_SetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade, TPArticleData &stuArticleData)
 {
-	g_stuArticleIOPluginInterface.stuArticleInterface.TP_SetArticleInfo(guidRes,eClipGrade,stuArticleData);
-	return S_OK;
+	return g_stuArticleIOPluginInterface.stuArticleInterface.TP_SetArticleInfo(guidRes,eClipGrade,stuArticleData);
 }
 
 LRESULT  TP_DelArticleInfo(GUID guidRes)
 {
-	g_stuArticleIOPluginInterface.stuArticleInterface.TP_DelArticleInfo(guidRes);
-	return S_OK;
+	return g_stuArticleIOPluginInterface.stuArticleInterface.TP_DelArticleInfo(guidRes);
 }
 LRESULT  TP_GetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode) 
 {
-	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(guidRes,stuChannelNode);
-	return S_OK;
+	return 	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(guidRes,stuChannelNode);
 }
 LRESULT  TP_SetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode)
 {
-	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_SetChannelNodeInfo(guidRes,stuChannelNode);
-	return S_OK;
+	return g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_SetChannelNodeInfo(guidRes,stuChannelNode);
 }
 
 LRESULT  TP_DelChannelNodeInfo(GUID guidRes)
 {
-	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_DelChannelNodeInfo(guidRes);
-	return S_OK;
+	return g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_DelChannelNodeInfo(guidRes);
 }
 
 LRESULT  TP_GetChannelNodeChild(GUID guidRes, TPResDataArray &hChildRes)
 {
-	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChannelNodeChild(guidRes, hChildRes);
-	return S_OK;
+	return g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChannelNodeChild(guidRes, hChildRes);
 }
 LRESULT  TP_GetChannelChild(GUID guidRes, TPResDataArray &hChildRes)
 {
-	g_stuArticleIOPluginInterface.stuChannelInterface.TP_GetChannelChild(guidRes, hChildRes);
-	return S_OK;
+	return g_stuArticleIOPluginInterface.stuChannelInterface.TP_GetChannelChild(guidRes, hChildRes);
 }
 BOOL  TP_IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo)
 {

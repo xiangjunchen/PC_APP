@@ -357,7 +357,7 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel2()
 }
 void CTPArticleMainDlg::AddChannel(TPChannelNodeData &stuChannelNode,CString sChannelUrl,CString sChannelKeyDiv, TP_CHANNEL_NODETYPE eNodeType)
 {
-	if(sChannelUrl.IsEmpty() || sChannelKeyDiv.IsEmpty())
+	if(sChannelUrl.IsEmpty()/* || sChannelKeyDiv.IsEmpty()*/)
 	{
 		AfxMessageBox(_T("Add Failed!"));
 		return ;

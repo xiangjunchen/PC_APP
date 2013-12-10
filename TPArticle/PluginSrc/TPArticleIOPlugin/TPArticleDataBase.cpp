@@ -12,6 +12,8 @@ LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TPArticleData &stuArticleDa
 {
 	DWORD dwSize = 0;
 	CString  sFileName = GetResFilePath(guidRes, TP_RES_ARTICLE, &stuArticleData);
+	if(!PathFileExists(sFileName))	return S_FALSE;
+
 	CTPMemFile hMemFile;
 	hMemFile.ReadFile(sFileName);
 	DWORD dwTemp = 0;

@@ -18,13 +18,11 @@ LRESULT TP_GetProcessName(LPTSTR &strManageName)
 
 LRESULT  TP_GetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData) 
 {
-	g_stuArticleDataBase.ReadArticle(guidRes, stuArtData);
-	return S_OK;
+	return g_stuArticleDataBase.ReadArticle(guidRes, stuArtData);
 }
 LRESULT  TP_SetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData)
 {
-	g_stuArticleDataBase.WriteArticle(guidRes, stuArtData);
-	return S_OK;
+	return 	g_stuArticleDataBase.WriteArticle(guidRes, stuArtData);
 }
 
 LRESULT  TP_DelArticleInfo(GUID guidRes)
@@ -34,13 +32,11 @@ LRESULT  TP_DelArticleInfo(GUID guidRes)
 
 LRESULT  TP_GetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode) 
 {
-	g_stuArticleDataBase.ReadChannelNode(guidRes, stuChannelNode);
-	return S_OK;
+	return 	g_stuArticleDataBase.ReadChannelNode(guidRes, stuChannelNode);
 }
 LRESULT  TP_SetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode)
 {
-	g_stuArticleDataBase.WriteChannelNode(guidRes, stuChannelNode);
-	return S_OK;
+	return 	g_stuArticleDataBase.WriteChannelNode(guidRes, stuChannelNode);
 }
 
 LRESULT  TP_DelChannelNodeInfo(GUID guidRes)
@@ -50,13 +46,11 @@ LRESULT  TP_DelChannelNodeInfo(GUID guidRes)
 
 LRESULT  TP_GetChannelInfo(GUID guidRes,TPChannelData &stuChannelData) 
 {
-	g_stuArticleDataBase.ReadChannel(guidRes, stuChannelData);
-	return S_OK;
+	return 	g_stuArticleDataBase.ReadChannel(guidRes, stuChannelData);
 }
 LRESULT  TP_SetChannelInfo(GUID guidRes,TPChannelData &stuChannelData)
 {
-	g_stuArticleDataBase.WriteChannel(guidRes, stuChannelData);
-	return S_OK;
+	return 	g_stuArticleDataBase.WriteChannel(guidRes, stuChannelData);
 }
 
 LRESULT  TP_DelChannelInfo(GUID guidRes)
@@ -80,14 +74,12 @@ LRESULT  TP_DelCommentInfo(GUID guidRes)
 
 LRESULT  TP_GetChannelNodeChild(GUID guidRes, TPResDataArray &hChildRes)
 {
-	g_stuArticleDataBase.GetChannelNodeChild(guidRes, hChildRes);
-	return S_OK;
+	return 	g_stuArticleDataBase.GetChannelNodeChild(guidRes, hChildRes);
 }
 
 LRESULT  TP_GetChannelChild(GUID guidRes, TPResDataArray &hChildRes)
 {
-	g_stuArticleDataBase.GetChannelChild(guidRes, hChildRes);
-	return S_OK;
+	return 	g_stuArticleDataBase.GetChannelChild(guidRes, hChildRes);
 }
 BOOL  TP_IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo)
 {
@@ -154,6 +146,10 @@ LRESULT TP_InitData(void *pData)
 			TCHAR szTech[MAX_PATH] = _T("科技");
 			eNodeType = TP_CHANNEL_SYSTEM|TP_CHANNEL_TECH;
 			g_stuArticleDataBase.CreateDefChannelNode(guidPublicTechChannelNode,guidPublicChannelNode,szTech, eNodeType);
+
+			TCHAR szLife[MAX_PATH] = _T("生活");
+			eNodeType = TP_CHANNEL_SYSTEM|TP_CHANNEL_LIFE;
+			g_stuArticleDataBase.CreateDefChannelNode(guidPublicLifeChannelNode,guidPublicChannelNode,szLife, eNodeType);
 
 			TCHAR szUser[MAX_PATH];
 			ULONG uLength = MAX_PATH;	

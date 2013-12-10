@@ -66,6 +66,8 @@ BOOL CTPChannelParser::ParserChannel(const TCHAR *cFileName)
 		MSXML2::IXMLDOMNodePtr ChildNode;
 		ChildNode = pObjectNodeList->Getitem(j);
 		ChildNode->get_baseName(&nameString);
+		if(nameString == NULL)	continue;
+
 		if(TP_StrCmp(nameString, _T("rss"))==0)
 		{
 			MSXML2::IXMLDOMNodeListPtr pRSSNodeList;
@@ -95,10 +97,10 @@ BOOL CTPChannelParser::ParserChannel(const TCHAR *cFileName)
 		{
 			//ASSERT(0);
 		}
-		else
-		{
-			ASSERT(0);
-		}
+// 		else
+// 		{
+// 			ASSERT(0);
+// 		}
 	}
 	return TRUE;
 }
@@ -296,17 +298,25 @@ int CTPArticleParser::GetItemInfo(TCHAR *&cItemText)
 {
 	if(!m_pChannelItem || TP_StrLen(m_pChannelItem->cItemLink) <= 0)	return 0;
 
-	TCHAR cXMLPath[MAX_PATH];
-	::GetModuleFileName(NULL,cXMLPath,MAX_PATH);
-	PathRemoveFileSpec(cXMLPath);	
-	lstrcat(cXMLPath,_T("\\temp.html"));
+	CString sArticle = _T("");
+	if(TP_StrLen(m_cKeyDiv) <= 0)
+	{
+		sArticle = m_pChannelItem->cItemDescription; 
+	}
+	else
+	{
+		TCHAR cXMLPath[MAX_PATH];
+		::GetModuleFileName(NULL,cXMLPath,MAX_PATH);
+		PathRemoveFileSpec(cXMLPath);	
+		lstrcat(cXMLPath,_T("\\temp.html"));
 
-	CTPDownloadHttp stuDownload;
-	stuDownload.SetHttpUrl(m_pChannelItem->cItemLink, cXMLPath);
-	stuDownload.Download();
+		CTPDownloadHttp stuDownload;
+		stuDownload.SetHttpUrl(m_pChannelItem->cItemLink, cXMLPath);
+		stuDownload.Download();
 
-	CString sArticle = GetHtmlString(cXMLPath);
-	ParserHtml(sArticle);
+		sArticle = GetHtmlString(cXMLPath);
+		ParserHtml(sArticle);
+	}
 
 	int nLength = sArticle.GetLength();
 	TP_StrCpy(m_cItemText, sArticle.GetBuffer(),sArticle.GetLength());
