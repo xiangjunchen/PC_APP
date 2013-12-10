@@ -426,3 +426,9 @@ BOOL CTPArticleDataBase::IsChannelExist(GUID guidChannelNode, TPChannelBase *pCh
 	m_aChannelFileName.Unlock();
 	return FALSE;
 }
+
+CString CTPArticleDataBase::GetCurArticleHtmlPath()
+{
+	CString sHtmlPath = TP_GetSysPath() + _T("\\Temp\\Html\\Cur.html");
+	return sHtmlPath;
+}

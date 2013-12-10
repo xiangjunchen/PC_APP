@@ -83,8 +83,9 @@ END_MESSAGE_MAP()
 
 
 // CTPArticleMainDlg message handlers
-void CTPArticleMainDlg::AdjustHtml()
+void CTPArticleMainDlg::AdjustHtml(CString sHtml)
 {
+	if(sHtml.IsEmpty() || !PathFileExists(sHtml))	return ;
 	CRect rc;
 	GetDlgItem(IDC_STATIC_ARTICLETEXT)->GetWindowRect(&rc);
 	this->ScreenToClient(&rc);
@@ -104,7 +105,7 @@ void CTPArticleMainDlg::AdjustHtml()
 	{
 		m_pHtmlCtrl->MoveWindow(rc,FALSE);
 	}
-	m_pHtmlCtrl->Navigate2(_T("\\about.htm"));
+	m_pHtmlCtrl->Navigate2(sHtml);
 
 }
 BOOL CTPArticleMainDlg::OnInitDialog()
@@ -118,9 +119,10 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	m_pArticleList = (CTPListCtrl *)GetDlgItem(IDC_LIST_ARTICLE); 
 	m_pArticleList->InsertColumn(0, _T("Article Title"), LVCFMT_LEFT,500);	
 
-	AdjustHtml();
 	TP_InitArticleCenter();
 
+	CString sFileName = g_stuArticleInterface.stuArticleInterfce.TP_GetCurArticleHtmlPath();
+	AdjustHtml(sFileName);
 	//public channelNode
 	GUID guidNode = guidPublicChannelNode;
 	TPResDataArray aResData;
@@ -326,17 +328,9 @@ void CTPArticleMainDlg::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 					//m_pArticleList->GetItemData(iCurIndex);
 					TPArticleData stuArticle;
 					g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(m_aArticleList[iCurIndex],TP_GRADE_ALL,stuArticle);
-
-					CFile file;
-					if(!file.Open(_T("E:\\about.htm"),CFile::modeCreate | CFile::modeWrite | CFile::typeBinary)) return ;
-					char *name=NULL;
-					DWORD n=WideCharToMultiByte(CP_OEMCP,NULL,stuArticle.cText,-1,NULL,0,NULL,FALSE);
-					name=new char[n];
-					WideCharToMultiByte(CP_OEMCP,NULL,stuArticle.cText,-1,name,n,NULL,FALSE);
-					file.Write(name,n);
-					file.Close();
-					if(name)	{delete name; name = NULL;}
-					AdjustHtml();
+					CString sFileName = g_stuArticleInterface.stuArticleInterfce.TP_GetCurArticleHtmlPath();
+					CTPArticleParser::SaveHtml(sFileName, stuArticle.cText);
+					AdjustHtml(sFileName);
 				}
 			}
 		}

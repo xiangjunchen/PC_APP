@@ -29,6 +29,10 @@ LRESULT  TP_DelArticleInfo(GUID guidRes)
 {
 	return S_OK;
 }
+CString  TP_GetCurArticleHtmlPath()
+{
+	return 	g_stuArticleDataBase.GetCurArticleHtmlPath();
+}
 
 LRESULT  TP_GetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode) 
 {
@@ -91,6 +95,7 @@ LRESULT TP_GetPlugInFunction(TPArticleIOPluginInterface *pInterface)
 	pInterface->stuArticleInterface.TP_GetArticleInfo = TP_GetArticleInfo;
 	pInterface->stuArticleInterface.TP_SetArticleInfo = TP_SetArticleInfo;
 	pInterface->stuArticleInterface.TP_DelArticleInfo = TP_DelArticleInfo;
+	pInterface->stuArticleInterface.TP_GetCurArticleHtmlPath = TP_GetCurArticleHtmlPath;
 
 	//ChannelNode
  	pInterface->stuChannelNodeInterface.TP_GetChannelNodeChild = TP_GetChannelNodeChild;

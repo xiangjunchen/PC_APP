@@ -33,7 +33,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	void AdjustHtml();
+	void AdjustHtml(CString sHtml);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedButtonAddchannel();

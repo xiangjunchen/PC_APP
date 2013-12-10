@@ -81,6 +81,11 @@ LRESULT  TP_DelArticleInfo(GUID guidRes)
 {
 	return g_stuArticleIOPluginInterface.stuArticleInterface.TP_DelArticleInfo(guidRes);
 }
+CString  TP_GetCurArticleHtmlPath()
+{
+	return g_stuArticleIOPluginInterface.stuArticleInterface.TP_GetCurArticleHtmlPath();
+}
+
 LRESULT  TP_GetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode) 
 {
 	return 	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(guidRes,stuChannelNode);
@@ -127,6 +132,8 @@ LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)
 	pInterface->stuArticleInterfce.TP_GetArticleInfo = TP_GetArticleInfo;
 	pInterface->stuArticleInterfce.TP_SetArticleInfo = TP_SetArticleInfo;
 	pInterface->stuArticleInterfce.TP_DelArticleInfo = TP_DelArticleInfo;
+	pInterface->stuArticleInterfce.TP_GetCurArticleHtmlPath = TP_GetCurArticleHtmlPath;
+
 	return S_OK;
 }
 void TP_GetManageProcess(TPArticleManageProcess *pstuProcess)

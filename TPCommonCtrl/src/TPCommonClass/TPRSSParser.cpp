@@ -344,7 +344,31 @@ BOOL	CTPArticleParser::ParserHtml(CString &sHtmlStr)
 // 	{
 	return TRUE;
 }
+BOOL CTPArticleParser::SaveHtml(const TCHAR *cFileName, const TCHAR *cHtml)
+{
+	CFile file;
+	try
+	{
+		if(!file.Open(cFileName,CFile::modeCreate | CFile::modeWrite | CFile::typeBinary)) return FALSE;
+		char *name=NULL;
+		DWORD n=WideCharToMultiByte(CP_OEMCP,NULL,cHtml,-1,NULL,0,NULL,FALSE);
+		name=new char[n];
+		WideCharToMultiByte(CP_OEMCP,NULL,cHtml,-1,name,n,NULL,FALSE);
+		file.Write(name,n);
+		file.Close();
 
+		if(name)	{delete name; name = NULL;}
+	}
+	catch (CFileException* e)
+	{
+		file.Close();
+		TCHAR szError[1024];
+		e->GetErrorMessage(szError, 1024);
+		CString str = szError;
+		return FALSE;
+	}
+	return TRUE;
+}
 CString CTPArticleParser::GetHtmlString(const TCHAR *cFileName)
 {
 	CString sHtmlStr = _T("");

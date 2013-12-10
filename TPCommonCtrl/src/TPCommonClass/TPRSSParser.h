@@ -72,6 +72,7 @@ public:
 public:
 	int	SetChannelItem(TPChannelItem *pChannelItem, TCHAR *cKeyDiv);
 	int GetItemInfo(TCHAR *&cItemText);
+	static BOOL SaveHtml(const TCHAR *cFileName, const TCHAR *cHtml);
 
 private:
 	//BOOL ParserChannel(const TCHAR *cFileName);

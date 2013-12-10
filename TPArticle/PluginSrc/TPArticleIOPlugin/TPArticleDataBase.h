@@ -29,7 +29,7 @@ public:
 	//Article
 	LRESULT ReadArticle(GUID guidRes,TPArticleData &stuArticleData);
 	LRESULT WriteArticle(GUID guidRes,TPArticleData &stuArticleData);
-	
+	CString GetCurArticleHtmlPath();	
 	//base
 	CTPMapStringToString *GetMap(TP_RES_TYPE eResType);
 	LRESULT InitFileMap();

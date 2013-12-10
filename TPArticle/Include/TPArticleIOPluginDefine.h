@@ -513,6 +513,7 @@ typedef struct _tagTPArticleInterface
 	LRESULT  (*TP_GetArticleInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade, TPArticleData &stuArticleData); //
 	LRESULT  (*TP_SetArticleInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade, TPArticleData &stuArticleData); //
 	LRESULT  (*TP_DelArticleInfo)(GUID guidRes);
+	CString  (*TP_GetCurArticleHtmlPath)(); //
 
 	_tagTPArticleInterface()
 	{
@@ -559,6 +560,7 @@ typedef struct _tagTPArticlePluginInterface
 	LRESULT  (*TP_GetArticleInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData); //
 	LRESULT  (*TP_SetArticleInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData); //
 	LRESULT  (*TP_DelArticleInfo)(GUID guidRes);
+	CString  (*TP_GetCurArticleHtmlPath)();
 
 }TPArticlePluginInterface;
 
