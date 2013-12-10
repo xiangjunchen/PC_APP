@@ -391,19 +391,11 @@ CTPMapStringToString *CTPArticleDataBase::GetMap(TP_RES_TYPE eResType)
 
 	return p_aMap;
 }
-BOOL CTPArticleDataBase::CreateDefChannelNode(TCHAR *cName, TP_CHANNEL_NODETYPE eNodeType, GUID guidNode)
+BOOL CTPArticleDataBase::CreateDefChannelNode(GUID guidRes, GUID guidNode, TCHAR *cName, TP_CHANNEL_NODETYPE eNodeType)
 {
 	TPChannelNodeData stuChannelNode;
-	if(eNodeType & TP_CHANNEL_SYSTEM)
-	{
-		CoCreateGuid(&stuChannelNode.guidRes);
-		stuChannelNode.guidNode  = guidNode;
-	}
-	else
-	{
-		stuChannelNode.guidRes  = guidNode;
-		stuChannelNode.guidNode = GUID_NULL;
-	}
+	stuChannelNode.guidRes = guidRes;
+	stuChannelNode.guidNode = guidNode;
 	stuChannelNode.eNodeType = eNodeType;
 	TP_StrCpy(stuChannelNode.cNodeName, cName,MAX_PATH);
 	WriteChannelNode(stuChannelNode.guidRes, stuChannelNode);

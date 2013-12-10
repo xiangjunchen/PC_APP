@@ -149,17 +149,17 @@ LRESULT TP_InitData(void *pData)
 
 			TCHAR szSport[MAX_PATH] = _T("体育");
 			TP_CHANNEL_NODETYPE eNodeType = TP_CHANNEL_SYSTEM|TP_CHANNEL_SPORT;
-			g_stuArticleDataBase.CreateDefChannelNode(szSport, eNodeType,guidPublicChannelNode);
+			g_stuArticleDataBase.CreateDefChannelNode(guidPublicSportChannelNode,guidPublicChannelNode,szSport, eNodeType);
 
 			TCHAR szTech[MAX_PATH] = _T("科技");
 			eNodeType = TP_CHANNEL_SYSTEM|TP_CHANNEL_TECH;
-			g_stuArticleDataBase.CreateDefChannelNode(szTech, eNodeType,guidPublicChannelNode);
+			g_stuArticleDataBase.CreateDefChannelNode(guidPublicTechChannelNode,guidPublicChannelNode,szTech, eNodeType);
 
 			TCHAR szUser[MAX_PATH];
 			ULONG uLength = MAX_PATH;	
  			::GetUserName(szUser,&uLength);
 			eNodeType = TP_CHANNEL_PERSON;
-			g_stuArticleDataBase.CreateDefChannelNode(szUser, eNodeType,guidPrivateChannelNode);
+			g_stuArticleDataBase.CreateDefChannelNode(guidPrivateChannelNode, GUID_NULL, szUser, eNodeType);
 		}
 		if(!PathFileExists(sFilePersonal + _T("\\Article")))
 		{

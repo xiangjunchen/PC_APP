@@ -376,6 +376,8 @@ void CTPArticleMainDlg::AddChannel(TPChannelNodeData &stuChannelNode,CString sCh
 	stuChannelParser.GetChannelInfo(pChannelInfo);
 	if(g_stuArticleInterface.stuChannelInterface.TP_IsChannelExist(stuChannelNode.guidRes, pChannelInfo))
 	{
+		if(cAddress)	{delete cAddress; cAddress = NULL;}
+		if(cKeyDiv)		{delete cKeyDiv; cKeyDiv = NULL;}
 		AfxMessageBox(_T("Already exist!"));
 		return ;
 

@@ -37,6 +37,6 @@ public:
 	CString GetResFilePath(GUID guidRes,TP_RES_TYPE eResType,void *pData);
 	CString ResTypeToExt(TP_RES_TYPE eResType);
 	CString ResTypeToFolderName(TP_RES_TYPE eResType);
-	BOOL    CreateDefChannelNode(TCHAR *cName, TP_CHANNEL_NODETYPE eNodeType, GUID guidNode);
+	BOOL    CreateDefChannelNode(GUID guidRes, GUID guidNode, TCHAR *cName, TP_CHANNEL_NODETYPE eNodeType);
 
 };

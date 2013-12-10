@@ -116,8 +116,7 @@ LRESULT  TP_GetChannelChild(GUID guidRes, TPResDataArray &hChildRes)
 }
 BOOL  TP_IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo)
 {
-	g_stuArticleIOPluginInterface.stuChannelInterface.TP_IsChannelExist(guidChannelNode, pChannelInfo);
-	return S_OK;
+	return g_stuArticleIOPluginInterface.stuChannelInterface.TP_IsChannelExist(guidChannelNode, pChannelInfo);
 }
 
 LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)
