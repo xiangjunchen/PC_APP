@@ -72,8 +72,9 @@ public:
 public:
 	int	SetChannelItem(TPChannelItem *pChannelItem, TCHAR *cKeyDiv);
 	int GetItemInfo(TCHAR *&cItemText);
-	static BOOL SaveHtml(const TCHAR *cFileName, const TCHAR *cHtml);
-
+	static BOOL SaveHtml(const TCHAR *cFileName, const TCHAR *cHtml, BOOL bApplyTemplate = TRUE);
+	static CString GetHtmlString(const TCHAR *cFileName);
+	static CString GetTemplateString(const TCHAR *cFileName,const TCHAR *cHtml);
 private:
 	//BOOL ParserChannel(const TCHAR *cFileName);
 	//BOOL ParserChannelNode(MSXML2::IXMLDOMNodePtr ChildNode);
@@ -81,7 +82,6 @@ private:
 	//BOOL ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode);
 
 	BOOL	ParserHtml(CString &sHtmlStr);
-	CString GetHtmlString(const TCHAR *cFileName);
 	BOOL	ReleaseItemInfo();
 
 };

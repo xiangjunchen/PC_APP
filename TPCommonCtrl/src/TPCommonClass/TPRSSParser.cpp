@@ -344,16 +344,38 @@ BOOL	CTPArticleParser::ParserHtml(CString &sHtmlStr)
 // 	{
 	return TRUE;
 }
-BOOL CTPArticleParser::SaveHtml(const TCHAR *cFileName, const TCHAR *cHtml)
+CString CTPArticleParser::GetTemplateString(const TCHAR *cFileName, const TCHAR *cHtml)
 {
+	CString sPatch = _T(""), sHtmlAll = _T("");
+	TCHAR cPath[MAX_PATH];
+	lstrcpy(cPath, cFileName);
+	PathRemoveFileSpec(cPath);	
+	sPatch  = cPath;
+	sPatch += _T("\\template1.html");
+	CString sTempHtml = GetHtmlString(sPatch);
+	int iBody = sTempHtml.Find(_T("</BODY>"));
+	int iLength = sTempHtml.GetLength();
+	if(iBody > 0)
+	{
+		sHtmlAll = sTempHtml.Left(iBody);
+		sHtmlAll += cHtml;
+		sHtmlAll += sTempHtml.Right(iLength - iBody);
+	}		
+	return sHtmlAll;
+}
+BOOL CTPArticleParser::SaveHtml(const TCHAR *cFileName, const TCHAR *cHtml, BOOL bApplyTemplate)
+{
+	CString sHtmlAll = cHtml;
+	if(bApplyTemplate)
+		sHtmlAll = GetTemplateString(cFileName, cHtml);
 	CFile file;
 	try
 	{
 		if(!file.Open(cFileName,CFile::modeCreate | CFile::modeWrite | CFile::typeBinary)) return FALSE;
 		char *name=NULL;
-		DWORD n=WideCharToMultiByte(CP_OEMCP,NULL,cHtml,-1,NULL,0,NULL,FALSE);
+		DWORD n=WideCharToMultiByte(CP_OEMCP,NULL,sHtmlAll,-1,NULL,0,NULL,FALSE);
 		name=new char[n];
-		WideCharToMultiByte(CP_OEMCP,NULL,cHtml,-1,name,n,NULL,FALSE);
+		WideCharToMultiByte(CP_OEMCP,NULL,sHtmlAll,-1,name,n,NULL,FALSE);
 		file.Write(name,n);
 		file.Close();
 
