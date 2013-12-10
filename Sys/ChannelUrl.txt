@@ -7,3 +7,6 @@ http://www.36kr.com/feed
 
 
 http://www.guokr.com/rss/
+
+
+http://feed.feedsky.com/qiushi
