@@ -234,7 +234,7 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel()
 
 		TPChannelNodeData stuChannelNode;
 		g_stuArticleInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(m_aChannelNodeListPublic[iSel],stuChannelNode);
-		AddChannel(stuChannelNode,sChannelUrl,sChannelKeyDiv );
+		AddChannel(stuChannelNode,sChannelUrl,sChannelKeyDiv,stuChannelNode.eNodeType);
 	}
 }
 
@@ -349,13 +349,13 @@ void CTPArticleMainDlg::OnBnClickedButtonAddchannel2()
 
 		TPChannelData stuChannel;
 		g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(m_aChannelListPublic[iSel],stuChannel);
-		AddChannel(stuChannelNode, stuChannel.stuChannelBase.cChannelAddress,stuChannel.cKeyDiv);
+		AddChannel(stuChannelNode, stuChannel.stuChannelBase.cChannelAddress,stuChannel.cKeyDiv,stuChannel.eNodeType);
 
 		ResetChannelContent(guidPrivateChannelNode, m_pChannelList, m_aChannelList);
 
 	}
 }
-void CTPArticleMainDlg::AddChannel(TPChannelNodeData &stuChannelNode,CString sChannelUrl,CString sChannelKeyDiv)
+void CTPArticleMainDlg::AddChannel(TPChannelNodeData &stuChannelNode,CString sChannelUrl,CString sChannelKeyDiv, TP_CHANNEL_NODETYPE eNodeType)
 {
 	if(sChannelUrl.IsEmpty() || sChannelKeyDiv.IsEmpty())
 	{
@@ -387,7 +387,7 @@ void CTPArticleMainDlg::AddChannel(TPChannelNodeData &stuChannelNode,CString sCh
 	CoCreateGuid(&stuChannel.guidRes);
 	stuChannel.guidNode = stuChannelNode.guidRes;
 	TP_StrCpy(stuChannel.cKeyDiv, sChannelKeyDiv.GetBuffer(), sChannelKeyDiv.GetLength());
-	stuChannel.eNodeType = stuChannelNode.eNodeType;
+	stuChannel.eNodeType = (stuChannelNode.eNodeType | (eNodeType&TP_CHANNEL_TYPEALL));
 	stuChannel.stuChannelBase = *pChannelInfo;
 	//	stuChannel.AppendUpdateItem();
 	g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);

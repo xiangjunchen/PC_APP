@@ -26,7 +26,7 @@ public:
 	CTPHtmlCtrl *m_pHtmlCtrl;
 	CGuidArray   m_aChannelList;
 	CGuidArray   m_aArticleList;
-	void AddChannel(TPChannelNodeData &stuChannelNode,CString sChannelUrl,CString sChannelKeyDiv);
+	void AddChannel(TPChannelNodeData &stuChannelNode,CString sChannelUrl,CString sChannelKeyDiv,TP_CHANNEL_NODETYPE eNodeType);
 	void ResetChannelContent(GUID guidChannelNode, CTPComboBox *pChannel,	CGuidArray   &aChannelListPublic);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
