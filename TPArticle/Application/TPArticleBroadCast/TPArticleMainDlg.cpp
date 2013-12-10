@@ -326,8 +326,17 @@ void CTPArticleMainDlg::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 					//m_pArticleList->GetItemData(iCurIndex);
 					TPArticleData stuArticle;
 					g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(m_aArticleList[iCurIndex],TP_GRADE_ALL,stuArticle);
-					AfxMessageBox(stuArticle.cText);
 
+					CFile file;
+					if(!file.Open(_T("E:\\about.htm"),CFile::modeCreate | CFile::modeWrite | CFile::typeBinary)) return ;
+					char *name=NULL;
+					DWORD n=WideCharToMultiByte(CP_OEMCP,NULL,stuArticle.cText,-1,NULL,0,NULL,FALSE);
+					name=new char[n];
+					WideCharToMultiByte(CP_OEMCP,NULL,stuArticle.cText,-1,name,n,NULL,FALSE);
+					file.Write(name,n);
+					file.Close();
+					if(name)	{delete name; name = NULL;}
+					AdjustHtml();
 				}
 			}
 		}
