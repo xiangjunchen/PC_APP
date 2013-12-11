@@ -33,10 +33,11 @@ BEGIN_MESSAGE_MAP(CTPArticleMainDlg, CTPDialog)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BUTTON_ADDCHANNEL, &CTPArticleMainDlg::OnBnClickedButtonAddchannel)
 	ON_CBN_SELENDOK(IDC_COMBO_CHANNELLIST, &CTPArticleMainDlg::OnCbnSelChannelList)
+	
 	ON_CBN_SELENDOK(IDC_COMBO_CHANNELNODELISTPUBLIC, &CTPArticleMainDlg::OnCbnSelChannelNodeList)
 	ON_CBN_SELENDOK(IDC_LIST_ARTICLE, &CTPArticleMainDlg::OnCbnSelArticleList)
-	ON_NOTIFY(NM_CLICK,IDC_LIST_ARTICLE,OnNMClick)
-	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
+// 	ON_NOTIFY(NM_CLICK,IDC_LIST_ARTICLE,OnNMClick)
+// 	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
 	ON_BN_CLICKED(IDC_BUTTON_ADDCHANNEL2, &CTPArticleMainDlg::OnBnClickedButtonAddchannel2)
 	ON_BN_CLICKED(IDC_BUTTON1, &CTPArticleMainDlg::OnBnClickedButton1)
 
@@ -45,31 +46,6 @@ END_MESSAGE_MAP()
 
 
 // CTPArticleMainDlg message handlers
-void CTPArticleMainDlg::AdjustHtml(CString sHtml)
-{
-	if(sHtml.IsEmpty() || !PathFileExists(sHtml))	return ;
-	CRect rc;
-	GetDlgItem(IDC_STATIC_ARTICLETEXT)->GetWindowRect(&rc);
-	this->ScreenToClient(&rc);
-
-// 	if(NULL == m_pHtmlCtrl)
-// 	{
-// 		m_pHtmlCtrl = new CTPHtmlCtrl;
-// 		m_pHtmlCtrl->Create(NULL,						 // class name
-// 			NULL,										 // title
-// 			(WS_CHILD | WS_VISIBLE ),					 // style
-// 			rc,											 // rectangle
-// 			this,									     // parent
-// 			IDC_STATIC_ARTICLETEXT,										 // control ID
-// 			NULL);									 // frame/doc context not used
-// 	}
-// 	else
-// 	{
-// 		m_pHtmlCtrl->MoveWindow(rc,FALSE);
-// 	}
-// 	m_pHtmlCtrl->Navigate2(sHtml);
-
-}
 BOOL CTPArticleMainDlg::OnInitDialog()
 {
 	CTPDialog::OnInitDialog();
@@ -79,8 +55,8 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	m_pChannelListPublic = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLISTPUBLIC);
 	m_pChannelNodeListPublic = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELNODELISTPUBLIC);
 
+	//List
 //	m_pArticleList = (CTPListCtrl *)GetDlgItem(IDC_LIST_ARTICLE); 
-
 	CRect rtArticleList;
 	GetDlgItem(IDC_LIST_ARTICLE)->GetWindowRect(&rtArticleList);
 	ScreenToClient(rtArticleList);
@@ -88,10 +64,11 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	m_pArticleList    =  new  CTPArticleListCtrl();	
 	m_pArticleList    -> Create(WS_BORDER | WS_CLIPCHILDREN | LVS_ICON | WS_CHILD | WS_VISIBLE | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE  ,rtArticleList,this,0); //modify by xjc
 //	m_pArticleList    ->SetWindowText(_L("ClipExplorer"));
-	m_pArticleList->m_iViewType = VIEWTYPE_REPORT;//VIEWTYPE_TEXTPICTURE;
+	m_pArticleList->m_iViewType = VIEWTYPE_TEXTPICTURE;//VIEWTYPE_REPORT;//;
 
 	m_pArticleList->InsertColumn(0, _T("Article Title"), LVCFMT_LEFT,500);	
-
+	m_pArticleList->m_pArticleMainDlg = this;
+	//
 	TP_InitArticleCenter();
 
 	CString sFileName = g_stuArticleInterface.stuArticleInterfce.TP_GetCurArticleHtmlPath();
@@ -108,58 +85,9 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 		m_pChannelNodeListPublic->InsertString(l, stuChannelNode.cNodeName);	
 	}	
 
-	//article
-	ResetChannelContent(guidPrivateChannelNode, m_pChannelList, m_aChannelList);
-
+	//private channelNode
+	ResetChannelContent(guidPrivateChannelNode, m_pChannelList, m_aChannelList);	
 	
-	
-	////////////////////////////////////////////////////////////////////////////rss test
-
-	//DWORD dwTick = GetTickCount();
-	//TCHAR cAddress[] = _T("http://www.huxiu.com/rss/0.xml");//;//_T("http://www.36kr.com/feed")
-	////TCHAR cAddress[] = _T("http://www.36kr.com/feed");//;//
-	//TCHAR cKeyDiv [] = _T("<div class=\"neirong-box\" id=\"neirong_box\">");
-	////TCHAR cKeyDiv [] = _T("<div class=\"mainContent sep-10\">");
-	//TPChannelBase *pChannelInfo = NULL;
-	//CTPChannelParser stuChannelParser;
-	//stuChannelParser.SetChannelAddress(cAddress);
-	//stuChannelParser.GetChannelInfo(pChannelInfo);
-
-	//TPChannelData stuChannel;
-	//CoCreateGuid(&stuChannel.guidRes);
-	//stuChannel.eNodeType = TP_CHANNEL_TECH|TP_CHANNEL_SYSTEM;
-	//stuChannel.stuChannelBase = *pChannelInfo;
-	//stuChannel.AppendUpdateItem();
-	//g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(stuChannel.guidRes,stuChannel);
-	//g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuChannel.guidRes,stuChannel);
-
-	//dwTick = GetTickCount() - dwTick;
-	//CString sTick = _T("");
-	//sTick.Format(_T("%d ms"), dwTick);
-	//AfxMessageBox(sTick);
-	//dwTick = GetTickCount();
-
-	//for (int l = 0 ; l < stuChannel.aChannelItemAll.GetSize(); l++)
-	//{
-	//	TCHAR *cItemText = NULL;
-	//	TPChannelItem *pItemInfo = NULL;
-	//	CTPArticleParser stuArticleParser;
-	//	stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], cKeyDiv);
-	//	stuArticleParser.GetItemInfo(cItemText);
-
-	//	TPArticleData stuArticle;
-	//	CoCreateGuid(&stuArticle.guidRes);
-	//	stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
-	//	TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
-	//	g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
-	//	g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
-	//}
-	//dwTick = GetTickCount() - dwTick;
-	//sTick = _T("");
-	//sTick.Format(_T("%d ms"), dwTick);
-	//AfxMessageBox(sTick);
-
-
 	//////////////////////////////////////////////////////////////////////////ctrl test
 	// 	CTPImgPreviewWnd *m_pImgPreWnd = new CTPImgPreviewWnd;
 	// 	m_pImgPreWnd->Create(0,pFrame,0);
@@ -170,11 +98,6 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	// 		m_pImgPreWnd->ShowWindow(SW_SHOW);
 	// 		m_pImgPreWnd->PreviewImg();		
 	// 	}
-
-
-	//////////////////////////////////////////////////////////////////////////
-	//
-	//////////////////////////////////////////////////////////////////////////
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -185,7 +108,6 @@ void CTPArticleMainDlg::OnDestroy()
 
 	if(m_pHtmlCtrl)
 	{
-		m_pHtmlCtrl->DestroyWindow();
 		delete m_pHtmlCtrl;
 		m_pHtmlCtrl = NULL;
 	}
@@ -266,6 +188,7 @@ void CTPArticleMainDlg::OnCbnSelArticleList()
 }
 void CTPArticleMainDlg::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	ASSERT(0);
 	if(m_pArticleList)
 	{
 		LPNMITEMACTIVATE pNMLV = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
@@ -369,6 +292,8 @@ void CTPArticleMainDlg::ResetChannelContent(GUID guidChannelNode, CTPComboBox *p
 		aChannelListPublic.Add(stuChannel.guidRes);
 		pChannel->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
 	}
+	pChannel->SetCurSel(0);
+	OnCbnSelChannelList();
 }
 void CTPArticleMainDlg::OnBnClickedButton1()
 {
@@ -384,5 +309,30 @@ void CTPArticleMainDlg::OnBnClickedButton1()
 	CString sFileName = g_stuArticleInterface.stuArticleInterfce.TP_GetCurArticleHtmlPath();
 
 	AdjustHtml(sFileName);
+
+}
+void CTPArticleMainDlg::AdjustHtml(CString sHtml)
+{
+	if(sHtml.IsEmpty() || !PathFileExists(sHtml))	return ;
+	CRect rc;
+	GetDlgItem(IDC_STATIC_ARTICLETEXT)->GetWindowRect(&rc);
+	this->ScreenToClient(&rc);
+
+	if(NULL == m_pHtmlCtrl)
+	{
+		m_pHtmlCtrl = new CTPHtmlCtrl;
+		m_pHtmlCtrl->Create(NULL,						 // class name
+			NULL,										 // title
+			(WS_CHILD | WS_VISIBLE ),					 // style
+			rc,											 // rectangle
+			this,									     // parent
+			IDC_STATIC_ARTICLETEXT,										 // control ID
+			NULL);									 // frame/doc context not used
+	}
+	else
+	{
+		m_pHtmlCtrl->MoveWindow(rc,FALSE);
+		m_pHtmlCtrl->Navigate2(sHtml);
+	}
 
 }

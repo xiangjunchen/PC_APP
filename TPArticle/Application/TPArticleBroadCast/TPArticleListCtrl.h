@@ -165,6 +165,7 @@ typedef  struct tag_TPListItemData
 }TPListItemData;
 typedef CArray<TPListItemData *,TPListItemData *&> TPListItemDataArray;
 
+class CTPArticleMainDlg;
 class CTPArticleListCtrl : public CTPListCtrlEx
 {
 	DECLARE_DYNAMIC(CTPArticleListCtrl)
@@ -173,6 +174,7 @@ public:
 	CTPArticleListCtrl();
 	virtual ~CTPArticleListCtrl();
 
+	CTPArticleMainDlg *m_pArticleMainDlg;
 public:
 	BOOL	SetResData(CGUIDArray &aArticleList, TPChannelData &stuChannel);
 public:
@@ -181,6 +183,7 @@ public:
 
 private:
 	void  GetItemResData(TPListItemData *pItemData,BOOL bGetData = TRUE);
+	virtual void    DrawTextPicture(CDC *pDC,int iItem);
 protected:
 	DECLARE_MESSAGE_MAP()
 };

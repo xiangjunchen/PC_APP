@@ -9,7 +9,7 @@ IMPLEMENT_DYNAMIC(CTPArticleListCtrl, CTPListCtrlEx)
 
 CTPArticleListCtrl::CTPArticleListCtrl()
 {
-
+	m_pArticleMainDlg = NULL;
 }
 
 CTPArticleListCtrl::~CTPArticleListCtrl()
@@ -37,8 +37,20 @@ void CTPArticleListCtrl::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 	if((pNMLV ->uNewState & LVIS_SELECTED )  && pNMLV ->lParam)
 	{ 
 		TPListItemData *pItemData = (TPListItemData *)pNMLV ->lParam;
-		if(pItemData/* && (pItemData ->dwState & TP_RESSTATE_HIDE)*/) return;
-		GetItemResData(pItemData);
+		//if(pItemData/* && (pItemData ->dwState & TP_RESSTATE_HIDE)*/) return;
+	//	GetItemResData(pItemData);
+
+		//m_pArticleList->GetItemData(iCurIndex);
+		TPArticleData stuArticle;
+		if(S_OK == g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(pItemData->guidRes,TP_GRADE_ALL,stuArticle))
+		{
+			TPChannelData stuChannel;
+			g_stuArticleInterface.stuChannelInterface.TP_GetChannelInfo(stuArticle.guidNode,stuChannel);
+			CString sFileName = g_stuArticleInterface.stuArticleInterfce.TP_GetCurArticleHtmlPath();
+			CTPArticleParser::SaveHtml(sFileName, stuArticle.cText, stuArticle.stuChannelItem.cItemTitle,stuChannel.stuChannelBase.cChannelTitle,stuArticle.stuChannelItem.cItemPubDate);
+			if(m_pArticleMainDlg)
+				m_pArticleMainDlg->AdjustHtml(sFileName);
+		}
 	}	
 }
 void  CTPArticleListCtrl::GetItemResData(TPListItemData *pItemData,BOOL bGetData)
@@ -81,6 +93,8 @@ BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stu
 		InsertItem(iIndex,stuArticle.stuChannelItem.cItemTitle);//CTPListCtrlEx::InsertItem(iResNeed,_L("         "));
 		TPListItemData *pItemData = new TPListItemData();
 	//	pItemData ->SetResBaseData(hChildRes[l]);
+		pItemData->guidRes = stuArticle.guidRes;
+		pItemData->guidNode = stuArticle.guidNode;
 		pItemData ->pItem = m_aItem[iIndex];
 		//GetItemResData(pItemData);		
 		CTPListCtrlEx::SetItemData(iIndex,(DWORD_PTR)pItemData);
@@ -103,4 +117,9 @@ void CTPArticleListCtrl::OnLvnDeleteitem(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 //	if(m_iMenuItem == pNMLV->iItem) m_iMenuItem = -1;
 	*pResult = 0;
+}
+void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
+{
+	ASSERT(0);
+	return ;
 }
