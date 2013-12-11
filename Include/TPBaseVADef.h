@@ -41,8 +41,19 @@ typedef long TP_ACCESS_MODE;
 #define TP_ACCESS_DBEINFO   	0x00002000//swx 2009-03-14 for Doblly E track info
 #define TP_ACCESS_STARTTC		0x00004000//ljj @2009-4-9
 #define TP_ACCESS_EDI   		0x00008000//swx Edi
+#define TP_ACCESS_2PASSMODE		0x00010000//gr 2pass mode for compile
+#define TP_ACCESS_NOMXFINFO		0x00020000
+#define TP_ACCESS_CREATEIDX		0x00040000
+#define TP_ACCESS_NOAUDIO		0x00080000
+#define TP_ACCESS_NOIDX         0
+#define TP_ACCESS_NETCHECK		0x00100000
+#define TP_ACCESS_NOAUDIOFILTER 0x00200000  //取音频不用滤波
+#define TP_ACCESS_SAMERATE		0x00800000  // 跟系统相同帧率的才能打开
 
-#define TP_VIDEO_STANDARD_NUM  19
+#define TP_ACCESS_GETICON      (TP_ACCESS_READ|TP_ACCESS_NOIDX|TP_ACCESS_GETIMAGE|TP_ACCESS_NOCHECKRATE|TP_ACCESS_NOPROXYCTRL|TP_ACCESS_NOAUDIO|TP_ACCESS_NOMXFINFO)
+
+#define TP_VIDEO_STANDARD_NUM  34
+
 
 
 
@@ -85,11 +96,42 @@ enum	TP_VIDEO_STANDARD	// 桌面视频制式标准枚举定义
 	TP_VIDEOSTANDARD_1280_1080_50i		= 0x01000000,	    //HD  size:1280*1080 f/s : 25 interlaced
 	TP_VIDEOSTANDARD_1280_1080_5994i	= 0x02000000,	    //HD  size:1280*1080 f/s : 29.97 interlaced
 	TP_VIDEOSTANDARD_1280_1080_60i		= 0x04000000,	    //HD  size:1280*1080 f/s : 30 interlaced
+
+	//以下设置都是临时使用的。 将来如何定义重新弄	
+
+	TP_VIDEOSTANDARD_1280_720_25p		= 0x10000001,		//
+	TP_VIDEOSTANDARD_1280_720_2997p		= 0x10000002,		//
+
+	TP_VIDEOSTANDARD_1920_1080_50p		= 0x10000004,		//
+	TP_VIDEOSTANDARD_1920_1080_5994p	= 0x10000008,		//
+
+	TP_VIDEOSTANDARD_1440_1080_50p		= 0x10000010,	    //
+	TP_VIDEOSTANDARD_1440_1080_5994p	= 0x10000020,	    //
+	TP_VIDEOSTANDARD_1440_1080_25p		= 0x10000040,	    //
+	TP_VIDEOSTANDARD_1440_1080_2997p	= 0x10000080,	    //
+
+	TP_VIDEOSTANDARD_PAL_50P			= 0x10000100,		//PAL size:720*576 f/s : 25
+	TP_VIDEOSTANDARD_NTSC_5994P			= 0x10000200,		//NTSC size:720*486  f/s : 29.97
+	TP_VIDEOSTANDARD_PAL_50P_16_9		= 0x10000400,		
+	TP_VIDEOSTANDARD_NTSC_5994P_16_9	= 0x10000800,		
+
+	TP_VIDEOSTANDARD_PAL_25P			= 0x10001000,		//PAL size:720*576 f/s : 25
+	TP_VIDEOSTANDARD_NTSC_2997P			= 0x10002000,		//NTSC size:720*486  f/s : 29.97
+	TP_VIDEOSTANDARD_PAL_25P_16_9		= 0x10004000,		
+	TP_VIDEOSTANDARD_NTSC_2997P_16_9	= 0x10008000,	
+
 };
 
 
-#define TP_VIDEOSTANDARD_ALL 0x0fffffff   //缺省支持所有制式 hh
+#define TP_VIDEOSTANDARD_ALL 0xffffffff   //缺省支持所有制式 hh
 
+#define TP_VIDEOSTANDARD_ALLSU {TP_VIDEOSTANDARD_PAL,TP_VIDEOSTANDARD_NTSC_2997,TP_VIDEOSTANDARD_NTSC_30,TP_VIDEOSTANDARD_SECAM,TP_VIDEOSTANDARD_1920_1080_50i,TP_VIDEOSTANDARD_1920_1080_5994i,\
+	TP_VIDEOSTANDARD_1920_1080_60i,	TP_VIDEOSTANDARD_1920_1080_2398p,TP_VIDEOSTANDARD_1920_1080_24p,TP_VIDEOSTANDARD_1920_1080_25p,TP_VIDEOSTANDARD_1920_1080_2997p,TP_VIDEOSTANDARD_1920_1080_30p,	\
+	TP_VIDEOSTANDARD_1280_720_2398p,TP_VIDEOSTANDARD_1280_720_24p,TP_VIDEOSTANDARD_1280_720_50p,TP_VIDEOSTANDARD_1280_720_5994p,TP_VIDEOSTANDARD_1440_1080_50i,TP_VIDEOSTANDARD_1440_1080_5994i,	\
+	TP_VIDEOSTANDARD_1440_1080_60i,TP_VIDEOSTANDARD_PAL_16_9,TP_VIDEOSTANDARD_NTSC_2997_16_9,TP_VIDEOSTANDARD_NTSC_30_16_9,TP_VIDEOSTANDARD_NTSC_2997_480,TP_VIDEOSTANDARD_NTSC_30_480,\
+	TP_VIDEOSTANDARD_1280_1080_50i,TP_VIDEOSTANDARD_1280_1080_5994i,TP_VIDEOSTANDARD_1280_1080_60i,TP_VIDEOSTANDARD_1280_720_25p,TP_VIDEOSTANDARD_1280_720_2997p,TP_VIDEOSTANDARD_1920_1080_50p,\
+	TP_VIDEOSTANDARD_1920_1080_5994p,TP_VIDEOSTANDARD_1440_1080_50p,TP_VIDEOSTANDARD_1440_1080_5994p,TP_VIDEOSTANDARD_1440_1080_25p,TP_VIDEOSTANDARD_1440_1080_2997p,TP_VIDEOSTANDARD_PAL_50P,TP_VIDEOSTANDARD_NTSC_5994P,\
+	TP_VIDEOSTANDARD_PAL_50P_16_9,TP_VIDEOSTANDARD_NTSC_5994P_16_9,TP_VIDEOSTANDARD_PAL_25P, TP_VIDEOSTANDARD_PAL_25P_16_9, TP_VIDEOSTANDARD_NTSC_2997P, TP_VIDEOSTANDARD_NTSC_2997P_16_9}
 
 
 enum	TP_VIDEO_HS_CLASS	
@@ -257,6 +299,8 @@ typedef struct  tag_TPResolutionInfo
 	TP_SCANMODE    tpScanMode;
 }TPResolutionInfo, *LPTPResolutionInfo;
 
+
+
 typedef struct  tag_MemBufCopyParam
 {
 	BOOL		bSwap;
@@ -323,11 +367,12 @@ typedef struct tag_TPFileFormat					//文件格式
 	DWORD				dwVersion;				//版本号
 	BOOL 				bHasVideo;				//是否含有视频
 	BOOL 				bHasAudio;				//是否含有音频
-	UINT                uParam;                 //中间传递参数 
 	GUID				guidFileType;			//文件类型GUID
 	DWORD               dwFileHeadSize;			//文件头尺寸
 	TPVideoFormat		tpVideoFormat;			//视频格式
-	TPAudioFormatEx		tpAudioFormatEx;			//音频格式
+	TPAudioFormatEx		tpAudioFormatEx;		//音频格式
+	long                lDuration;              //中间传递参数  长度 No Save
+	UINT                uParam;                 //中间传递参数  状态 No Save
 }TPFileFormat,*LPTPFileFormat;
 
 
@@ -454,6 +499,7 @@ typedef struct tag_TPImageSize
 }TPImageSize,*LPTPImageSize;
 
 
+#define TP_VIDEOSTANDARD_SIZE 128
 
 //图象视频帧支持格式(未压缩)
 typedef struct tag_TPImageFormatSu	
@@ -477,7 +523,7 @@ typedef struct tag_TPImageFormatSu
 	long    lSuggestImageSizeNum;   //提供可供用户选择的几种尺寸设置
 	TPImageSize* pImageSizeSu;
 
-	DWORD   dwVideoStandard;  //支持制式hh
+	DWORD   dwVideoStandSu[TP_VIDEOSTANDARD_SIZE];        //所支持的制式 hh
 
 }TPImageFormatSu, *LPTPImageFormatSu;
 
@@ -557,7 +603,7 @@ typedef struct tag_TPVideoFormatSu
 	long						lVideoStandSuNum;         //所支持的制式数量hh
 	TPImageFormatSu*            pImageFormatSu;
     
-	DWORD                       dwVideoStandSu;           //所支持的制式hh
+	DWORD                       dwVideoStandSu[TP_VIDEOSTANDARD_SIZE];           //所支持的制式hh
 	BOOL                        bRealtime;               //是否实时  
 }TPVideoFormatSu,*LPTPVideoFormatSu;
 
@@ -666,7 +712,7 @@ typedef struct tag_TPFileFormatSu
 	TPAudioFormatSu*    pAudioFormatSu;
 
 	DWORD               dwExtraType;
-	DWORD               dwVideoStandardSu;//所支持的制式 hh
+	DWORD               dwVideoStandSu[TP_VIDEOSTANDARD_SIZE];//所支持的制式 hh
 
 }TPFileFormatSu,*LPTPFileFormatSu;
 
@@ -769,14 +815,143 @@ typedef struct tag_Face_Area   //辛力 add 20110601
 		dHeight(SrcFace_area.dHeight)
 	  {	
 	  }
+
+	tag_Face_Area &operator = (const tag_Face_Area &other)
+	{
+		this->nID = other.nID;
+		this->dX  = other.dX;
+		this->dY  = other.dY;
+		this->dWidth = other.dWidth;
+		this->dHeight = other.dHeight;
+		return *this;
+	}
+
+	void Reset()
+	{
+
+	}
+
 }FaceArea;
+
+#define TP_ProxyFmtSetting_Ver  5
+
+typedef struct tag_ProxyFmtSetting    
+{
+
+	enum VideoFileType
+	{
+		VideoFile_Full_Avi,
+		VideoFile_Full_Mxf,
+		VideoFile_Full_MP4_MPG2,
+		VideoFile_Full_MP4_H264,
+
+		VideoFile_Proxy_Avi_Mpge4,
+		VideoFile_Proxy_Avi2_Mpge4,
+		VideoFile_Proxy_Avi2_H264,
+
+		VideoFile_Proxy_MP4_H264,
+	};
+	enum ProxyImageSize
+	{
+		ProxyImageSize_Fix,
+		ProxyImageSize_2,
+		ProxyImageSize_4,
+		ProxyImageSize_8,		
+	};
+	enum AudioFileType
+	{
+		AudioFile_Mp3,
+		AudioFile_Wav,		
+	};
+	DWORD           dwVersion;	
+
+	BOOL            uFullVideoFileDef; 
+	VideoFileType   eFullVideoFileType;     //高清视屏文件
+	UINT            uProxyVideoFileDef;
+	VideoFileType   eProxyVideoFileType;    //标清视频文件
+
+	AudioFileType   eProxyAudioFileType;    
+	BOOL            bProxyVideoHasAudio;
+
+	ProxyImageSize  eHDImageSize;
+	int             iProxyHDImageWidth;
+	int             iProxyHDImageHeight;
+
+	ProxyImageSize  eSDImageSize;
+	int             iProxySDImageWidth;
+	int             iProxySDImageHeight;
+
+	long            lDataRate;
+
+	DWORD           dwRes[20] ;//dwRes[0]保存Ntsc/Pal，用于Reset时候取低质量幅面。
+
+	tag_ProxyFmtSetting()
+	{
+		dwVersion = TP_ProxyFmtSetting_Ver;
+		Reset();
+		ZeroMemory(dwRes,sizeof(dwRes));
+	}
+	void Reset()
+	{
+		uFullVideoFileDef     = FALSE;
+		eFullVideoFileType    = VideoFile_Full_Avi;     //高清视屏文件
+		uProxyVideoFileDef    = FALSE;
+		eProxyVideoFileType   = VideoFile_Proxy_Avi2_Mpge4;    //标清视频文件
+
+#ifdef TP_NS_NET
+		eProxyAudioFileType   = AudioFile_Mp3;    
+#else
+		eProxyAudioFileType   = AudioFile_Wav;    
+#endif		 
+
+		/*eHDImageSize          = ProxyImageSize_Fix;
+		iProxyHDImageWidth    = 480;
+		iProxyHDImageHeight   = 270;
+
+		eSDImageSize          = ProxyImageSize_Fix;
+		iProxySDImageWidth    = 352;
+		iProxySDImageHeight   = 288;*/
+
+		lDataRate              = 2000000;
+
+		SetFixImageSize(dwRes[0]);
+
+#ifdef TP_NS_NET
+		bProxyVideoHasAudio   = TRUE;
+#else
+		bProxyVideoHasAudio   = FALSE;
+#endif
+	}
+	void SetFixImageSize(BOOL bPal)
+	{
+		eHDImageSize        = ProxyImageSize_Fix;
+		iProxyHDImageWidth  = 480;
+		iProxyHDImageHeight = 270;
+
+		eSDImageSize         = ProxyImageSize_Fix;
+		dwRes[0] = bPal;
+		if(bPal)
+		{		
+			iProxySDImageWidth   = 360;
+			iProxySDImageHeight  = 288;
+		}
+		else 
+		{		
+			iProxySDImageWidth   = 360;
+			iProxySDImageHeight  = 240;
+		}
+	}
+	 
+}ProxyFmtSetting;
+
+ 
 typedef std::list<FaceArea> FaceAreaList;
 typedef struct tag_TPTextOut
 {
 	long lOffsetX;
 	long lOffsetY;
 	DWORD dwColor;
-	TCHAR strTextout[512];
+	TCHAR strTextout[1024];
 	void Reset()
 	{
 		lOffsetX = 10;
@@ -1225,7 +1400,7 @@ struct  TPEngineConfigPara
 	BOOL	nAudioMuteWhenNRealTime;//not realtime audio mute.
 	unsigned int nCGMemoryLimit;	//cg use total mem.
 	long    lRealSDlProxyRate;		
-	long    lRealHDlProxyRate;
+	double  lRealHDlProxyRate;
 	BOOL	bField;//Frame or field 主要是720P和Proxy编辑。
 	BOOL	bFieldTwiceRedner;
 	long    lSoundCardDelayTime;  //声卡延迟时间/for sdi-声卡同步

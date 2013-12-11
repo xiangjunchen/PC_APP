@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TPCommonClass", "..\..\TPCo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TPBaseTest", "..\Tool\TPBaseTest\TPBaseTest.vcproj", "{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TPBufferOperate", "..\..\TPCommonData\Src\TPBufferOperate\TPBufferOperate2008.vcproj", "{B11D303A-15FC-43CB-9DD2-AF6C965571F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -79,6 +81,14 @@ Global
 		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Unicode Debug|Win32.Build.0 = Debug|Win32
 		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Unicode Release|Win32.ActiveCfg = Release|Win32
 		{5D7E38EA-CDF7-4309-A259-0D1A51AD6ADB}.Unicode Release|Win32.Build.0 = Release|Win32
+		{B11D303A-15FC-43CB-9DD2-AF6C965571F7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B11D303A-15FC-43CB-9DD2-AF6C965571F7}.Debug|Win32.Build.0 = Debug|Win32
+		{B11D303A-15FC-43CB-9DD2-AF6C965571F7}.Release|Win32.ActiveCfg = Release|Win32
+		{B11D303A-15FC-43CB-9DD2-AF6C965571F7}.Release|Win32.Build.0 = Release|Win32
+		{B11D303A-15FC-43CB-9DD2-AF6C965571F7}.Unicode Debug|Win32.ActiveCfg = Unicode Debug|Win32
+		{B11D303A-15FC-43CB-9DD2-AF6C965571F7}.Unicode Debug|Win32.Build.0 = Unicode Debug|Win32
+		{B11D303A-15FC-43CB-9DD2-AF6C965571F7}.Unicode Release|Win32.ActiveCfg = Unicode Release|Win32
+		{B11D303A-15FC-43CB-9DD2-AF6C965571F7}.Unicode Release|Win32.Build.0 = Unicode Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

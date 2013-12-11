@@ -118,8 +118,204 @@ void CTPArticleListCtrl::OnLvnDeleteitem(NMHDR *pNMHDR, LRESULT *pResult)
 //	if(m_iMenuItem == pNMLV->iItem) m_iMenuItem = -1;
 	*pResult = 0;
 }
+
 void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 {
-	ASSERT(0);
-	return ;
+	TPListItemData *pItemData = (TPListItemData *)CTPListCtrlEx::GetItemData(iItem);
+	if(pItemData == NULL) return ;
+	pItemData ->rtIcon = CRect(0,0,0,0);
+	GetItemResData(pItemData);
+//	if(pItemData ->dwState & TP_RESSTATE_HIDE) return;
+	if(!pItemData ->pItem->bShow) return;
+
+	int iColumnCount = this ->GetColumnCount();
+	if(iColumnCount <=0) return;
+//	if(m_bViewFile) GetItemResClipFile(pItemData); 
+	int iColumnIndex[M2];
+	GetColumnOrderArray(iColumnIndex,iColumnCount);
+
+	INT nHeadIndex = 1;//TP_NodeTypeHeadIndex(m_eShowNodeType);
+	UINT uState = CTPListCtrlEx::GetItemState(iItem,LVIS_SELECTED |  LVIS_FOCUSED);	
+	if(uState & LVIS_SELECTED )    pDC ->SetTextColor(TP_GetSysColor(COLOR_BASE_TEXTFOCUS));	
+	else                           pDC ->SetTextColor(TP_GetSysColor(COLOR_BASE_TEXT));
+
+	int iLeft = 10000,iButton = 0;
+	CRect rDTRect(0,0,0,0);//右下黑框
+	int iOffset = 20;
+	CRect rtComment = CRect(0, 0, 0, 0), rtCommentText = CRect(0, 0, 0, 0);
+
+	for(int i = 0; i < iColumnCount; i++)
+	{
+		if(!m_aColumn[i]->bShow) continue;
+		CRect rcSub(0,0,0,0);
+		GetSubItemRect(iItem,i,LVIR_BOUNDS,rcSub);
+		if(rcSub.right < m_rtClient.left || rcSub.left > m_rtClient.right) continue;
+		pDC ->FillSolidRect(rcSub,TP_GetSysColor(m_iBackColor));
+
+		if(iColumnIndex[i]==0) // 绘制图标
+		{
+			CRect rtSub_Name,rtIcon,rtSmallIcon;
+			rtSub_Name = rcSub;
+
+			rtSub_Name.DeflateRect(1,1);	
+			rtSub_Name.right = rtSub_Name.left + rtSub_Name.Height() * TP_RESICON_WIDTH_HD /TP_RESICON_HIGH_HD; 	
+			rtSub_Name.OffsetRect(2,0);
+			rtSub_Name.DeflateRect(1,1);
+
+			BOOL bOverTurn = TRUE;//(pItemData ->eResType &(TP_RES_CGFILTER | TP_RES_ALLVAEFFECT | TP_RES_CGEFFECT)) !=0;
+			//if(pItemData->dwState & TP_RESSTATE_OVERTURNICON) bOverTurn = TRUE;
+
+			// 绘制目录图标
+			rtIcon = rtSub_Name;
+			rtSub_Name &= rcSub;
+// 			if(pItemData->eResType & (TP_RES_CATALOG | TP_RES_PROJECT | TP_RES_USER))
+// 			{
+// 				int   iNPIndex  = pItemData ->iNPIndex;
+// 				rtIcon.left    = rtIcon.left + (rtIcon.Width() - m_pCommonRes[TP_CLIPICON_FLODER]->Width())/2;
+// 				rtIcon.top     = rtIcon.top  + (rtIcon.Height()- m_pCommonRes[TP_CLIPICON_FLODER]->Height())/2;
+// 				rtIcon.right   = rtIcon.left + m_pCommonRes[TP_CLIPICON_FLODER]->Width();
+// 				rtIcon.bottom  = rtIcon.top  + m_pCommonRes[TP_CLIPICON_FLODER]->Height();	
+// 				//绘制文件夹大图标
+// 				CRect rtIconView = rcSub & rtIcon;
+// 				if(rtIconView.Width()>0) // 可见时绘制
+// 					ImageList_DrawEx(m_pCommonRes[TP_CLIPICON_FLODER] ->GetImage(),iNPIndex,pDC->m_hDC,rtIcon.left,rtIcon.top ,rtIconView.Width(),rtIconView.Height(),CLR_NONE,CLR_NONE,ILD_TRANSPARENT);
+// 				pItemData ->rtIcon = rtSub_Name;
+// 			}
+// 			else
+			{
+				// 绘制节目或素材图标
+				if(pItemData ->pIcon && pItemData->szIcon.cx > 0 && pItemData->szIcon.cy > 0)
+				{					
+					if(pItemData->bIs0403Icon)
+					{	
+						if(rtSub_Name.Width() > 0)
+							pDC->FillSolidRect(rtSub_Name,RGB(0,0,0));
+						rtIcon.left  = rtIcon.left + (rtIcon.Width() - rtIcon.Height() *4/3)/2;
+						rtIcon.right = rtIcon.left + rtIcon.Height() *4/3;
+					}
+					//绘制节目或素材大图标
+					CRect rtIconView = rtIcon & rcSub;
+					if(rtIconView.Width()>0)
+						TP_StretchDIBitsEx(pDC,pItemData ->pIcon,pItemData ->szIcon.cx,pItemData ->szIcon.cy,rtIcon,rtIconView.Width(),rtIconView.Height(),!bOverTurn);	
+					pItemData ->rtIcon = rtSub_Name;
+				}
+				else 
+				{
+					//如果找不到绘制的图片，则绘制全黑
+					if(rtSub_Name.Width() > 0)
+						pDC ->FillSolidRect(rtSub_Name,RGB(0,0,0));
+					pItemData ->rtIcon = rtSub_Name;
+				}
+			}
+
+			//如果选中画橘黄色边框，没有选中画黑色边框,如果列右边和黑线框右边重叠，消除右黑边
+			if(uState & LVIS_SELECTED) pDC ->Draw3dRect(rtSub_Name,RGB(246, 152, 11),RGB(246, 152, 11)); 
+			else                       pDC ->Draw3dRect(rtSub_Name,RGB(0,0,0),RGB(0,0,0));	
+			if(rcSub.right ==  rtSub_Name.right) 
+				pDC ->Draw3dRect(rtSub_Name.right,rtSub_Name.top,0,rtSub_Name.Height(),TP_GetSysColor(m_iBackColor),TP_GetSysColor(m_iBackColor));	
+
+			m_aItem[iItem]->aSubItem[i]->rtIcon = rtSub_Name;				
+
+			rcSub.left = rtSub_Name.right + 5;
+			iLeft   = rcSub.left;
+			iButton = rtSub_Name.bottom;
+
+ 			rtSmallIcon = rcSub;
+// 			rtSmallIcon.DeflateRect(1,1);	
+// 			rtSmallIcon.right = rtSmallIcon.left + m_pCommonRes[TP_CLIPICON_TYPEINDICATORSLARGE]->Width();
+// 			rtSmallIcon.OffsetRect(2,0);
+// 			rtSmallIcon.top    += (iOffset - m_pCommonRes[TP_CLIPICON_TYPEINDICATORSLARGE]->Height())/2;
+// 			rtSmallIcon.bottom  = rtSmallIcon.top + m_pCommonRes[TP_CLIPICON_TYPEINDICATORSLARGE]->Height();
+// 			int nIndex = TP_GetClipTypeIconIndex(pItemData->eResType, pItemData->eSingSourceType, pItemData);
+// 			//画name栏右上的小图标
+// 			CRect rtSmallIconView = rcSub & rtSmallIcon;
+// 			if(rtSmallIconView.Width() >0)
+// 				ImageList_DrawEx(m_pCommonRes[TP_CLIPICON_TYPEINDICATORS] ->GetImage(),nIndex,pDC->m_hDC,rtSmallIcon.left,rtSmallIcon.top ,rtSmallIconView.Width(),rtSmallIconView.Height(),CLR_NONE,CLR_NONE,ILD_TRANSPARENT);
+			rcSub.left = rtSmallIcon.right + 5;
+			rtCommentText |= rcSub;
+		}
+		rtComment |= rcSub;
+		//画选中状态下各列的选中区域
+
+		rcSub.bottom = rcSub.top + iOffset;
+		if(uState & LVIS_SELECTED) 
+		{
+			if(GetFocus() == this) pDC ->FillSolidRect(rcSub,TP_GetSysColor(COLOR_BASE_SELECTITEMA));	
+			else                   pDC ->FillSolidRect(rcSub,TP_GetSysColor(COLOR_BASE_SELECTITEM));	
+		}
+		iLeft = min(rcSub.left,iLeft);
+		rcSub.DeflateRect(2,0);
+		if(rcSub.right < rcSub .left) {rcSub.right +=2,rcSub.left = rcSub.right - 1;}
+
+		m_aItem[iItem]->aSubItem[i]->rtLable        = rcSub;
+		m_aItem[iItem]->aSubItem[i]->rtDrag         = m_aItem[iItem] ->aSubItem[i]->rtLable | m_aItem[iItem] ->aSubItem[i]->rtIcon;
+		m_aItem[iItem]->aSubItem[i]->rtDrag .bottom = max(iButton,m_aItem[iItem]->aSubItem[i]->rtDrag .bottom); 
+		rDTRect |= rcSub;
+
+		// 绘制Text
+// 		if((0 == iColumnIndex[i]) && (m_eNodeType & TP_NODE_USERINFO) && (g_pUserEnterInfo && pItemData->guidRes == g_pUserEnterInfo->guidUserConfigration))
+// 		{
+// 			CFont *pOldFont = NULL;
+// 			pOldFont = pDC->SelectObject(TP_GetSysFont(FONT_BASE_TEXT6));
+// 			COLORREF cTextColor = pDC->GetTextColor();
+// 			pDC->SetTextColor(TP_COLOR_ACTIVEUSER);
+// 			pDC ->DrawText(pItemData ->sText[iColumnIndex[i]],m_aItem[iItem] ->aSubItem[i]->rtLable ,DT_SINGLELINE|DT_LEFT|DT_VCENTER);
+// 			pDC->SetTextColor(cTextColor);
+// 			pDC->SelectObject(pOldFont);
+// 		}
+// 		else if((pItemData->eResType &(TP_RES_CLIP | TP_RES_ALLPROGRAM|TP_RES_CATALOG)) && nHeadIndex == TP_HEADINDEX_BIN && iColumnIndex[i] == TP_RESTEXT_CLIPCOLOR ||\
+// 			(pItemData->eResType &(TP_RES_CATALOG | TP_RES_PROJECT)) && nHeadIndex == TP_HEADINDEX_COMPUTER && iColumnIndex[i] == TP_PROJECT_CLIPCOLOR||\
+// 			(pItemData->eResType & TP_RES_CATALOG) && nHeadIndex == TP_HEADINDEX_PROJECT && iColumnIndex[i] == TP_CATALOG_CLIPCOLOR ||\
+// 			((m_eNodeType & TP_NODE_SEARCH) && (pItemData->eResType & TP_RES_PROJECT) && (iColumnIndex[i] == TP_PROJECTTEXT_CLIPCOLOR)))
+// 		{
+// 			CRect rtDraw = rcSub;
+// 			rtDraw.left += rcSub.Width()/2- rcSub.Height()/2;
+// 			rtDraw.left = max(rtDraw.left, rcSub.left);
+// 			rtDraw.right = rtDraw.left + rcSub.Height() + 20;
+// 			if(rtDraw.right >= rcSub.right)
+// 				rtDraw.right = rcSub.right;
+// 			COLORREF cColor = TP_GetResColor((TP_RES_COLOR)pItemData->cResColor, FALSE, TRUE);
+// 			rtDraw.DeflateRect(1,4,1,4);
+// 			pDC->Draw3dRect(rtDraw, cColor, cColor);
+// 			rtDraw.DeflateRect(1,1,1,1);
+// 			pDC->FillSolidRect(rtDraw, cColor);
+// 		}
+//		else
+		{
+			pDC ->DrawText(pItemData ->sText[iColumnIndex[i]],m_aItem[iItem] ->aSubItem[i]->rtLable ,DT_SINGLELINE|DT_LEFT|DT_VCENTER);
+		}	
+	}	
+
+	//如果列数少，没有填满屏幕，将选中列空余部分画上蓝色选中标志
+	if(rDTRect.right < m_rtClient.right && (uState & LVIS_SELECTED))
+	{		
+		if(GetFocus() == this) pDC ->FillSolidRect(CRect(rDTRect.right,rDTRect.top, m_rtClient.right,rDTRect.top + 20),TP_GetSysColor(COLOR_BASE_SELECTITEMA));	
+		else                   pDC ->FillSolidRect(CRect(rDTRect.right,rDTRect.top, m_rtClient.right,rDTRect.top + 20),TP_GetSysColor(COLOR_BASE_SELECTITEM));		
+	}	
+
+	rtComment.DeflateRect(2,2);
+	rtComment.OffsetRect(2,0);
+	rtComment.left  = iLeft;
+	rtComment.top  += iOffset;
+	rtComment.DeflateRect(0,0,2,0);	
+
+	//XN00024373 qushaojie 
+	if (rtCommentText.Width() > 0) rtCommentText = rtComment; 
+
+	//画右下的贯穿name右边所有列的黑框
+	if(rtComment.right > rtComment.left) pDC->Draw3dRect(rtComment,RGB(0,0,0),RGB(0,0,0));
+	rtCommentText.DeflateRect(3,3);
+// 	if(pItemData ->eResType & (TP_RES_CLIP | TP_RES_ALLPROGRAM))
+// 	{		
+// 		pDC->DrawText(pItemData->sText[TP_RESTEXT_COMMENT],rtCommentText,DT_VCENTER|DT_SINGLELINE);
+// 	}
+// 	else if((pItemData ->eResType & TP_RES_ALLCGTEMPLATE))
+// 	{
+// 
+// 		pDC->DrawText(pItemData->sText[TP_TEMPALTECGTEXT_COMMENT],rtCommentText,DT_VCENTER|DT_SINGLELINE);
+// 	}
+// 	else if(pItemData->eResType & TP_RES_USER)
+// 	{
+// 		pDC->DrawText(pItemData->sText[TP_USEREXT_COMMENT],rtCommentText,DT_VCENTER|DT_SINGLELINE);
+// 	}
 }

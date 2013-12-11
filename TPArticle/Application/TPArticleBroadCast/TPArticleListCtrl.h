@@ -2,6 +2,7 @@
 
 
 // CTPArticleListCtrl
+#define M2 40
 typedef  struct tag_TPListItemData
 {
 
@@ -21,7 +22,7 @@ typedef  struct tag_TPListItemData
 	int            iNPIndex;			//  图标索引
 	long           lRefCount;			//  引用计数
 	CString        VAString;	
-//	CString        sText[M2];			//  附加信息
+	CString        sText[M2];			//  附加信息
 	DWORD          dwBookIndex; 
 
 	// 图标信息
