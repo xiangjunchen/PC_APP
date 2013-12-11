@@ -398,6 +398,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TPArticleBroadCastApi.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TPArticleListCtrl.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TPArticleMainDlg.cpp"
 				>
 			</File>
@@ -433,6 +441,18 @@
 			</File>
 			<File
 				RelativePath=".\TPArticleBroadCast.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPArticleBroadCastApi.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPArticleBroadCastHead.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPArticleListCtrl.h"
 				>
 			</File>
 			<File

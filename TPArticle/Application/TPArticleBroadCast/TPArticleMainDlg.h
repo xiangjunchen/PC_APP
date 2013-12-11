@@ -2,7 +2,7 @@
 
 
 // CTPArticleMainDlg dialog
-
+class CTPArticleListCtrl;
 class CTPArticleMainDlg : public CTPDialog
 {
 	DECLARE_DYNAMIC(CTPArticleMainDlg)
@@ -22,7 +22,7 @@ public:
 	CGuidArray   m_aChannelListPublic;
 
 	CTPComboBox *m_pChannelList;
-	CTPListCtrl *m_pArticleList;
+	CTPArticleListCtrl *m_pArticleList;
 	CTPHtmlCtrl *m_pHtmlCtrl;
 	CGuidArray   m_aChannelList;
 	CGuidArray   m_aArticleList;
@@ -44,4 +44,6 @@ public:
 
 	afx_msg void OnBnClickedButtonAddchannel2();
 	afx_msg void OnBnClickedButton1();
+
+
 };

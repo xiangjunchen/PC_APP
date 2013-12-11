@@ -2,49 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "TPArticleBroadCast.h"
-#include "TPArticleMainDlg.h"
 
 
-HMODULE g_hArticleManage = NULL;  
-TPArticleManageProcess   g_stuPress;
-TPArticleManageInterface g_stuArticleInterface;
-LRESULT TP_InitArticleCenter()
-{
-	CString sFile   = _T("TPArticleManage");
-#ifdef _DEBUG
-	g_hArticleManage = ::LoadLibrary((CString)sFile + _T("ud.dll"));
-#else
-	g_hArticleManage = ::LoadLibrary((CString)sFile + _T("u.dll"));
-#endif
-	if(g_hArticleManage == NULL){ASSERT(0); return S_FALSE;}
-
-	void (*TP_GetManageProcess)(TPArticleManageProcess * ) = NULL;
-	TP_GetManageProcess = (void (* )(TPArticleManageProcess *)) ::GetProcAddress(g_hArticleManage,"TP_GetManageProcess");
-	if(TP_GetManageProcess == NULL)
-	{
-		ASSERT(0);
-		::FreeLibrary(g_hArticleManage);
-		g_hArticleManage = NULL;
-		return S_FALSE;
-	}
-	TP_GetManageProcess(&g_stuPress);	
-	g_stuPress.TP_GetManageFunction(&g_stuArticleInterface);
-	g_stuPress.TP_InitData(NULL);
-	return S_OK;
-}
-LRESULT TP_ReleaseArticleCenter()
-{
-	if(g_stuPress.TP_ReleaseData)
-		g_stuPress.TP_ReleaseData(NULL);
-	if(g_hArticleManage)
-	{
-		::FreeLibrary(g_hArticleManage);
-		g_hArticleManage = NULL;
-		return S_OK;
-	}
-	return S_FALSE;
-}
 
 // CTPArticleMainDlg dialog
 
@@ -80,6 +39,8 @@ BEGIN_MESSAGE_MAP(CTPArticleMainDlg, CTPDialog)
 	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
 	ON_BN_CLICKED(IDC_BUTTON_ADDCHANNEL2, &CTPArticleMainDlg::OnBnClickedButtonAddchannel2)
 	ON_BN_CLICKED(IDC_BUTTON1, &CTPArticleMainDlg::OnBnClickedButton1)
+
+
 END_MESSAGE_MAP()
 
 
@@ -91,22 +52,22 @@ void CTPArticleMainDlg::AdjustHtml(CString sHtml)
 	GetDlgItem(IDC_STATIC_ARTICLETEXT)->GetWindowRect(&rc);
 	this->ScreenToClient(&rc);
 
-	if(NULL == m_pHtmlCtrl)
-	{
-		m_pHtmlCtrl = new CTPHtmlCtrl;
-		m_pHtmlCtrl->Create(NULL,						 // class name
-			NULL,										 // title
-			(WS_CHILD | WS_VISIBLE ),					 // style
-			rc,											 // rectangle
-			this,									     // parent
-			IDC_STATIC_ARTICLETEXT,										 // control ID
-			NULL);									 // frame/doc context not used
-	}
-	else
-	{
-		m_pHtmlCtrl->MoveWindow(rc,FALSE);
-	}
-	m_pHtmlCtrl->Navigate2(sHtml);
+// 	if(NULL == m_pHtmlCtrl)
+// 	{
+// 		m_pHtmlCtrl = new CTPHtmlCtrl;
+// 		m_pHtmlCtrl->Create(NULL,						 // class name
+// 			NULL,										 // title
+// 			(WS_CHILD | WS_VISIBLE ),					 // style
+// 			rc,											 // rectangle
+// 			this,									     // parent
+// 			IDC_STATIC_ARTICLETEXT,										 // control ID
+// 			NULL);									 // frame/doc context not used
+// 	}
+// 	else
+// 	{
+// 		m_pHtmlCtrl->MoveWindow(rc,FALSE);
+// 	}
+// 	m_pHtmlCtrl->Navigate2(sHtml);
 
 }
 BOOL CTPArticleMainDlg::OnInitDialog()
@@ -117,7 +78,18 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	m_pChannelList = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLIST);
 	m_pChannelListPublic = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLISTPUBLIC);
 	m_pChannelNodeListPublic = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELNODELISTPUBLIC);
-	m_pArticleList = (CTPListCtrl *)GetDlgItem(IDC_LIST_ARTICLE); 
+
+//	m_pArticleList = (CTPListCtrl *)GetDlgItem(IDC_LIST_ARTICLE); 
+
+	CRect rtArticleList;
+	GetDlgItem(IDC_LIST_ARTICLE)->GetWindowRect(&rtArticleList);
+	ScreenToClient(rtArticleList);
+	(CTPListCtrl *)GetDlgItem(IDC_LIST_ARTICLE)->ShowWindow(SW_HIDE);
+	m_pArticleList    =  new  CTPArticleListCtrl();	
+	m_pArticleList    -> Create(WS_BORDER | WS_CLIPCHILDREN | LVS_ICON | WS_CHILD | WS_VISIBLE | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE  ,rtArticleList,this,0); //modify by xjc
+//	m_pArticleList    ->SetWindowText(_L("ClipExplorer"));
+	m_pArticleList->m_iViewType = VIEWTYPE_REPORT;//VIEWTYPE_TEXTPICTURE;
+
 	m_pArticleList->InsertColumn(0, _T("Article Title"), LVCFMT_LEFT,500);	
 
 	TP_InitArticleCenter();
@@ -213,10 +185,17 @@ void CTPArticleMainDlg::OnDestroy()
 
 	if(m_pHtmlCtrl)
 	{
+		m_pHtmlCtrl->DestroyWindow();
 		delete m_pHtmlCtrl;
 		m_pHtmlCtrl = NULL;
 	}
 
+	if(m_pArticleList)
+	{
+		m_pArticleList->DestroyWindow();
+		delete m_pArticleList;
+		m_pArticleList = NULL;
+	}
 	TP_ReleaseArticleCenter();
 
 	// TODO: Add your message handler code here
@@ -262,36 +241,7 @@ void CTPArticleMainDlg::OnCbnSelChannelList()
 		stuChannel.AppendUpdateItem();
 
 		//update
-		m_aArticleList.RemoveAll();
-		m_pArticleList->DeleteAllItems();
-		int iIndex = 0; 
-		for (int l = stuChannel.aChannelItemAll.GetSize() - 1; l >= 0 ;  l--)
-		{
-			TPArticleData stuArticle;
-			GUID guidItem = stuChannel.aChannelItemAll[l]->guidItem;
-			if((guidItem != GUID_NULL) && S_OK == g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(guidItem,TP_GRADE_ALL,stuArticle))
-			{
-			}
-			else
-			{
-				TCHAR *cItemText = NULL;
-				TPChannelItem *pItemInfo = NULL;
-				CTPArticleParser stuArticleParser;
-				stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], stuChannel.cKeyDiv);
-				stuArticleParser.GetItemInfo(cItemText);
-				ASSERT(TP_StrLen(cItemText) > 50);
-
-				CoCreateGuid(&stuArticle.guidRes);
-				stuArticle.guidNode = stuChannel.guidRes;
-				stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
-				TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
-				g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
-				stuChannel.aChannelItemAll[l]->guidItem = stuArticle.guidRes;
-			}
-			m_aArticleList.Add(stuArticle.guidRes);
-			m_pArticleList->InsertItem(iIndex++,stuArticle.stuChannelItem.cItemTitle);
-			//m_pArticleList ->SetItemData(l,(DWORD_PTR)pDataStu);
-		}
+		m_pArticleList->SetResData(m_aArticleList, stuChannel);
 		g_stuArticleInterface.stuChannelInterface.TP_SetChannelInfo(m_aChannelList[iSel],stuChannel);
 	}
 }

@@ -6,8 +6,6 @@
 #include "afxwinappex.h"
 #include "TPArticleBroadCast.h"
 #include "MainFrm.h"
-#include "TPImgPreviewWnd.h"
-#include "TPArticleMainDlg.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
