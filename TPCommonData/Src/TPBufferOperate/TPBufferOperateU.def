@@ -1,0 +1,181 @@
+; TPBufferOperateU.def : 声明 DLL 的模块参数。
+
+LIBRARY      "TPBufferOperateU"
+    ; 此处可以是显式导出
+
+EXPORTS
+
+;;;;;;;;;;;;;;图像内存操作函数接口;;;;;;;;;;;;;;
+TP_BitBlt
+TP_QuickBitBlt
+TP_StretchBlt
+TP_Clear
+TP_Memcpy
+TP_FillMaskColor
+TP_ColorMixLine
+TP_CalMask
+TP_AlphaMemSet
+TP_SCROLLSCREEN_BitBlt
+TP_MixMask
+TP_GetCycleCount
+TP_SubMask
+TP_BufferZoom
+TP_DwordBufferZoom
+
+; Add by zhaozhimeng @ 20070524
+TP_MemcpyLine
+TP_MemsetChar
+TP_MemsetDWORD
+; Add by zhaozhimeng @ 20070808
+TP_StretchBlt_Mean
+; Add by zhaozhimeng @ 20080124
+TP_OverTurnSelf
+TP_OverTurnCopy
+
+; add by ljj @ 2009-5-22
+TP_MemCompose
+TP_MemSplit
+
+TP_StretchBlt_YUYV
+
+TP_CreateTableFor_H1920To1440
+TP_DeleteTableFor_H1920To1440
+TP_LinearScale_H1920To1440
+
+TPBuffer_ScrollScreen_Up
+TPBuffer_ScrollScreen_Down
+TPBuffer_ScrollScreen_Left
+TPBuffer_ScrollScreen_Right
+
+;;;;;;;;;;;;;;颜色空间转换接口;;;;;;;;;;;;;;;;
+
+;;;;; Old API ;;;;;
+yuv_yyuuvv2yuv
+yuv_yuv2yyuuvv
+
+yuv_uyvy2yuv8
+yuv_yuyv2yuv8
+
+;;;;; 获取颜色空间变换系数 ;;;;;
+TPCS_GetMatYUVA2RGBA
+TPCS_GetMatYUVA2RGBA_Cell
+
+TPCS_GetMatRGBA2YUVA
+TPCS_GetMatRGBA2YUVA_Cell
+
+TPCS_GetMatLUVA2RGBA
+TPCS_GetMatRGBA2LUVA
+
+;;;;; 拆场与合场 ;;;;;
+TPCS_ComposeFields
+TPCS_SplitFrame
+
+;;;;; YUV 内部格式转换 420 <-> 422 <-> 444 ;;;;;
+TPCS_420_422_YUVFrame
+TPCS_420_422_YUVFrame_XDCAM
+TPCS_420_422_YUVSplit
+TPCS_420_422_YUVSplit_XDCAM
+
+TPCS_422_420_YUVField
+TPCS_422_420_YUVField_4
+TPCS_422_420_YUVField_XDCAM
+TPCS_422_420_YUVFrame
+TPCS_422_420_YUVFrame_4
+TPCS_422_420_YUVFrame_XDCAM
+
+TPCS_ComposeYUV422_Frame
+TPCS_ComposeYUV422_Split
+
+;;;;; YUV 420、422 片存储格式与 RGBA、BGRA 之间的转换 ;;;;;
+TPCS_YUV420_RGBA_Frame
+TPCS_YUV420_RGBA_Split
+TPCS_YUV422_RGBA_Frame
+TPCS_YUV422_RGBA_Split
+
+TPCS_YUV420_BGRA_Frame
+TPCS_YUV420_BGRA_Split
+TPCS_YUV422_BGRA_Frame
+TPCS_YUV422_BGRA_Split
+
+;;;;; YUYV 与 RGB、BGR 之间的转换 ;;;;;
+TPCS_RGB2YUYV_Frame
+TPCS_RGB2YUYV_Split
+
+TPCS_BGR2YUYV_Frame
+TPCS_BGR2YUYV_Split
+
+;;;;; YUYVA 与 RGBA、BGRA 之间的转换 ;;;;;
+TPCS_RGBA2YUYVA_Frame
+TPCS_RGBA2YUYVA_Split
+TPCS_RGBA2YUYV_Frame
+TPCS_RGBA2YUYV_Split
+
+TPCS_YUYV2RGBA_Compose
+
+TPCS_BGRA2YUYVA_Frame
+TPCS_BGRA2YUYVA_Split
+TPCS_BGRA2YUYV_Frame
+TPCS_BGRA2YUYV_Split
+
+TPCS_YUYV2BGRA_Compose
+TPCS_YUYV2BGRA_Frame
+TPCS_YUYV2RGBA_Frame
+
+TPCS_YUYV2BGR_Frame
+TPCS_YUYV2RGB_Frame
+TPCS_YUV16_2_RGB32_Frame
+
+TPCS_YUYV2BGRA_MeanStretch
+TPCS_YUYV2RGBA_MeanStretch
+
+;;;;; RGB Alpha 与 RGBA、BGR Alpha 与 BGRA 之间的转换 ;;;;;
+TPCS_24_to_32_Frame
+TPCS_24_to_32_Split
+TPCS_RGB32_SwapRBSelf
+TPCS_RGB24_SwapRBFrame
+
+;;;;;add by wangfengming 2011.4.6
+TPCvtRGB32_2_YUVA
+TPCvtBGRAandRGBA
+TPCvtYUVA2RGB32
+TPCvtYUV16_2_YUVA
+TPCvtYUVA_2_YUV16
+TPCvtRGB24_2_YUYVFrame
+NX_CvtYUYVA2BGRA_Frame
+
+TPCS_32_to_24_Frame	; lsb
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+TP_VideoAdapte
+TP_RectAdapt
+TP_BufferAdapte
+TP_MakeTranslucentBack
+
+TP_VerticalBlur
+
+
+;;;;;;add by lsb @ 2009-09-02
+TPYUYVConvertSafeColor
+TPBGRAConvertSafeColor
+TPByteSwapARGBOrBGRA
+TPCvtARGB2YUYVAFrame
+TPMemCpyLine
+TPCvtARGB2YUYVFrame
+TPCvtYUYV2ARGBFrame
+TPCvtYUYVA2ARGBFrame
+TPSplitFrame2Field
+TPMemSetByteLine
+TPMemSetDwordLine
+TPMemSetDwordRect
+TPMosaic
+TPGaussianBlur
+TPBGRACvtNotSafeColor
+TPYUYVCvtNotSafeColor
+TPCvt32To24BlendAlpha
+TPColor32BlendAlpha
+tp_memcpy
+TPCvtYUYV2YUVAFrame
+TPCvtYUVA2YUYVFrame
+TPCS_YUV16_Swap_Split
+TPCS_YUV16_Swap_Frame
+TPYUYVCvtNotSafeColorCPU
