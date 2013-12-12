@@ -23,6 +23,7 @@ typedef CArray<GUID,GUID &> CGUIDArray;
 #define  TP_GRADE_UNKNOW			0x00000000
 #define  TP_GRADE_BASE				0x00000001
 #define  TP_GRADE_COMMENT			0x00000002
+#define  TP_GRADE_ICON				0x00000004
 #define  TP_GRADE_ALL			    0x007FFFFF
 
 #define  TP_CHANNEL_NODETYPE		ULONGLONG
@@ -264,9 +265,11 @@ typedef struct _tagTPResBaseInfo
 
 typedef struct _tagTPPictureItem
 {
-	//LPBYTE     pIconBuf; //Í¼±ê
-	SIZE       szIcon;   //Í¼±ê³ß´ç
 	TCHAR      *cPicPath;//Í¼±êÂ·¾¶ 
+	SIZE       szIcon;   //Í¼±ê³ß´ç
+	LPBYTE     pIconBuf; //Í¼±ê
+	__int64    lIconFrame; //Í¼±êµÄÖ¡ºÅ
+
 	_tagTPPictureItem()
 	{
 		Reset();
@@ -278,24 +281,49 @@ typedef struct _tagTPPictureItem
 	void Reset()
 	{
 		cPicPath = NULL;
-//		if(pIconBuf){delete pIconBuf; pIconBuf = NULL;}
 		szIcon = CSize(0,0);
+		pIconBuf = NULL;
+		lIconFrame = 0;
 	}
 	void SaveFile(CFile &cFileWrite)
 	{
-		cFileWrite.Write(&szIcon,sizeof(SIZE));
 		TP_WriteStrToFile(cPicPath, cFileWrite);
+		cFileWrite.Write(&szIcon,sizeof(CSize));
+		cFileWrite.Write(&lIconFrame,sizeof(__int64));
+		if(pIconBuf) 	
+			cFileWrite.Write(pIconBuf,sizeof(DWORD)*szIcon.cx * szIcon.cy);
 	}
-	void ReadFile(CFile &cFileRead)
+	void ReadFile(CFile &cFileRead, TP_GRADE_TYPE eClipGrade)
 	{
 		Release();
 
-		cFileRead.Read(&szIcon,sizeof(SIZE));
 		TP_ReadStrFromFile(cPicPath, cFileRead);
+		cFileRead.Read(&szIcon,sizeof(CSize));
+		if(eClipGrade & TP_GRADE_ICON)
+		{
+			cFileRead.Read(&lIconFrame,sizeof(__int64));
+			if(szIcon.cx > 0 && szIcon.cy > 0)
+			{
+				pIconBuf = new BYTE[sizeof(DWORD)*szIcon.cx * szIcon.cy];
+				if(pIconBuf) 	
+					cFileRead.Read(pIconBuf,sizeof(DWORD)*szIcon.cx * szIcon.cy);
+			}
+			else
+			{
+				pIconBuf = NULL;
+			}
+		}
+		else
+		{		
+			cFileRead.Seek(sizeof(__int64) +sizeof(DWORD)*szIcon.cx * szIcon.cy ,CFile::current);
+			pIconBuf = NULL;
+			szIcon  = CSize(0,0);
+		}	
 	}
 	void Release()
 	{
 		if(cPicPath)  {delete cPicPath ; cPicPath = NULL;}
+		if(pIconBuf){delete pIconBuf; pIconBuf = NULL;}
 
 		Reset();
 	}
