@@ -38,7 +38,7 @@ CTPListCtrlEx::CTPListCtrlEx()
 	m_szItemList         = CSize(200,20);
 	m_szItemIcon         = CSize(100,90);
 	m_szItemReport       = CSize(20,20);	
-	m_szItemTextPicture  = CSize(20,40);
+	m_szItemTextPicture  = CSize(20,60);
 	m_szItemInfo         = CSize(20,40);
 	m_szItemBuffer       = CSize(TP_LISTCTRL_WIDTH + 6,TP_LISTCTRL_HIGH + 23);
 

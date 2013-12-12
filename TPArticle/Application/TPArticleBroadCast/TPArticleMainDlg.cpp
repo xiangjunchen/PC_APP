@@ -66,7 +66,7 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 //	m_pArticleList    ->SetWindowText(_L("ClipExplorer"));
 	m_pArticleList->m_iViewType = VIEWTYPE_TEXTPICTURE;//VIEWTYPE_REPORT;//;
 
-	m_pArticleList->InsertColumn(0, _T("Article Title"), LVCFMT_LEFT,500);	
+	m_pArticleList->InsertColumn(0, _T("Article Title"), LVCFMT_LEFT,rtArticleList.Width()-10);	
 	m_pArticleList->m_pArticleMainDlg = this;
 	//
 	TP_InitArticleCenter();
