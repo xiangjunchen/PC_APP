@@ -1,6 +1,0 @@
-; TPRSSParserud.def : Declares the module parameters for the DLL.
-
-LIBRARY      "TPRSSParserud"
-
-EXPORTS
-    ; Explicit exports can go here
