@@ -27,7 +27,7 @@ public:
 	BOOL    IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo);
 
 	//Article
-	LRESULT ReadArticle(GUID guidRes,TPArticleData &stuArticleData);
+	LRESULT ReadArticle(GUID guidRes,TP_GRADE_TYPE eGradeType, TPArticleData &stuArticleData);
 	LRESULT WriteArticle(GUID guidRes,TPArticleData &stuArticleData);
 	CString GetCurArticleHtmlPath();	
 	//base

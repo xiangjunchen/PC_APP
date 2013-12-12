@@ -18,7 +18,7 @@ LRESULT TP_GetProcessName(LPTSTR &strManageName)
 
 LRESULT  TP_GetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData) 
 {
-	return g_stuArticleDataBase.ReadArticle(guidRes, stuArtData);
+	return g_stuArticleDataBase.ReadArticle(guidRes, eClipGrade, stuArtData);
 }
 LRESULT  TP_SetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData)
 {

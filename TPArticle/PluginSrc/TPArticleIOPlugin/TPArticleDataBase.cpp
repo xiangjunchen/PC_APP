@@ -8,7 +8,7 @@ CTPArticleDataBase::CTPArticleDataBase(void)
 CTPArticleDataBase::~CTPArticleDataBase(void)
 {
 }
-LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TPArticleData &stuArticleData)
+LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TP_GRADE_TYPE eGradeType,TPArticleData &stuArticleData)
 {
 	DWORD dwSize = 0;
 	CString  sFileName = GetResFilePath(guidRes, TP_RES_ARTICLE, &stuArticleData);
@@ -36,7 +36,7 @@ LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TPArticleData &stuArticleDa
 	for(DWORD l = 0 ; l < dwSize; l++)
 	{
 		TPPictureItem *pItem = new TPPictureItem;
-		pItem->ReadFile(hMemFile);
+		pItem->ReadFile(hMemFile, eGradeType);
 		stuArticleData.aPictureItem.Add(pItem);
 	}
 	//
