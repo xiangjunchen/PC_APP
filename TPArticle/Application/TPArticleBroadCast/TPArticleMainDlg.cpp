@@ -89,15 +89,15 @@ BOOL CTPArticleMainDlg::OnInitDialog()
 	ResetChannelContent(guidPrivateChannelNode, m_pChannelList, m_aChannelList);	
 	
 	//////////////////////////////////////////////////////////////////////////ctrl test
- 	CTPImgPreviewWnd *m_pImgPreWnd = new CTPImgPreviewWnd;
- 	m_pImgPreWnd->Create(0,this,0);
- 
- 	if(m_pImgPreWnd)
- 	{
- 		m_pImgPreWnd->SetLayeredWindowAttributes(0,150,2);
- 		m_pImgPreWnd->ShowWindow(SW_SHOW);
- 		m_pImgPreWnd->PreviewImg();		
- 	}
+//  	CTPImgPreviewWnd *m_pImgPreWnd = new CTPImgPreviewWnd;
+//  	m_pImgPreWnd->Create(0,this,0);
+//  
+//  	if(m_pImgPreWnd)
+//  	{
+//  		m_pImgPreWnd->SetLayeredWindowAttributes(0,150,2);
+//  		m_pImgPreWnd->ShowWindow(SW_SHOW);
+//  		m_pImgPreWnd->PreviewImg();		
+//  	}
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
