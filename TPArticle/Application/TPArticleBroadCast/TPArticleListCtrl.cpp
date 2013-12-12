@@ -117,7 +117,8 @@ BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stu
 		}
 		aArticleList.Add(stuArticle.guidRes);
 		
-		InsertItem(iIndex,stuArticle.stuChannelItem.cItemTitle);//CTPListCtrlEx::InsertItem(iResNeed,_L("         "));
+		CTPListCtrlEx::InsertItem(iIndex,_L("         "));
+		//InsertItem(iIndex,stuArticle.stuChannelItem.cItemTitle);//CTPListCtrlEx::InsertItem(iResNeed,_L("         "));
 		TPListItemData *pItemData = new TPListItemData();
 	//	pItemData ->SetResBaseData(hChildRes[l]);
 		pItemData->guidRes = stuArticle.guidRes;
@@ -260,7 +261,7 @@ void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 			// 			CRect rtSmallIconView = rcSub & rtSmallIcon;
 			// 			if(rtSmallIconView.Width() >0)
 			// 				ImageList_DrawEx(m_pCommonRes[TP_CLIPICON_TYPEINDICATORS] ->GetImage(),nIndex,pDC->m_hDC,rtSmallIcon.left,rtSmallIcon.top ,rtSmallIconView.Width(),rtSmallIconView.Height(),CLR_NONE,CLR_NONE,ILD_TRANSPARENT);
-			rcSub.left = rtSmallIcon.right + 5;
+			//rcSub.left = rtSmallIcon.right + 5;
 			rtCommentText |= rcSub;
 		}
 		rtComment |= rcSub;
@@ -276,40 +277,10 @@ void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 		rcSub.DeflateRect(2,0);
 		if(rcSub.right < rcSub .left) {rcSub.right +=2,rcSub.left = rcSub.right - 1;}
 
-		m_aItem[iItem]->aSubItem[i]->rtLable        = rcSub;
-		m_aItem[iItem]->aSubItem[i]->rtDrag         = m_aItem[iItem] ->aSubItem[i]->rtLable | m_aItem[iItem] ->aSubItem[i]->rtIcon;
-		m_aItem[iItem]->aSubItem[i]->rtDrag .bottom = max(iButton,m_aItem[iItem]->aSubItem[i]->rtDrag .bottom); 
+ 		m_aItem[iItem]->aSubItem[i]->rtLable        = rcSub;
+ 		m_aItem[iItem]->aSubItem[i]->rtDrag         = m_aItem[iItem] ->aSubItem[i]->rtLable | m_aItem[iItem] ->aSubItem[i]->rtIcon;
+ 		m_aItem[iItem]->aSubItem[i]->rtDrag .bottom = max(iButton,m_aItem[iItem]->aSubItem[i]->rtDrag .bottom); 
 		rDTRect |= rcSub;
-
-		// »æÖÆText
-		// 		if((0 == iColumnIndex[i]) && (m_eNodeType & TP_NODE_USERINFO) && (g_pUserEnterInfo && pItemData->guidRes == g_pUserEnterInfo->guidUserConfigration))
-		// 		{
-		// 			CFont *pOldFont = NULL;
-		// 			pOldFont = pDC->SelectObject(TP_GetSysFont(FONT_BASE_TEXT6));
-		// 			COLORREF cTextColor = pDC->GetTextColor();
-		// 			pDC->SetTextColor(TP_COLOR_ACTIVEUSER);
-		// 			pDC ->DrawText(pItemData ->sText[iColumnIndex[i]],m_aItem[iItem] ->aSubItem[i]->rtLable ,DT_SINGLELINE|DT_LEFT|DT_VCENTER);
-		// 			pDC->SetTextColor(cTextColor);
-		// 			pDC->SelectObject(pOldFont);
-		// 		}
-		// 		else if((pItemData->eResType &(TP_RES_CLIP | TP_RES_ALLPROGRAM|TP_RES_CATALOG)) && nHeadIndex == TP_HEADINDEX_BIN && iColumnIndex[i] == TP_RESTEXT_CLIPCOLOR ||\
-		// 			(pItemData->eResType &(TP_RES_CATALOG | TP_RES_PROJECT)) && nHeadIndex == TP_HEADINDEX_COMPUTER && iColumnIndex[i] == TP_PROJECT_CLIPCOLOR||\
-		// 			(pItemData->eResType & TP_RES_CATALOG) && nHeadIndex == TP_HEADINDEX_PROJECT && iColumnIndex[i] == TP_CATALOG_CLIPCOLOR ||\
-		// 			((m_eNodeType & TP_NODE_SEARCH) && (pItemData->eResType & TP_RES_PROJECT) && (iColumnIndex[i] == TP_PROJECTTEXT_CLIPCOLOR)))
-		// 		{
-		// 			CRect rtDraw = rcSub;
-		// 			rtDraw.left += rcSub.Width()/2- rcSub.Height()/2;
-		// 			rtDraw.left = max(rtDraw.left, rcSub.left);
-		// 			rtDraw.right = rtDraw.left + rcSub.Height() + 20;
-		// 			if(rtDraw.right >= rcSub.right)
-		// 				rtDraw.right = rcSub.right;
-		// 			COLORREF cColor = TP_GetResColor((TP_RES_COLOR)pItemData->cResColor, FALSE, TRUE);
-		// 			rtDraw.DeflateRect(1,4,1,4);
-		// 			pDC->Draw3dRect(rtDraw, cColor, cColor);
-		// 			rtDraw.DeflateRect(1,1,1,1);
-		// 			pDC->FillSolidRect(rtDraw, cColor);
-		// 		}
-		//		else
 		{
 			pDC ->DrawText(pItemData ->sText[iColumnIndex[i]],m_aItem[iItem] ->aSubItem[i]->rtLable ,DT_SINGLELINE|DT_LEFT|DT_VCENTER);
 		}	
@@ -355,6 +326,7 @@ void  CTPArticleListCtrl::GetItemResData(TPListItemData *pItemData,BOOL bGetData
 		TPArticleData stuArticle;
 		if(S_OK == g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(pItemData->guidRes,TP_GRADE_ALL,stuArticle))
 		{
+			pItemData->sText[0] = stuArticle.stuChannelItem.cItemTitle;
 			if(stuArticle.aPictureItem.GetSize() > 0 && stuArticle.aPictureItem[0]->pIconBuf)
 			{
 				pItemData->pIcon = stuArticle.aPictureItem[0]->pIconBuf;
