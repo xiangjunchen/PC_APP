@@ -31,6 +31,7 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
+	void SetShowWindow(int nCmdShow);
 	DECLARE_MESSAGE_MAP()
 public:
 	void AdjustHtml(CString sHtml);
@@ -46,4 +47,5 @@ public:
 	afx_msg void OnBnClickedButton1();
 
 
+	afx_msg void OnBnClickedButtonOwnchannel();
 };

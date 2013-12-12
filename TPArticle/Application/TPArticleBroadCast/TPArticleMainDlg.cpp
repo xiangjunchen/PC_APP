@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "TPArticleMainDlg.h"
 
 
 
@@ -42,6 +43,7 @@ BEGIN_MESSAGE_MAP(CTPArticleMainDlg, CTPDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &CTPArticleMainDlg::OnBnClickedButton1)
 
 
+	ON_BN_CLICKED(IDC_BUTTON_OWNCHANNEL, &CTPArticleMainDlg::OnBnClickedButtonOwnchannel)
 END_MESSAGE_MAP()
 
 
@@ -49,6 +51,7 @@ END_MESSAGE_MAP()
 BOOL CTPArticleMainDlg::OnInitDialog()
 {
 	CTPDialog::OnInitDialog();
+
 
 	// TODO:  Add extra initialization here
 	m_pChannelList = (CTPComboBox*)GetDlgItem(IDC_COMBO_CHANNELLIST);
@@ -335,4 +338,37 @@ void CTPArticleMainDlg::AdjustHtml(CString sHtml)
 		m_pHtmlCtrl->Navigate2(sHtml);
 	}
 
+}
+void CTPArticleMainDlg::OnBnClickedButtonOwnchannel()
+{
+	CRect rtArticleText;
+	GetDlgItem(IDC_STATIC_ARTICLETEXT)->GetWindowRect(&rtArticleText);
+	ScreenToClient(&rtArticleText);
+
+	SetShowWindow(SW_HIDE);
+
+	CRect rtArticleList;
+	m_pArticleList->GetWindowRect(&rtArticleList);
+	ScreenToClient(&rtArticleList);
+
+	rtArticleList.top = rtArticleText.top;
+	m_pArticleList->MoveWindow(rtArticleList);
+}
+void CTPArticleMainDlg::SetShowWindow(int nCmdShow)
+{
+	int id[] = {
+	IDC_EDIT_CHANNELURL,
+	IDC_BUTTON_ADDCHANNEL,
+	IDC_EDIT_CHANNELKEYDIV,
+	IDC_COMBO_CHANNELNODELISTPUBLIC,
+	IDC_COMBO_CHANNELLISTPUBLIC,
+	IDC_BUTTON_ADDCHANNEL2,
+
+	IDC_COMBO_CHANNELLIST,
+	IDC_LIST_ARTICLE
+	};
+	for (int l = 0 ; l < sizeof(id)/sizeof(int); l++)
+	{
+		GetDlgItem(id[l])->ShowWindow(nCmdShow);
+	}
 }
