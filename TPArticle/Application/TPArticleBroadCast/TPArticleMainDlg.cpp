@@ -292,7 +292,7 @@ void CTPArticleMainDlg::ResetChannelContent(GUID guidChannelNode, CTPComboBox *p
 		aChannelListPublic.Add(stuChannel.guidRes);
 		pChannel->InsertString(l, stuChannel.stuChannelBase.cChannelTitle);	
 	}
-	pChannel->SetCurSel(0);
+	pChannel->SetCurSel(1);
 	OnCbnSelChannelList();
 }
 void CTPArticleMainDlg::OnBnClickedButton1()

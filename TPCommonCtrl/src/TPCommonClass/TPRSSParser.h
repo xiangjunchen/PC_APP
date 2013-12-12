@@ -71,7 +71,7 @@ public:
 	TCHAR			*m_cItemText;
 public:
 	int	SetChannelItem(TPChannelItem *pChannelItem, TCHAR *cKeyDiv);
-	int GetItemInfo(TCHAR *&cItemText);
+	int GetItemInfo(TCHAR *&cItemText, TCHAR *&cImgPath);
 	static BOOL SaveHtml(const TCHAR *cFileName, 
 						 const TCHAR *cHtmlBody, 
 						 const TCHAR *cHtmlTitle,
@@ -91,6 +91,7 @@ private:
 	//BOOL ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode);
 
 	BOOL	ParserHtml(CString &sHtmlStr);
+	CString	ParserImg(CString sHtmlStr, int iPos=1);
 	BOOL	ReleaseItemInfo();
 
 };

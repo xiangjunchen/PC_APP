@@ -265,6 +265,7 @@ typedef struct _tagTPResBaseInfo
 
 typedef struct _tagTPPictureItem
 {
+	BOOL	   bDelBuf;
 	TCHAR      *cPicPath;//图标路径 
 	SIZE       szIcon;   //图标尺寸
 	LPBYTE     pIconBuf; //图标
@@ -280,6 +281,7 @@ typedef struct _tagTPPictureItem
 	}
 	void Reset()
 	{
+		bDelBuf = TRUE;
 		cPicPath = NULL;
 		szIcon = CSize(0,0);
 		pIconBuf = NULL;
@@ -323,7 +325,7 @@ typedef struct _tagTPPictureItem
 	void Release()
 	{
 		if(cPicPath)  {delete cPicPath ; cPicPath = NULL;}
-		if(pIconBuf){delete pIconBuf; pIconBuf = NULL;}
+		if(bDelBuf && pIconBuf){delete pIconBuf; pIconBuf = NULL;}
 
 		Reset();
 	}

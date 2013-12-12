@@ -69,7 +69,7 @@ BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stu
 		}
 		else
 		{
-			TCHAR *cItemText = NULL;
+			TCHAR *cItemText = NULL, *cImgPath = NULL;
 			TPChannelItem *pItemInfo = NULL;
  			int iIconWidth = TP_RESICON_WIDTH_HD,  iIconHeight = TP_RESICON_HIGH_HD;
  			LPBYTE pIcon = new BYTE[iIconWidth * iIconHeight * sizeof(DWORD)];
@@ -77,7 +77,7 @@ BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stu
 
 			CTPArticleParser stuArticleParser;
 			stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], stuChannel.cKeyDiv);
-			stuArticleParser.GetItemInfo(cItemText);
+			stuArticleParser.GetItemInfo(cItemText, cImgPath);
 			ASSERT(TP_StrLen(cItemText) > 50);
 
 			CoCreateGuid(&stuArticle.guidRes);
@@ -327,18 +327,19 @@ void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 }
 void  CTPArticleListCtrl::GetItemResData(TPListItemData *pItemData,BOOL bGetData)
 {
-	if(pItemData == NULL)    return;
-	if(pItemData ->bGetData/* && !(pItemData ->bGetData  & TP_RESUSEFLAG_RELEASE)*/) return;
-
-	TPArticleData stuArticle;
-	if(S_OK == g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(pItemData->guidRes,TP_GRADE_ALL,stuArticle))
+	if(!pItemData ->bGetData)
 	{
-		if(stuArticle.aPictureItem.GetSize() > 0 && stuArticle.aPictureItem[0]->pIconBuf)
+		TPArticleData stuArticle;
+		if(S_OK == g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(pItemData->guidRes,TP_GRADE_ALL,stuArticle))
 		{
-			pItemData->pIcon = stuArticle.aPictureItem[0]->pIconBuf;
-			pItemData->szIcon = stuArticle.aPictureItem[0]->szIcon;
+			if(stuArticle.aPictureItem.GetSize() > 0 && stuArticle.aPictureItem[0]->pIconBuf)
+			{
+				pItemData->pIcon = stuArticle.aPictureItem[0]->pIconBuf;
+				pItemData->szIcon = stuArticle.aPictureItem[0]->szIcon;
+				stuArticle.aPictureItem[0]->bDelBuf = FALSE;
+				pItemData->bDelIcon = TRUE;
+			}
+			pItemData ->bGetData = TRUE;
 		}
-		pItemData ->bGetData = TRUE;
 	}
-
 }

@@ -294,7 +294,7 @@ int	CTPArticleParser::SetChannelItem(TPChannelItem *pChannelItem, TCHAR *cKeyDiv
 // 	TP_StrCpy(m_pChannelItem->cItemLink, pChannelItem->cItemLink, nLen);
 	return 1;
 }
-int CTPArticleParser::GetItemInfo(TCHAR *&cItemText)
+int CTPArticleParser::GetItemInfo(TCHAR *&cItemText,TCHAR *&cImgPath)
 {
 	if(!m_pChannelItem || TP_StrLen(m_pChannelItem->cItemLink) <= 0)	return 0;
 
@@ -317,12 +317,57 @@ int CTPArticleParser::GetItemInfo(TCHAR *&cItemText)
 		sArticle = GetHtmlString(cXMLPath);
 		ParserHtml(sArticle);
 	}
-
 	int nLength = sArticle.GetLength();
 	TP_StrCpy(m_cItemText, sArticle.GetBuffer(),sArticle.GetLength());
 	//sArticle.ReleaseBuffer();
 	cItemText = m_cItemText;
+
+	//download img
+	CString sImgUrl = ParserImg(sArticle);
+	if(!sImgUrl.IsEmpty())
+	{
+		CString sExt = sImgUrl.Right(4);
+		sExt = PathFindExtension(sImgUrl);
+		TCHAR cXMLPath[MAX_PATH];
+		::GetModuleFileName(NULL,cXMLPath,MAX_PATH);
+		PathRemoveFileSpec(cXMLPath);	
+		lstrcat(cXMLPath,_T("\\temp")+sExt);
+
+		CTPDownloadHttp stuDownload;
+		stuDownload.SetHttpUrl(sImgUrl, cXMLPath);
+		stuDownload.Download();
+
+		TP_StrCpy(cImgPath, cXMLPath,MAX_PATH);		
+	}
+
 	return 1;
+}
+
+CString	CTPArticleParser::ParserImg(CString sHtmlStr, int iPos)
+{
+	//<img src = "http://u.img.huxiu.com/portal/201312/12/120803iiix2jljkxp6ibk6.jpg" alt = 
+	CString sImg = _T("");
+// 	sHtmlStr.Find(_T("<img"));
+	int iFind = -1;
+	TCHAR *szImg[] = {_T(".jpg"),_T(".png"),_T(".bmp")};
+	for (int l = 0 ; l < sizeof(szImg)/sizeof(TCHAR); l++)
+	{
+		iFind = sHtmlStr.Find(szImg[l]);
+		if(iFind > 0)
+		{
+			sImg = sHtmlStr.Left(iFind);
+			iFind = sImg.ReverseFind('\"');
+			if(iFind > 0)
+			{
+				sImg = sImg.Right(sImg.GetLength() - iFind - 1);
+				sImg += szImg[l];
+				break;
+			}
+		}
+	}
+	
+
+	return sImg;
 }
 
 BOOL	CTPArticleParser::ParserHtml(CString &sHtmlStr)
