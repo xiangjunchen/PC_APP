@@ -323,22 +323,22 @@ int CTPArticleParser::GetItemInfo(TCHAR *&cItemText,TCHAR *&cImgPath)
 	cItemText = m_cItemText;
 
 	//download img
-	CString sImgUrl = ParserImg(sArticle);
-	if(!sImgUrl.IsEmpty())
-	{
-		CString sExt = sImgUrl.Right(4);
-		sExt = PathFindExtension(sImgUrl);
-		TCHAR cXMLPath[MAX_PATH];
-		::GetModuleFileName(NULL,cXMLPath,MAX_PATH);
-		PathRemoveFileSpec(cXMLPath);	
-		lstrcat(cXMLPath,_T("\\temp")+sExt);
-
-		CTPDownloadHttp stuDownload;
-		stuDownload.SetHttpUrl(sImgUrl, cXMLPath);
-		stuDownload.Download();
-
-		TP_StrCpy(cImgPath, cXMLPath,MAX_PATH);		
-	}
+// 	CString sImgUrl = ParserImg(sArticle);
+// 	if(!sImgUrl.IsEmpty())
+// 	{
+// 		CString sExt = sImgUrl.Right(4);
+// 		sExt = PathFindExtension(sImgUrl);
+// 		TCHAR cXMLPath[MAX_PATH];
+// 		::GetModuleFileName(NULL,cXMLPath,MAX_PATH);
+// 		PathRemoveFileSpec(cXMLPath);	
+// 		lstrcat(cXMLPath,_T("\\temp")+sExt);
+// 
+// 		CTPDownloadHttp stuDownload;
+// 		stuDownload.SetHttpUrl(sImgUrl, cXMLPath);
+// 		stuDownload.Download();
+// 
+// 		TP_StrCpy(cImgPath, cXMLPath,MAX_PATH);		
+// 	}
 
 	return 1;
 }

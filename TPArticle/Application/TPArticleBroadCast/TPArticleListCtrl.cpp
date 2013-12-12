@@ -71,9 +71,6 @@ BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stu
 		{
 			TCHAR *cItemText = NULL, *cImgPath = NULL;
 			TPChannelItem *pItemInfo = NULL;
- 			int iIconWidth = TP_RESICON_WIDTH_HD,  iIconHeight = TP_RESICON_HIGH_HD;
- 			LPBYTE pIcon = new BYTE[iIconWidth * iIconHeight * sizeof(DWORD)];
- 			ZeroMemory(pIcon,iIconWidth * iIconHeight * sizeof(DWORD));	
 
 			CTPArticleParser stuArticleParser;
 			stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], stuChannel.cKeyDiv);
@@ -84,12 +81,37 @@ BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stu
 			stuArticle.guidNode = stuChannel.guidRes;
 			stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
 			TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
- 			TPPictureItem *pPicture = new TPPictureItem;
- 			pPicture->pIconBuf  = pIcon;
- 			pPicture->szIcon.cx = iIconWidth;
- 			pPicture->szIcon.cy = iIconHeight;
- 			TP_StrCpy(pPicture->cPicPath,_T(""),1);
- 			stuArticle.aPictureItem.Add(pPicture);
+			//////////////////////////////////////////////////////////////////////////icon
+			if(cImgPath)
+			{
+				int iIconWidth = TP_RESICON_WIDTH_HD,  iIconHeight = TP_RESICON_HIGH_HD;
+				LPBYTE pIcon = new BYTE[iIconWidth * iIconHeight * sizeof(DWORD)];
+				ZeroMemory(pIcon,iIconWidth * iIconHeight * sizeof(DWORD));	
+				int iWidth = 0 ; int iHeight = 0;
+				CTPImgDecode stuDec;
+				stuDec.Open(cImgPath,iWidth,iHeight);
+				LPBYTE pByte = new BYTE[iWidth * iWidth * sizeof(DWORD)];
+				ZeroMemory(pByte, iWidth * iHeight * sizeof(DWORD));
+
+				if(FIO_Succeed == stuDec.GetImage(pByte))
+				{
+					TP_StretchBlt_Mean((LPDWORD)pIcon, 0, 0, iIconWidth, iIconHeight, iIconWidth, iIconHeight, (LPDWORD)pByte, 0, 0, iWidth, iHeight, iWidth, iHeight, TP_BUFFER_COPY, TP_PARITY_BOTH);
+
+					TPPictureItem *pPicture = new TPPictureItem;
+					pPicture->pIconBuf  = pIcon;
+					pPicture->szIcon.cx = iIconWidth;
+					pPicture->szIcon.cy = iIconHeight;
+					TP_StrCpy(pPicture->cPicPath,cImgPath,TP_StrLen(cImgPath));
+					stuArticle.aPictureItem.Add(pPicture);
+				}
+				else
+				{
+					if(pIcon) {delete pIcon; pIcon = NULL;}
+					if(pByte) {delete pByte; pByte = NULL;}
+				}
+			}
+			//////////////////////////////////////////////////////////////////////////
+			
 			g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
 			stuChannel.aChannelItemAll[l]->guidItem = stuArticle.guidRes;
 		}
@@ -104,6 +126,7 @@ BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stu
 		//GetItemResData(pItemData);		
 		CTPListCtrlEx::SetItemData(iIndex,(DWORD_PTR)pItemData);
 		iIndex++;
+
 	}
 	return TRUE;
 }
@@ -202,7 +225,7 @@ void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 					//绘制节目或素材大图标
 					CRect rtIconView = rtIcon & rcSub;
 					if(rtIconView.Width()>0)
-						TP_StretchDIBitsEx(pDC,pItemData ->pIcon,pItemData ->szIcon.cx,pItemData ->szIcon.cy,rtIcon,rtIconView.Width(),rtIconView.Height(),!bOverTurn);	
+						TP_StretchDIBitsEx(pDC,pItemData ->pIcon,pItemData ->szIcon.cx,pItemData ->szIcon.cy,rtIcon,rtIconView.Width(),rtIconView.Height(),TRUE);	
 					pItemData ->rtIcon = rtSub_Name;
 				}
 				else 

@@ -355,13 +355,14 @@ int CTPImgDecode::Open(TCHAR *cFileName, int &iWidth, int &iHeight)
 // 		//	nRet = gifOpen(lpResource);
 // 		break;
 	default:
-		ASSERT(0);
+	//	ASSERT(0);
 		nRet = FIO_Unsupported;
 		break;
 	}
 	if(nRet != FIO_Succeed)
 	{
 		delete m_lplpResource;
+		m_lplpResource = NULL;
 // 		*m_lplpResource = NULL;
 		return nRet;
 	}
