@@ -53,12 +53,7 @@ void CTPArticleListCtrl::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 	}	
 }
-void  CTPArticleListCtrl::GetItemResData(TPListItemData *pItemData,BOOL bGetData)
-{
-	if(pItemData == NULL)    return;
-	if(pItemData ->bGetData/* && !(pItemData ->bGetData  & TP_RESUSEFLAG_RELEASE)*/) return;
-	pItemData ->bGetData = TRUE;
-}
+
 BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stuChannel)
 {
 	aArticleList.RemoveAll();
@@ -76,6 +71,10 @@ BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stu
 		{
 			TCHAR *cItemText = NULL;
 			TPChannelItem *pItemInfo = NULL;
+ 			int iIconWidth = TP_RESICON_WIDTH_HD,  iIconHeight = TP_RESICON_HIGH_HD;
+ 			LPBYTE pIcon = new BYTE[iIconWidth * iIconHeight * sizeof(DWORD)];
+ 			ZeroMemory(pIcon,iIconWidth * iIconHeight * sizeof(DWORD));	
+
 			CTPArticleParser stuArticleParser;
 			stuArticleParser.SetChannelItem(stuChannel.aChannelItemAll[l], stuChannel.cKeyDiv);
 			stuArticleParser.GetItemInfo(cItemText);
@@ -85,6 +84,12 @@ BOOL CTPArticleListCtrl::SetResData(CGUIDArray &aArticleList, TPChannelData &stu
 			stuArticle.guidNode = stuChannel.guidRes;
 			stuArticle.stuChannelItem = *stuChannel.aChannelItemAll[l];
 			TP_StrCpy(stuArticle.cText, cItemText, TP_StrLen(cItemText));
+ 			TPPictureItem *pPicture = new TPPictureItem;
+ 			pPicture->pIconBuf  = pIcon;
+ 			pPicture->szIcon.cx = iIconWidth;
+ 			pPicture->szIcon.cy = iIconHeight;
+ 			TP_StrCpy(pPicture->cPicPath,_T(""),1);
+ 			stuArticle.aPictureItem.Add(pPicture);
 			g_stuArticleInterface.stuArticleInterfce.TP_SetArticleInfo(stuArticle.guidRes,TP_GRADE_ALL,stuArticle);
 			stuChannel.aChannelItemAll[l]->guidItem = stuArticle.guidRes;
 		}
@@ -118,19 +123,20 @@ void CTPArticleListCtrl::OnLvnDeleteitem(NMHDR *pNMHDR, LRESULT *pResult)
 //	if(m_iMenuItem == pNMLV->iItem) m_iMenuItem = -1;
 	*pResult = 0;
 }
-
 void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 {
+	int iColumnCount = this ->GetColumnCount();
+	if(iColumnCount <=0) return;
+
 	TPListItemData *pItemData = (TPListItemData *)CTPListCtrlEx::GetItemData(iItem);
 	if(pItemData == NULL) return ;
 	pItemData ->rtIcon = CRect(0,0,0,0);
+
 	GetItemResData(pItemData);
-//	if(pItemData ->dwState & TP_RESSTATE_HIDE) return;
+
 	if(!pItemData ->pItem->bShow) return;
 
-	int iColumnCount = this ->GetColumnCount();
-	if(iColumnCount <=0) return;
-//	if(m_bViewFile) GetItemResClipFile(pItemData); 
+	//	if(m_bViewFile) GetItemResClipFile(pItemData); 
 	int iColumnIndex[M2];
 	GetColumnOrderArray(iColumnIndex,iColumnCount);
 
@@ -168,20 +174,20 @@ void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 			// 绘制目录图标
 			rtIcon = rtSub_Name;
 			rtSub_Name &= rcSub;
-// 			if(pItemData->eResType & (TP_RES_CATALOG | TP_RES_PROJECT | TP_RES_USER))
-// 			{
-// 				int   iNPIndex  = pItemData ->iNPIndex;
-// 				rtIcon.left    = rtIcon.left + (rtIcon.Width() - m_pCommonRes[TP_CLIPICON_FLODER]->Width())/2;
-// 				rtIcon.top     = rtIcon.top  + (rtIcon.Height()- m_pCommonRes[TP_CLIPICON_FLODER]->Height())/2;
-// 				rtIcon.right   = rtIcon.left + m_pCommonRes[TP_CLIPICON_FLODER]->Width();
-// 				rtIcon.bottom  = rtIcon.top  + m_pCommonRes[TP_CLIPICON_FLODER]->Height();	
-// 				//绘制文件夹大图标
-// 				CRect rtIconView = rcSub & rtIcon;
-// 				if(rtIconView.Width()>0) // 可见时绘制
-// 					ImageList_DrawEx(m_pCommonRes[TP_CLIPICON_FLODER] ->GetImage(),iNPIndex,pDC->m_hDC,rtIcon.left,rtIcon.top ,rtIconView.Width(),rtIconView.Height(),CLR_NONE,CLR_NONE,ILD_TRANSPARENT);
-// 				pItemData ->rtIcon = rtSub_Name;
-// 			}
-// 			else
+			// 			if(pItemData->eResType & (TP_RES_CATALOG | TP_RES_PROJECT | TP_RES_USER))
+			// 			{
+			// 				int   iNPIndex  = pItemData ->iNPIndex;
+			// 				rtIcon.left    = rtIcon.left + (rtIcon.Width() - m_pCommonRes[TP_CLIPICON_FLODER]->Width())/2;
+			// 				rtIcon.top     = rtIcon.top  + (rtIcon.Height()- m_pCommonRes[TP_CLIPICON_FLODER]->Height())/2;
+			// 				rtIcon.right   = rtIcon.left + m_pCommonRes[TP_CLIPICON_FLODER]->Width();
+			// 				rtIcon.bottom  = rtIcon.top  + m_pCommonRes[TP_CLIPICON_FLODER]->Height();	
+			// 				//绘制文件夹大图标
+			// 				CRect rtIconView = rcSub & rtIcon;
+			// 				if(rtIconView.Width()>0) // 可见时绘制
+			// 					ImageList_DrawEx(m_pCommonRes[TP_CLIPICON_FLODER] ->GetImage(),iNPIndex,pDC->m_hDC,rtIcon.left,rtIcon.top ,rtIconView.Width(),rtIconView.Height(),CLR_NONE,CLR_NONE,ILD_TRANSPARENT);
+			// 				pItemData ->rtIcon = rtSub_Name;
+			// 			}
+			// 			else
 			{
 				// 绘制节目或素材图标
 				if(pItemData ->pIcon && pItemData->szIcon.cx > 0 && pItemData->szIcon.cy > 0)
@@ -220,17 +226,17 @@ void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 			iLeft   = rcSub.left;
 			iButton = rtSub_Name.bottom;
 
- 			rtSmallIcon = rcSub;
-// 			rtSmallIcon.DeflateRect(1,1);	
-// 			rtSmallIcon.right = rtSmallIcon.left + m_pCommonRes[TP_CLIPICON_TYPEINDICATORSLARGE]->Width();
-// 			rtSmallIcon.OffsetRect(2,0);
-// 			rtSmallIcon.top    += (iOffset - m_pCommonRes[TP_CLIPICON_TYPEINDICATORSLARGE]->Height())/2;
-// 			rtSmallIcon.bottom  = rtSmallIcon.top + m_pCommonRes[TP_CLIPICON_TYPEINDICATORSLARGE]->Height();
-// 			int nIndex = TP_GetClipTypeIconIndex(pItemData->eResType, pItemData->eSingSourceType, pItemData);
-// 			//画name栏右上的小图标
-// 			CRect rtSmallIconView = rcSub & rtSmallIcon;
-// 			if(rtSmallIconView.Width() >0)
-// 				ImageList_DrawEx(m_pCommonRes[TP_CLIPICON_TYPEINDICATORS] ->GetImage(),nIndex,pDC->m_hDC,rtSmallIcon.left,rtSmallIcon.top ,rtSmallIconView.Width(),rtSmallIconView.Height(),CLR_NONE,CLR_NONE,ILD_TRANSPARENT);
+			rtSmallIcon = rcSub;
+			// 			rtSmallIcon.DeflateRect(1,1);	
+			// 			rtSmallIcon.right = rtSmallIcon.left + m_pCommonRes[TP_CLIPICON_TYPEINDICATORSLARGE]->Width();
+			// 			rtSmallIcon.OffsetRect(2,0);
+			// 			rtSmallIcon.top    += (iOffset - m_pCommonRes[TP_CLIPICON_TYPEINDICATORSLARGE]->Height())/2;
+			// 			rtSmallIcon.bottom  = rtSmallIcon.top + m_pCommonRes[TP_CLIPICON_TYPEINDICATORSLARGE]->Height();
+			// 			int nIndex = TP_GetClipTypeIconIndex(pItemData->eResType, pItemData->eSingSourceType, pItemData);
+			// 			//画name栏右上的小图标
+			// 			CRect rtSmallIconView = rcSub & rtSmallIcon;
+			// 			if(rtSmallIconView.Width() >0)
+			// 				ImageList_DrawEx(m_pCommonRes[TP_CLIPICON_TYPEINDICATORS] ->GetImage(),nIndex,pDC->m_hDC,rtSmallIcon.left,rtSmallIcon.top ,rtSmallIconView.Width(),rtSmallIconView.Height(),CLR_NONE,CLR_NONE,ILD_TRANSPARENT);
 			rcSub.left = rtSmallIcon.right + 5;
 			rtCommentText |= rcSub;
 		}
@@ -253,34 +259,34 @@ void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 		rDTRect |= rcSub;
 
 		// 绘制Text
-// 		if((0 == iColumnIndex[i]) && (m_eNodeType & TP_NODE_USERINFO) && (g_pUserEnterInfo && pItemData->guidRes == g_pUserEnterInfo->guidUserConfigration))
-// 		{
-// 			CFont *pOldFont = NULL;
-// 			pOldFont = pDC->SelectObject(TP_GetSysFont(FONT_BASE_TEXT6));
-// 			COLORREF cTextColor = pDC->GetTextColor();
-// 			pDC->SetTextColor(TP_COLOR_ACTIVEUSER);
-// 			pDC ->DrawText(pItemData ->sText[iColumnIndex[i]],m_aItem[iItem] ->aSubItem[i]->rtLable ,DT_SINGLELINE|DT_LEFT|DT_VCENTER);
-// 			pDC->SetTextColor(cTextColor);
-// 			pDC->SelectObject(pOldFont);
-// 		}
-// 		else if((pItemData->eResType &(TP_RES_CLIP | TP_RES_ALLPROGRAM|TP_RES_CATALOG)) && nHeadIndex == TP_HEADINDEX_BIN && iColumnIndex[i] == TP_RESTEXT_CLIPCOLOR ||\
-// 			(pItemData->eResType &(TP_RES_CATALOG | TP_RES_PROJECT)) && nHeadIndex == TP_HEADINDEX_COMPUTER && iColumnIndex[i] == TP_PROJECT_CLIPCOLOR||\
-// 			(pItemData->eResType & TP_RES_CATALOG) && nHeadIndex == TP_HEADINDEX_PROJECT && iColumnIndex[i] == TP_CATALOG_CLIPCOLOR ||\
-// 			((m_eNodeType & TP_NODE_SEARCH) && (pItemData->eResType & TP_RES_PROJECT) && (iColumnIndex[i] == TP_PROJECTTEXT_CLIPCOLOR)))
-// 		{
-// 			CRect rtDraw = rcSub;
-// 			rtDraw.left += rcSub.Width()/2- rcSub.Height()/2;
-// 			rtDraw.left = max(rtDraw.left, rcSub.left);
-// 			rtDraw.right = rtDraw.left + rcSub.Height() + 20;
-// 			if(rtDraw.right >= rcSub.right)
-// 				rtDraw.right = rcSub.right;
-// 			COLORREF cColor = TP_GetResColor((TP_RES_COLOR)pItemData->cResColor, FALSE, TRUE);
-// 			rtDraw.DeflateRect(1,4,1,4);
-// 			pDC->Draw3dRect(rtDraw, cColor, cColor);
-// 			rtDraw.DeflateRect(1,1,1,1);
-// 			pDC->FillSolidRect(rtDraw, cColor);
-// 		}
-//		else
+		// 		if((0 == iColumnIndex[i]) && (m_eNodeType & TP_NODE_USERINFO) && (g_pUserEnterInfo && pItemData->guidRes == g_pUserEnterInfo->guidUserConfigration))
+		// 		{
+		// 			CFont *pOldFont = NULL;
+		// 			pOldFont = pDC->SelectObject(TP_GetSysFont(FONT_BASE_TEXT6));
+		// 			COLORREF cTextColor = pDC->GetTextColor();
+		// 			pDC->SetTextColor(TP_COLOR_ACTIVEUSER);
+		// 			pDC ->DrawText(pItemData ->sText[iColumnIndex[i]],m_aItem[iItem] ->aSubItem[i]->rtLable ,DT_SINGLELINE|DT_LEFT|DT_VCENTER);
+		// 			pDC->SetTextColor(cTextColor);
+		// 			pDC->SelectObject(pOldFont);
+		// 		}
+		// 		else if((pItemData->eResType &(TP_RES_CLIP | TP_RES_ALLPROGRAM|TP_RES_CATALOG)) && nHeadIndex == TP_HEADINDEX_BIN && iColumnIndex[i] == TP_RESTEXT_CLIPCOLOR ||\
+		// 			(pItemData->eResType &(TP_RES_CATALOG | TP_RES_PROJECT)) && nHeadIndex == TP_HEADINDEX_COMPUTER && iColumnIndex[i] == TP_PROJECT_CLIPCOLOR||\
+		// 			(pItemData->eResType & TP_RES_CATALOG) && nHeadIndex == TP_HEADINDEX_PROJECT && iColumnIndex[i] == TP_CATALOG_CLIPCOLOR ||\
+		// 			((m_eNodeType & TP_NODE_SEARCH) && (pItemData->eResType & TP_RES_PROJECT) && (iColumnIndex[i] == TP_PROJECTTEXT_CLIPCOLOR)))
+		// 		{
+		// 			CRect rtDraw = rcSub;
+		// 			rtDraw.left += rcSub.Width()/2- rcSub.Height()/2;
+		// 			rtDraw.left = max(rtDraw.left, rcSub.left);
+		// 			rtDraw.right = rtDraw.left + rcSub.Height() + 20;
+		// 			if(rtDraw.right >= rcSub.right)
+		// 				rtDraw.right = rcSub.right;
+		// 			COLORREF cColor = TP_GetResColor((TP_RES_COLOR)pItemData->cResColor, FALSE, TRUE);
+		// 			rtDraw.DeflateRect(1,4,1,4);
+		// 			pDC->Draw3dRect(rtDraw, cColor, cColor);
+		// 			rtDraw.DeflateRect(1,1,1,1);
+		// 			pDC->FillSolidRect(rtDraw, cColor);
+		// 		}
+		//		else
 		{
 			pDC ->DrawText(pItemData ->sText[iColumnIndex[i]],m_aItem[iItem] ->aSubItem[i]->rtLable ,DT_SINGLELINE|DT_LEFT|DT_VCENTER);
 		}	
@@ -305,17 +311,34 @@ void CTPArticleListCtrl::DrawTextPicture(CDC *pDC,int iItem)
 	//画右下的贯穿name右边所有列的黑框
 	if(rtComment.right > rtComment.left) pDC->Draw3dRect(rtComment,RGB(0,0,0),RGB(0,0,0));
 	rtCommentText.DeflateRect(3,3);
-// 	if(pItemData ->eResType & (TP_RES_CLIP | TP_RES_ALLPROGRAM))
-// 	{		
-// 		pDC->DrawText(pItemData->sText[TP_RESTEXT_COMMENT],rtCommentText,DT_VCENTER|DT_SINGLELINE);
-// 	}
-// 	else if((pItemData ->eResType & TP_RES_ALLCGTEMPLATE))
-// 	{
-// 
-// 		pDC->DrawText(pItemData->sText[TP_TEMPALTECGTEXT_COMMENT],rtCommentText,DT_VCENTER|DT_SINGLELINE);
-// 	}
-// 	else if(pItemData->eResType & TP_RES_USER)
-// 	{
-// 		pDC->DrawText(pItemData->sText[TP_USEREXT_COMMENT],rtCommentText,DT_VCENTER|DT_SINGLELINE);
-// 	}
+	// 	if(pItemData ->eResType & (TP_RES_CLIP | TP_RES_ALLPROGRAM))
+	// 	{		
+	// 		pDC->DrawText(pItemData->sText[TP_RESTEXT_COMMENT],rtCommentText,DT_VCENTER|DT_SINGLELINE);
+	// 	}
+	// 	else if((pItemData ->eResType & TP_RES_ALLCGTEMPLATE))
+	// 	{
+	// 
+	// 		pDC->DrawText(pItemData->sText[TP_TEMPALTECGTEXT_COMMENT],rtCommentText,DT_VCENTER|DT_SINGLELINE);
+	// 	}
+	// 	else if(pItemData->eResType & TP_RES_USER)
+	// 	{
+	// 		pDC->DrawText(pItemData->sText[TP_USEREXT_COMMENT],rtCommentText,DT_VCENTER|DT_SINGLELINE);
+	// 	}
+}
+void  CTPArticleListCtrl::GetItemResData(TPListItemData *pItemData,BOOL bGetData)
+{
+	if(pItemData == NULL)    return;
+	if(pItemData ->bGetData/* && !(pItemData ->bGetData  & TP_RESUSEFLAG_RELEASE)*/) return;
+
+	TPArticleData stuArticle;
+	if(S_OK == g_stuArticleInterface.stuArticleInterfce.TP_GetArticleInfo(pItemData->guidRes,TP_GRADE_ALL,stuArticle))
+	{
+		if(stuArticle.aPictureItem.GetSize() > 0 && stuArticle.aPictureItem[0]->pIconBuf)
+		{
+			pItemData->pIcon = stuArticle.aPictureItem[0]->pIconBuf;
+			pItemData->szIcon = stuArticle.aPictureItem[0]->szIcon;
+		}
+		pItemData ->bGetData = TRUE;
+	}
+
 }

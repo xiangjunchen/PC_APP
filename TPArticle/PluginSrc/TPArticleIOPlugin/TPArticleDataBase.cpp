@@ -63,12 +63,12 @@ LRESULT CTPArticleDataBase::WriteArticle(GUID guidRes,TPArticleData &stuArticleD
 	TP_WriteStrToFile(stuArticleData.cText, hMemFile);
 	hMemFile.Write(&stuArticleData.lCommentSize,sizeof(INT64));				
 	stuArticleData.stuChannelItem.SaveFile(hMemFile);
+	dwSize = stuArticleData.aPictureItem.GetSize();
 	hMemFile.Write(&dwSize,sizeof(int));			
 	for(DWORD l = 0 ; l < dwSize; l++)
 	{
-		TPPictureItem *pItem = new TPPictureItem;
+		TPPictureItem *pItem = stuArticleData.aPictureItem[l];
 		pItem->SaveFile(hMemFile);
-		stuArticleData.aPictureItem.Add(pItem);
 	}
 	//
 	hMemFile.WriteFile(sFileName);

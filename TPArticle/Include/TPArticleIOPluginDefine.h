@@ -276,7 +276,7 @@ typedef struct _tagTPPictureItem
 	}
 	~_tagTPPictureItem()
 	{
-		Reset();
+		Release();
 	}
 	void Reset()
 	{
