@@ -13,6 +13,8 @@
 #include "TPWebHost.h"
 #include "TPDownloadHttp.h"
 #include "TPRSSParser.h"
+#include "Jpegfile.h"
+#include "TPImgInterface.h"
 //#include "etdbrecordset.h"
 //#include "ETNetDefine.h"
 //#include "ETNetDeclaration.h"

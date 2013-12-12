@@ -241,7 +241,7 @@
 				AdditionalDependencies="strmbasd.lib uuid.lib winmm.lib"
 				OutputFile="..\..\..\Unicode Debug\TPCommonClassud.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Lib\;..\..\..\Lib\Lib_Import\dx9sdk"
+				AdditionalLibraryDirectories="..\..\..\Lib\;..\..\..\Lib\Lib_Import\dx9sdk;..\..\..\Lib\Lib_Import\imgio"
 				ModuleDefinitionFile=".\TPCommonClassud.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -378,6 +378,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TPImgInterface.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TPMessageCenter.cpp"
 				>
 			</File>
@@ -405,6 +409,30 @@
 				RelativePath=".\TPWinShellInterface.cpp"
 				>
 			</File>
+			<Filter
+				Name="fio_img"
+				>
+				<File
+					RelativePath=".\JCONFIG.H"
+					>
+				</File>
+				<File
+					RelativePath=".\Jmorecfg.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Jpegfile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Jpegfile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\JPEGLIB.H"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -505,6 +533,10 @@
 			</File>
 			<File
 				RelativePath=".\TPGuidLock.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPImgInterface.h"
 				>
 			</File>
 			<File
