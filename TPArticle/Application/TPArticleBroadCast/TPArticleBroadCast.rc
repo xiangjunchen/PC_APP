@@ -71,25 +71,39 @@ END
 // Dialog
 //
 
-IDD_TPARTICLEMAINDLG DIALOGEX 0, 0, 647, 362
+IDD_DAILOG_ARTICLEMAINDLG DIALOGEX 0, 0, 655, 362
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,225,346,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,588,346,50,14
-    EDITTEXT        IDC_EDIT_CHANNELURL,31,21,234,16,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_CHANNELKEYDIV,32,44,233,16,ES_AUTOHSCROLL
-    PUSHBUTTON      "AddChannel",IDC_BUTTON_ADDCHANNEL,281,22,50,14
-    COMBOBOX        IDC_COMBO_CHANNELLIST,80,102,161,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_LIST_ARTICLE,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,33,123,300,218
-    LTEXT           "ArticleText",IDC_STATIC_ARTICLETEXT,346,26,269,308
-    COMBOBOX        IDC_COMBO_CHANNELLISTPUBLIC,105,70,161,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "AddToPrivate",IDC_BUTTON_ADDCHANNEL2,281,69,50,14
-    COMBOBOX        IDC_COMBO_CHANNELNODELISTPUBLIC,32,70,59,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "FullScreen",IDC_BUTTON_FULLSCREEN,346,7,41,10
-    PUSHBUTTON      "...",IDC_BUTTON_PUBLIC,9,15,13,14
-    PUSHBUTTON      "My",IDC_BUTTON_OWNCHANNEL,9,39,13,14
+    DEFPUSHBUTTON   "OK",IDOK,525,343,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,587,343,50,14
+    LTEXT           "ArticleText",IDC_STATIC_ARTICLETEXT,346,26,269,308,NOT WS_VISIBLE
+    PUSHBUTTON      "Full",IDC_BUTTON_FULLSCREEN,6,84,20,14
+    PUSHBUTTON      "Add",IDC_BUTTON_PUBLIC,6,15,20,14
+    PUSHBUTTON      "My",IDC_BUTTON_OWNCHANNEL,6,38,20,14
+    LTEXT           "List",IDC_STATIC_LIST,35,32,298,302,NOT WS_VISIBLE
+    PUSHBUTTON      "like",IDC_BUTTON_FAVOURITEARTICLE,6,61,20,14
+    PUSHBUTTON      "Add Favourite",IDC_BUTTON_FAVOURITEADD,463,343,50,14
+    LTEXT           "Static",IDC_STATIC_LOADSTATUS,41,10,79,8,0,WS_EX_TRANSPARENT
+    PUSHBUTTON      "¡ü",IDC_BUTTON_FORWARDARTICLE,6,107,20,14
+    PUSHBUTTON      "¡ý",IDC_BUTTON_NEXTARTICLE,6,130,20,14
+END
+
+IDD_DIALOG_PUBLICCHANNELCENTER DIALOGEX 0, 0, 496, 215
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,205,194,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,439,194,50,14
+    EDITTEXT        IDC_EDIT_CHANNELURL,88,22,234,16,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_CHANNELKEYDIV,89,46,233,16,ES_AUTOHSCROLL
+    PUSHBUTTON      "AddChannel",IDC_BUTTON_ADDCHANNEL,338,23,50,14
+    COMBOBOX        IDC_COMBO_CHANNELLIST,137,103,161,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_CHANNELLISTPUBLIC,162,71,161,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "AddToPrivate",IDC_BUTTON_ADDCHANNEL2,338,70,50,14
+    COMBOBOX        IDC_COMBO_CHANNELNODELISTPUBLIC,89,71,59,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 
@@ -101,15 +115,37 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
-    IDD_TPARTICLEMAINDLG, DIALOG
+    IDD_DAILOG_ARTICLEMAINDLG, DIALOG
     BEGIN
         LEFTMARGIN, 2
-        RIGHTMARGIN, 638
+        RIGHTMARGIN, 646
         TOPMARGIN, 1
         BOTTOMMARGIN, 360
     END
+
+    IDD_DIALOG_PUBLICCHANNELCENTER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 489
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 208
+    END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU_SYSMENU MENU 
+BEGIN
+    POPUP "Sys Manage"
+    BEGIN
+        MENUITEM "Public Channel Manage",       ID_SYSMENU_PUBLICCHANNELMANAGE
+    END
+END
 
 #endif    // Chinese (P.R.C.) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -162,6 +198,50 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "&View"
+    BEGIN
+        POPUP "&Toolbars and Docking Windows"
+        BEGIN
+            MENUITEM "<placeholder>",               ID_VIEW_TOOLBAR
+        END
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About TPArticleBroadCast...", ID_APP_ABOUT
+    END
+END
+
+IDR_POPUP_EDIT MENU 
+BEGIN
+    POPUP "Edit"
+    BEGIN
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Icon
 //
 
@@ -202,50 +282,6 @@ BEGIN
     BUTTON      ID_EDIT_PASTE
     SEPARATOR
     BUTTON      ID_APP_ABOUT
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_MAINFRAME MENU 
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
-    END
-    POPUP "&View"
-    BEGIN
-        POPUP "&Toolbars and Docking Windows"
-        BEGIN
-            MENUITEM "<placeholder>",               ID_VIEW_TOOLBAR
-        END
-        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&About TPArticleBroadCast...", ID_APP_ABOUT
-    END
-END
-
-IDR_POPUP_EDIT MENU 
-BEGIN
-    POPUP "Edit"
-    BEGIN
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
-    END
 END
 
 

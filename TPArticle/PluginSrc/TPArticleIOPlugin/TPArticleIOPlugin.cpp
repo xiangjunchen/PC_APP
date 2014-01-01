@@ -27,13 +27,24 @@ LRESULT  TP_SetArticleInfo(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &
 
 LRESULT  TP_DelArticleInfo(GUID guidRes)
 {
-	return S_OK;
+	return g_stuArticleDataBase.DeleteArticle(guidRes);
 }
 CString  TP_GetCurArticleHtmlPath()
 {
 	return 	g_stuArticleDataBase.GetCurArticleHtmlPath();
 }
-
+CString  TP_GetArticleResourcePath(GUID guidRes, TCHAR *cPath)
+{
+	return 	g_stuArticleDataBase.GetArticleResourcePath(guidRes, cPath);
+}
+LRESULT  TP_GetArticleChild(GUID guidNode, TPResDataArray &hChildRes)
+{
+	return g_stuArticleDataBase.GetArticleChild(guidNode, hChildRes);
+}
+BOOL     TP_IsArticleExist(GUID guidChannel, TPChannelItem *pChannelItem)
+{
+	return g_stuArticleDataBase.IsArticleExist(guidChannel, pChannelItem);
+}
 LRESULT  TP_GetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode) 
 {
 	return 	g_stuArticleDataBase.ReadChannelNode(guidRes, stuChannelNode);
@@ -59,6 +70,7 @@ LRESULT  TP_SetChannelInfo(GUID guidRes,TPChannelData &stuChannelData)
 
 LRESULT  TP_DelChannelInfo(GUID guidRes)
 {
+	g_stuArticleDataBase.DeleteChannel(guidRes);
 	return S_OK;
 }
 
@@ -85,10 +97,11 @@ LRESULT  TP_GetChannelChild(GUID guidRes, TPResDataArray &hChildRes)
 {
 	return 	g_stuArticleDataBase.GetChannelChild(guidRes, hChildRes);
 }
-BOOL  TP_IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo)
+BOOL  TP_IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo, GUID &guidExist)
 {
-	return g_stuArticleDataBase.IsChannelExist(guidChannelNode, pChannelInfo);
+	return g_stuArticleDataBase.IsChannelExist(guidChannelNode, pChannelInfo, guidExist);
 }
+
 LRESULT TP_GetPlugInFunction(TPArticleIOPluginInterface *pInterface)
 {
 	//Article
@@ -96,6 +109,9 @@ LRESULT TP_GetPlugInFunction(TPArticleIOPluginInterface *pInterface)
 	pInterface->stuArticleInterface.TP_SetArticleInfo = TP_SetArticleInfo;
 	pInterface->stuArticleInterface.TP_DelArticleInfo = TP_DelArticleInfo;
 	pInterface->stuArticleInterface.TP_GetCurArticleHtmlPath = TP_GetCurArticleHtmlPath;
+	pInterface->stuArticleInterface.TP_GetArticleResourcePath = TP_GetArticleResourcePath;
+	pInterface->stuArticleInterface.TP_IsArticleExist = TP_IsArticleExist;
+	pInterface->stuArticleInterface.TP_GetArticleChild = TP_GetArticleChild;
 
 	//ChannelNode
  	pInterface->stuChannelNodeInterface.TP_GetChannelNodeChild = TP_GetChannelNodeChild;

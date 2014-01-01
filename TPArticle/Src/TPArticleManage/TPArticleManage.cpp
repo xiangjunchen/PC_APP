@@ -85,7 +85,19 @@ CString  TP_GetCurArticleHtmlPath()
 {
 	return g_stuArticleIOPluginInterface.stuArticleInterface.TP_GetCurArticleHtmlPath();
 }
+CString   TP_GetArticleResourcePath(GUID guidRes, TCHAR *cPath)
+{
+	return g_stuArticleIOPluginInterface.stuArticleInterface.TP_GetArticleResourcePath(guidRes, cPath);
+}
+BOOL     TP_IsArticleExist(GUID guidChannel, TPChannelItem *pChannelItem)
+{
+	return g_stuArticleIOPluginInterface.stuArticleInterface.TP_IsArticleExist(guidChannel, pChannelItem);
 
+}
+LRESULT  TP_GetArticleChild(GUID guidNode, TPResDataArray &hChildRes)
+{
+	return g_stuArticleIOPluginInterface.stuArticleInterface.TP_GetArticleChild(guidNode, hChildRes);
+}
 LRESULT  TP_GetChannelNodeInfo(GUID guidRes,TPChannelNodeData &stuChannelNode) 
 {
 	return 	g_stuArticleIOPluginInterface.stuChannelNodeInterface.TP_GetChannelNodeInfo(guidRes,stuChannelNode);
@@ -108,9 +120,9 @@ LRESULT  TP_GetChannelChild(GUID guidRes, TPResDataArray &hChildRes)
 {
 	return g_stuArticleIOPluginInterface.stuChannelInterface.TP_GetChannelChild(guidRes, hChildRes);
 }
-BOOL  TP_IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo)
+BOOL  TP_IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo, GUID &guidExist)
 {
-	return g_stuArticleIOPluginInterface.stuChannelInterface.TP_IsChannelExist(guidChannelNode, pChannelInfo);
+	return g_stuArticleIOPluginInterface.stuChannelInterface.TP_IsChannelExist(guidChannelNode, pChannelInfo, guidExist);
 }
 
 LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)
@@ -133,6 +145,9 @@ LRESULT TP_GetManageFunction(TPArticleManageInterface *pInterface)
 	pInterface->stuArticleInterfce.TP_SetArticleInfo = TP_SetArticleInfo;
 	pInterface->stuArticleInterfce.TP_DelArticleInfo = TP_DelArticleInfo;
 	pInterface->stuArticleInterfce.TP_GetCurArticleHtmlPath = TP_GetCurArticleHtmlPath;
+	pInterface->stuArticleInterfce.TP_GetArticleResourcePath = TP_GetArticleResourcePath;
+	pInterface->stuArticleInterfce.TP_IsArticleExist = TP_IsArticleExist;
+	pInterface->stuArticleInterfce.TP_GetArticleChild = TP_GetArticleChild;
 
 	return S_OK;
 }

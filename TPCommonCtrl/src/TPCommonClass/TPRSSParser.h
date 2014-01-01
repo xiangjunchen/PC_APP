@@ -69,6 +69,7 @@ public:
 	TPChannelItem 	*m_pChannelItem;
 	TCHAR			*m_cKeyDiv;
 	TCHAR			*m_cItemText;
+	TCHAR			*m_cImgPath;
 public:
 	int	SetChannelItem(TPChannelItem *pChannelItem, TCHAR *cKeyDiv);
 	int GetItemInfo(TCHAR *&cItemText, TCHAR *&cImgPath);
@@ -77,13 +78,16 @@ public:
 						 const TCHAR *cHtmlTitle,
 						 const TCHAR *cHtmlAuthor,
 						 const TCHAR *cPubData,
-						 BOOL bApplyTemplate = TRUE);
+						 BOOL bApplyTemplate = TRUE,
+						 BOOL bFullScreen    = FALSE);
 	static CString GetHtmlString(const TCHAR *cFileName);
 	static CString GetTemplateString(const TCHAR *cFileName, 
 									 const TCHAR *cHtmlBody, 
 									 const TCHAR *cHtmlTitle,
 									 const TCHAR *cHtmlAuthor,
-									 const TCHAR *cPubData);
+									 const TCHAR *cPubData,
+									 BOOL bFullScreen = FALSE);
+	static CString GetBodyString(const TCHAR *cHtmlBody);
 private:
 	//BOOL ParserChannel(const TCHAR *cFileName);
 	//BOOL ParserChannelNode(MSXML2::IXMLDOMNodePtr ChildNode);

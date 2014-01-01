@@ -232,6 +232,7 @@
 				OutputFile="..\..\..\Unicode Debug\$(ProjectName)ud.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Lib"
+				DelayLoadDLLs=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -413,6 +414,10 @@
 				RelativePath=".\TPImgPreviewWnd.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\TPPublicArticleManage.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -461,6 +466,10 @@
 			</File>
 			<File
 				RelativePath=".\TPImgPreviewWnd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TPPublicArticleManage.h"
 				>
 			</File>
 		</Filter>

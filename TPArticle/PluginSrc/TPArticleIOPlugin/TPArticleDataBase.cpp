@@ -8,11 +8,10 @@ CTPArticleDataBase::CTPArticleDataBase(void)
 CTPArticleDataBase::~CTPArticleDataBase(void)
 {
 }
-LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TP_GRADE_TYPE eGradeType,TPArticleData &stuArticleData)
+LRESULT CTPArticleDataBase::ReadArticle(CString sFileName,TP_GRADE_TYPE eGradeType, TPArticleData &stuArticleData)
 {
-	DWORD dwSize = 0;
-	CString  sFileName = GetResFilePath(guidRes, TP_RES_ARTICLE, &stuArticleData);
 	if(!PathFileExists(sFileName))	return S_FALSE;
+	DWORD dwSize = 0;
 
 	CTPMemFile hMemFile;
 	hMemFile.ReadFile(sFileName);
@@ -28,6 +27,7 @@ LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TP_GRADE_TYPE eGradeType,TP
 	hMemFile.Read(&stuArticleData.tmModify,sizeof(SYSTEMTIME));				
 	hMemFile.Read(&stuArticleData.tmRead,sizeof(SYSTEMTIME));				
 	hMemFile.Read(&stuArticleData.eResType,sizeof(ULONGLONG));			
+	hMemFile.Read(&stuArticleData.eNodeType,sizeof(ULONGLONG));			
 
 	TP_ReadStrFromFile(stuArticleData.cText, hMemFile);
 	hMemFile.Read(&stuArticleData.lCommentSize,sizeof(INT64));				
@@ -42,6 +42,27 @@ LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TP_GRADE_TYPE eGradeType,TP
 	//
 	hMemFile.Close();
 	return S_OK;
+}
+LRESULT CTPArticleDataBase::DeleteArticle(GUID guidRes)
+{
+	CString  sFileName = GetResFilePath(guidRes, TP_RES_ARTICLE, NULL);
+	//delete ressource
+	CString sArticleDirect = _T(""), sGuidRes = TP_UuidToString(&guidRes);
+	sArticleDirect.Format(_T("%s\\%s\\%s"),GetLocalDataPath(),ResTypeToFolderName(TP_RES_ARTICLERES),sGuidRes);
+	TP_DeleteDirectory(sArticleDirect);
+	//delete base
+	DeleteFile(sFileName);
+
+	m_aArticleFileName.RemoveKey(TP_GuidToString(&guidRes));
+	return S_OK;
+}
+
+LRESULT CTPArticleDataBase::ReadArticle(GUID guidRes,TP_GRADE_TYPE eGradeType,TPArticleData &stuArticleData)
+{
+	CString  sFileName = GetResFilePath(guidRes, TP_RES_ARTICLE, &stuArticleData);
+	if(sFileName.IsEmpty())	return S_FALSE;
+
+	return ReadArticle(sFileName, eGradeType, stuArticleData);
 }
 LRESULT CTPArticleDataBase::WriteArticle(GUID guidRes,TPArticleData &stuArticleData)
 {
@@ -59,6 +80,7 @@ LRESULT CTPArticleDataBase::WriteArticle(GUID guidRes,TPArticleData &stuArticleD
 	hMemFile.Write(&stuArticleData.tmModify,sizeof(SYSTEMTIME));				
 	hMemFile.Write(&stuArticleData.tmRead,sizeof(SYSTEMTIME));				
 	hMemFile.Write(&stuArticleData.eResType,sizeof(ULONGLONG));			
+	hMemFile.Write(&stuArticleData.eNodeType,sizeof(ULONGLONG));			
 
 	TP_WriteStrToFile(stuArticleData.cText, hMemFile);
 	hMemFile.Write(&stuArticleData.lCommentSize,sizeof(INT64));				
@@ -98,8 +120,8 @@ LRESULT CTPArticleDataBase::ReadChannel(CString  sFileName,TPChannelData &stuCha
 	hMemFile.Read(&stuChannelData.tmModify,sizeof(SYSTEMTIME));				
 	hMemFile.Read(&stuChannelData.tmRead,sizeof(SYSTEMTIME));				
 	hMemFile.Read(&stuChannelData.eResType,sizeof(ULONGLONG));			
-
 	hMemFile.Read(&stuChannelData.eNodeType,sizeof(ULONGLONG));			
+
 	hMemFile.Read(&stuChannelData.lUpdateInterval,sizeof(int));			
 	hMemFile.Read(&stuChannelData.lSaveNum,sizeof(int));			
 	TP_ReadStrFromFile(stuChannelData.cKeyDiv, hMemFile);
@@ -121,7 +143,7 @@ LRESULT CTPArticleDataBase::ReadChannel(CString  sFileName,TPChannelData &stuCha
 LRESULT CTPArticleDataBase::ReadChannel(GUID guidRes,TPChannelData &stuChannelData)
 {
 	CString  sFileName = GetResFilePath(guidRes, TP_RES_CHANNEL, &stuChannelData);
-
+	if(!PathFileExists(sFileName))	{  ASSERT(0); return S_FALSE;}
 	ReadChannel(sFileName, stuChannelData);
 	return S_OK;
 }
@@ -141,8 +163,8 @@ LRESULT CTPArticleDataBase::WriteChannel(GUID guidRes,TPChannelData &stuChannelD
 	hMemFile.Write(&stuChannelData.tmModify,sizeof(SYSTEMTIME));				
 	hMemFile.Write(&stuChannelData.tmRead,sizeof(SYSTEMTIME));				
 	hMemFile.Write(&stuChannelData.eResType,sizeof(ULONGLONG));			
-
 	hMemFile.Write(&stuChannelData.eNodeType,sizeof(ULONGLONG));			
+
 	hMemFile.Write(&stuChannelData.lUpdateInterval,sizeof(int));			
 	hMemFile.Write(&stuChannelData.lSaveNum,sizeof(int));	
 	TP_WriteStrToFile(stuChannelData.cKeyDiv, hMemFile);
@@ -181,8 +203,8 @@ LRESULT CTPArticleDataBase::ReadChannelNode(GUID guidRes,TPChannelNodeData &stuC
 	hMemFile.Read(&stuChannelNodeData.tmModify,sizeof(SYSTEMTIME));				
 	hMemFile.Read(&stuChannelNodeData.tmRead,sizeof(SYSTEMTIME));				
 	hMemFile.Read(&stuChannelNodeData.eResType,sizeof(ULONGLONG));			
-
 	hMemFile.Read(&stuChannelNodeData.eNodeType,sizeof(ULONGLONG));			
+
 	TP_ReadStrFromFile(stuChannelNodeData.cNodeName, hMemFile);
 	//
 	hMemFile.Close();
@@ -205,8 +227,8 @@ LRESULT CTPArticleDataBase::WriteChannelNode(GUID guidRes,TPChannelNodeData &stu
 	hMemFile.Write(&stuChannelNodeData.tmModify,sizeof(SYSTEMTIME));				
 	hMemFile.Write(&stuChannelNodeData.tmRead,sizeof(SYSTEMTIME));				
 	hMemFile.Write(&stuChannelNodeData.eResType,sizeof(ULONGLONG));			
-
 	hMemFile.Write(&stuChannelNodeData.eNodeType,sizeof(ULONGLONG));			
+
 	TP_WriteStrToFile(stuChannelNodeData.cNodeName, hMemFile);
 	//
 	hMemFile.WriteFile(sFileName);
@@ -230,6 +252,8 @@ LRESULT CTPArticleDataBase::GetChannelNodeChild(GUID guidRes, TPResDataArray &hC
 		{
 			TPResData stuRes;
 			stuRes.guidRes = TP_UuidFromString(sGuid);
+			stuRes.guidNode = guidRes;
+			stuRes.eResType = TP_RES_CHANNELNODE;
 			hChildRes.Add(stuRes);
 		}
 	}
@@ -251,6 +275,8 @@ LRESULT CTPArticleDataBase::GetChannelChild(GUID guidRes, TPResDataArray &hChild
 		{
 			TPResData stuRes;
 			stuRes.guidRes = TP_UuidFromString(sGuid);
+			stuRes.guidNode = guidRes;
+			stuRes.eResType = TP_RES_CHANNEL;
 			hChildRes.Add(stuRes);
 		}
 	}
@@ -280,49 +306,60 @@ CString CTPArticleDataBase::ResTypeToFolderName(TP_RES_TYPE eResType)
 	else if(eResType & TP_RES_CHANNEL)		return _T("Channel");
 	else if(eResType & TP_RES_ARTICLE)		return _T("Article");
 	else if(eResType & TP_RES_COMMENT)		return _T("ArticleSource");
+	else if(eResType & TP_RES_ARTICLERES)	return _T("ArticleSource");
 	else									ASSERT(0);
 	return _T("");
 }
 CString CTPArticleDataBase::GetResFilePath(GUID guidRes,TP_RES_TYPE eResType,void *pData)
 {
 	CString sFileName = GetLocalDataPath();
-	if(!pData)	{ASSERT(0);return sFileName;}
+	CString sGuidRes  = TP_UuidToString(&guidRes);
+	if(pData)
+	{
+		CString sGuidNode,sName ;
+		if(eResType & TP_RES_CHANNELNODE)
+		{
+			TPChannelNodeData *pNode = (TPChannelNodeData *)pData;
+			sGuidRes = TP_UuidToString(&guidRes);
+			sGuidNode = TP_UuidToString(&pNode->guidNode) ;
+			sName	= pNode->cNodeName;
+		}
+		else if(eResType & TP_RES_CHANNEL)
+		{
+			TPChannelData *pChannelData = (TPChannelData *)pData;
+			sGuidRes = TP_UuidToString(&guidRes);
+			sGuidNode = TP_UuidToString(&pChannelData->guidNode) ;
+			sName	= pChannelData->stuChannelBase.cChannelTitle;
 
-	CString sGuidRes,sGuidNode,sName ;
-	if(eResType & TP_RES_CHANNELNODE)
-	{
-		TPChannelNodeData *pNode = (TPChannelNodeData *)pData;
-		sGuidRes = TP_UuidToString(&guidRes);
-		sGuidNode = TP_UuidToString(&pNode->guidNode) ;
-		sName	= pNode->cNodeName;
-	}
-	else if(eResType & TP_RES_CHANNEL)
-	{
-		TPChannelData *pChannelData = (TPChannelData *)pData;
-		sGuidRes = TP_UuidToString(&guidRes);
-		sGuidNode = TP_UuidToString(&pChannelData->guidNode) ;
-		sName	= pChannelData->stuChannelBase.cChannelTitle;
+		}
+		else if(eResType & TP_RES_ARTICLE)
+		{
+			TPArticleData *pArticleData = (TPArticleData *)pData;
+			sGuidRes = TP_UuidToString(&guidRes);
+			sGuidNode = TP_UuidToString(&pArticleData->guidNode) ;
+			sName	= pArticleData->stuChannelItem.cItemTitle;
 
-	}
-	else if(eResType & TP_RES_ARTICLE)
-	{
-		TPArticleData *pArticleData = (TPArticleData *)pData;
-		sGuidRes = TP_UuidToString(&guidRes);
-		sGuidNode = TP_UuidToString(&pArticleData->guidNode) ;
-		sName	= pArticleData->stuChannelItem.cItemTitle;
-
-	}
-	else if(eResType & TP_RES_COMMENT)
-	{
-		TPCommentData *pCommentData = (TPCommentData *)pData;
+		}
+		else if(eResType & TP_RES_COMMENT)
+		{
+			TPCommentData *pCommentData = (TPCommentData *)pData;
+		}
+		else
+		{
+			ASSERT(0);
+		}	
+		TP_GetValidFileName(sName);
+		sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
+		if(!PathFileExists(sFileName))
+		{
+			CTPMapStringToString *p_aMap = GetMap(eResType);
+			if(p_aMap)
+			{
+				p_aMap->Lookup(sGuidRes, sFileName);
+			}
+		}
 	}
 	else
-	{
-		ASSERT(0);
-	}	
-	TP_GetValidFileName(sName);
-	sFileName.Format(_T("%s\\%s\\%s#%s#%s%s"),GetLocalDataPath(),ResTypeToFolderName(eResType),sGuidRes,sGuidNode,sName,ResTypeToExt(eResType));
-	if(!PathFileExists(sFileName))
 	{
 		CTPMapStringToString *p_aMap = GetMap(eResType);
 		if(p_aMap)
@@ -335,9 +372,9 @@ CString CTPArticleDataBase::GetResFilePath(GUID guidRes,TP_RES_TYPE eResType,voi
 
 LRESULT CTPArticleDataBase::InitFileMap()
 {
-	CString sChannelPath	 = GetLocalDataPath() + _T("\\Channel\\");
-	CString sChannelNodePath = GetLocalDataPath() + _T("\\ChannelNode\\");
-	CString sArticlePath	 = GetLocalDataPath() + _T("\\Article\\");
+	CString sChannelPath	 = GetLocalDataPath() + _T("\\Channel");
+	CString sChannelNodePath = GetLocalDataPath() + _T("\\ChannelNode");
+	CString sArticlePath	 = GetLocalDataPath() + _T("\\Article");
 	if(!PathFileExists(sChannelPath) || !PathFileExists(sChannelNodePath) || !PathFileExists(sArticlePath)) return S_FALSE;
 
 	CString      sFileName = _T("");
@@ -404,11 +441,12 @@ BOOL CTPArticleDataBase::CreateDefChannelNode(GUID guidRes, GUID guidNode, TCHAR
 	return TRUE;
 }
 
-BOOL CTPArticleDataBase::IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo)
+BOOL CTPArticleDataBase::IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo, GUID &guidExist)
 {
 	CString sCatalog  = TP_UuidToString(&guidChannelNode);
 	CString sFileName,sGuid;
 	POSITION posGet = NULL;
+	BOOL bFind = FALSE;
 	m_aChannelFileName.Lock();
 	posGet = m_aChannelFileName.GetStartPosition();
 	while (posGet)
@@ -420,15 +458,106 @@ BOOL CTPArticleDataBase::IsChannelExist(GUID guidChannelNode, TPChannelBase *pCh
 			ReadChannel(sFileName, stuChannel);
 			if((TP_StrCmp(pChannelInfo->cChannelTitle, stuChannel.stuChannelBase.cChannelTitle) == 0)
 				|| (TP_StrCmp(pChannelInfo->cChannelLink, stuChannel.stuChannelBase.cChannelLink) == 0))
-				return TRUE;
+			{
+				sFileName = PathFindFileName(sFileName);
+				guidExist = TP_UuidFromString(sFileName.Left(36));
+				bFind = TRUE;
+			}
 		}
 	}
 	m_aChannelFileName.Unlock();
-	return FALSE;
+	return bFind;
 }
 
 CString CTPArticleDataBase::GetCurArticleHtmlPath()
 {
 	CString sHtmlPath = TP_GetSysPath() + _T("\\Temp\\Html\\Cur.html");
 	return sHtmlPath;
+}
+CString CTPArticleDataBase::GetArticleResourcePath(GUID guidRes, TCHAR *cPath)
+{
+// 	CString sResource = cPath;
+	CString sSource = _T(""), sArticleDirect = _T("");
+	CString sGuidRes = TP_UuidToString(&guidRes);
+	CString sFileName = PathFindFileName(cPath);
+	sArticleDirect.Format(_T("%s\\%s\\%s"),GetLocalDataPath(),ResTypeToFolderName(TP_RES_ARTICLERES),sGuidRes);
+	if(!PathFileExists(sArticleDirect))
+	{
+		::CreateDirectory(sArticleDirect,NULL);
+	}
+	sSource.Format(_T("%s\\%s"),sArticleDirect,sFileName);
+	if(!PathFileExists(sSource))
+	{
+		if(!CopyFile(cPath, sSource, FALSE))
+		{
+			ASSERT(0);
+		}
+		DeleteFile(cPath);
+	}
+	return sSource;
+}
+BOOL  CTPArticleDataBase::IsArticleExist(GUID guidChannel, TPChannelItem *pChannelItem)
+{
+	CString sCatalog  = TP_UuidToString(&guidChannel);
+	CString sFileName,sGuid;
+	POSITION posGet = NULL;
+	BOOL bFind = FALSE;
+	m_aArticleFileName.Lock();
+	posGet = m_aArticleFileName.GetStartPosition();
+	while (posGet)
+	{
+		m_aArticleFileName.GetNextAssoc(posGet,sGuid,sFileName);
+		if(sFileName.Find(sCatalog)>0) 
+		{
+			TPArticleData stuArticle;
+			ReadArticle(sFileName, TP_GRADE_ALL, stuArticle);
+			if((TP_StrCmp(pChannelItem->cItemTitle, stuArticle.stuChannelItem.cItemTitle) == 0)
+				|| (TP_StrCmp(pChannelItem->cItemLink, stuArticle.stuChannelItem.cItemLink) == 0))
+			{
+				pChannelItem->guidItem = stuArticle.guidRes;
+				bFind = TRUE;
+			}
+		}
+	}
+	m_aArticleFileName.Unlock();
+	return bFind;
+}
+LRESULT CTPArticleDataBase::GetArticleChild(GUID guidNode, TPResDataArray &hChildRes)
+{
+	CString sCatalog  = TP_UuidToString(&guidNode);
+	CString sFileName,sGuid;
+	POSITION posGet = NULL;
+	m_aArticleFileName.Lock();
+	posGet = m_aArticleFileName.GetStartPosition();
+	while (posGet)
+	{
+		m_aArticleFileName.GetNextAssoc(posGet,sGuid,sFileName);
+		if(sFileName.Find(sCatalog)>0) 
+		{
+			TPResData stuResData;
+			stuResData.guidRes = TP_UuidFromString(sGuid);
+			stuResData.guidNode = guidNode;
+			stuResData.eResType = TP_RES_ARTICLE;
+			hChildRes.Add(stuResData);
+		}
+	}
+	m_aArticleFileName.Unlock();
+	return FALSE;
+}
+LRESULT CTPArticleDataBase::DeleteChannel(GUID guidRes)
+{
+	//注意删掉Channel下面的Article及其source
+	TPResDataArray aResData;
+	GetArticleChild(guidRes, aResData);
+	for (int l = 0 ; l < aResData.GetSize(); l++)
+	{
+		DeleteArticle(aResData[l].guidRes);
+	}
+
+	CString  sFileName = GetResFilePath(guidRes, TP_RES_CHANNEL, NULL);
+	//delete base
+	DeleteFile(sFileName);
+
+	m_aChannelFileName.RemoveKey(TP_GuidToString(&guidRes));
+	return S_OK;
 }

@@ -129,9 +129,12 @@ BOOL CTPDownloadHttp::Download()
 
 	if(TP_StrLen(m_cDownloadPath) <= 0)	ASSERT(0);
 
-	InternetDownloadFile(/*AfxGetMainWnd()->m_hWnd*/NULL,4,4,m_cHttpUrl,m_cDownloadPath);
-
-	if(!PathFileExists(m_cDownloadPath))	ASSERT(0);
+	if(InternetDownloadFile(/*AfxGetMainWnd()->m_hWnd*/NULL,4,4,m_cHttpUrl,m_cDownloadPath) == 0)
+	{
+		if(!PathFileExists(m_cDownloadPath))	ASSERT(0);
+	}
+	else
+		ASSERT(0);
 	return TRUE;
 }
 

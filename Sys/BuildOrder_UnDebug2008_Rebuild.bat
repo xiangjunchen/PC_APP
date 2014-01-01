@@ -1,3 +1,4 @@
+devenv ..\TPCommonData\Src\TPBufferOperate\TPBufferOperate2008.vcproj /rebuild "Unicode Debug"
 devenv ..\TPCommonCtrl\Src\TPCommonClass\TPCommonClass.vcproj /rebuild "Unicode Debug"
 devenv ..\TPCommonCtrl\Src\TPExtraCtrl\TPExtraCtrl2008.vcproj /rebuild "Unicode Debug"
 devenv ..\TPCommonCtrl\Src\TPCommonCtrl\TPCommonCtrl.vcproj /rebuild "Unicode Debug"

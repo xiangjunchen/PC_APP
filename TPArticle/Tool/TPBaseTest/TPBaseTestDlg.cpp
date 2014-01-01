@@ -152,7 +152,26 @@ BOOL CTPBaseTestDlg::OnInitDialog()
 // 	TP_GetOffsetDiv(sHtml);
 
 	//CString sPath = TP_GetWindowsSysPath(TP_WINDOWSPATH_PERSONAL);
-	AdjustHtml();
+//	AdjustHtml();
+
+	CDC *pDc = GetDC();
+	CRect rtAritcleBack = CRect(10,10,100,100);
+	GetDlgItem(IDC_STATIC_HTML)->GetWindowRect(rtAritcleBack);
+	ScreenToClient(rtAritcleBack);
+	pDc ->DrawText(_T("C:\\1ssssssssss.bmp"),rtAritcleBack,DT_SINGLELINE|DT_LEFT|DT_VCENTER|DT_CALCRECT);
+	pDc->MoveTo(CPoint(rtAritcleBack.left,rtAritcleBack.top));
+	pDc->LineTo(CPoint(rtAritcleBack.right,rtAritcleBack.bottom));
+	CDC *pDC = GetDC();
+
+	ReleaseDC(pDc);
+
+	CPaintDC dc(this); 
+	CRect rtClient;
+	GetClientRect(&rtClient);
+	dc.FillSolidRect(rtClient,RGB(255,0,0));
+
+// 	CPaintDC dc(this); 
+// 	dc.FillSolidRect(rtAritcleBack,RGB(255,0,0));
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -220,6 +239,11 @@ void CTPBaseTestDlg::OnPaint()
 	}
 	else
 	{
+		CPaintDC dc(this); 
+		CRect rtClient;
+		GetClientRect(&rtClient);
+		dc.FillSolidRect(rtClient,RGB(255,0,0));
+
 		CDialog::OnPaint();
 	}
 }

@@ -586,7 +586,7 @@ protected:
 protected:
 
 	void            LoadRes();
-	void            PaintHead(CDC *pDC);
+	virtual void    PaintHead(CDC *pDC);
 	virtual void    PaintDC(CDC *pDC = NULL);
 	void            PaintInvert(CRectArray &aInvert);
 

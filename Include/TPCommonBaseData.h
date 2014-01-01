@@ -903,6 +903,7 @@ inline void  TP_GetValidFileName(CString &sClipName)
 	sClipName.Replace(_T('<'), _T('-'));
 	sClipName.Replace(_T('/'), _T('-'));
 	sClipName.Replace(_T('|'), _T('-'));
+	sClipName.Replace(_T('?'), _T('-'));
 }  
 class CTraceEx
 {
@@ -1282,6 +1283,7 @@ typedef struct _tagTPChannelItem
 	TCHAR	*cItemLink;
 	TCHAR	*cItemDescription;
 	TCHAR	*cItemPubDate;
+	TCHAR   *cChannelTitle;
 	_tagTPChannelItem()
 	{
 		Reset();
@@ -1297,6 +1299,7 @@ typedef struct _tagTPChannelItem
 		cItemLink = NULL;
 		cItemDescription = NULL;
 		cItemPubDate = NULL;
+		cChannelTitle = NULL;
 	}
 	void Release()
 	{
@@ -1304,6 +1307,7 @@ typedef struct _tagTPChannelItem
 		if(cItemLink)  {delete cItemLink ; cItemLink = NULL;}
 		if(cItemDescription)  {delete cItemDescription ; cItemDescription = NULL;}
 		if(cItemPubDate)  {delete cItemPubDate ; cItemPubDate = NULL;}
+		if(cChannelTitle)  {delete cChannelTitle ; cChannelTitle = NULL;}
 	}
 	_tagTPChannelItem &operator = (_tagTPChannelItem &oTher)
 	{
@@ -1314,6 +1318,7 @@ typedef struct _tagTPChannelItem
 		TP_StrCpy(cItemLink, oTher.cItemLink, TP_StrLen(oTher.cItemLink));
 		TP_StrCpy(cItemDescription, oTher.cItemDescription, TP_StrLen(oTher.cItemDescription));
 		TP_StrCpy(cItemPubDate, oTher.cItemPubDate, TP_StrLen(oTher.cItemPubDate));
+		TP_StrCpy(cChannelTitle, oTher.cChannelTitle, TP_StrLen(oTher.cChannelTitle));
 		return *this;
 	}
 	void SaveFile(CFile &cFileWrite)
@@ -1323,6 +1328,7 @@ typedef struct _tagTPChannelItem
 		TP_WriteStrToFile(cItemLink,  cFileWrite);
 		TP_WriteStrToFile(cItemDescription,  cFileWrite);
 		TP_WriteStrToFile(cItemPubDate,  cFileWrite);
+		TP_WriteStrToFile(cChannelTitle,  cFileWrite);
 	}
 	void ReadFile(CFile &cFileRead)
 	{
@@ -1333,6 +1339,7 @@ typedef struct _tagTPChannelItem
 		TP_ReadStrFromFile(cItemLink, cFileRead);
 		TP_ReadStrFromFile(cItemDescription, cFileRead);
 		TP_ReadStrFromFile(cItemPubDate, cFileRead);
+		TP_ReadStrFromFile(cChannelTitle, cFileRead);
 	}
 	BOOL IsEqual(_tagTPChannelItem *poTher)
 	{

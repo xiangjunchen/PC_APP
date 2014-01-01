@@ -39,8 +39,8 @@
 
 
 #include "TPImportDllDef.h"
-#include "TPCommonCtrlExport.h"
 #include "TPCommonDataExport.h"
+#include "TPCommonCtrlExport.h"
 #include "TPCommonGuiDef.h"
 
 #include "TPArticleIOPluginDefine.h"

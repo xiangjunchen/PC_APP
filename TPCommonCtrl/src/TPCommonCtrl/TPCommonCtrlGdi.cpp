@@ -134,15 +134,36 @@ namespace _tp_commonctrl
 		//我们定义的数据
 
 		//基本
-
+		//(255, 251, 240),自己感觉一下，相应调整一下数值。 
+		//	Windows的标准色(256色模式)
+		//	RGB( 0, 0, 0) 黑色
+		//	RGB( 0, 0, 255) 蓝色
+		//	RGB( 0, 255, 0) 绿色
+		//	RGB( 0, 255, 255) 青色
+		//	RGB( 255, 0, 0) 红色
+		//	RGB( 255, 0, 255) 品红色
+		//	RGB( 255, 255, 0) 黄色
+		//	RGB( 255, 255, 255) 白色
+		//	RGB( 0, 0, 128) 暗蓝色
+		//	RGB( 0, 128, 0) 暗绿色
+		//	RGB( 0, 128, 128) 暗青色
+		//	RGB( 128, 0, 0) 暗红色
+		//	RGB( 128, 0, 128) 暗紫色
+		//	RGB( 128, 128, 0) 橄榄色
+		//	RGB( 128, 128, 128) 暗灰色
+		//	RGB( 192, 192, 192) 亮灰色
+		//	RGB( 192, 220, 192) 淡绿色
+		//	RGB( 166, 202, 240) 天蓝色
+		//	RGB( 255, 251, 240) 乳白色
+		//	RGB( 160, 160, 164) 中灰色
 		if(dwBegin<=COLOR_BASE_BALCK && dwEnd >=COLOR_VU_DISABLE)
 		{	
 			g_tpSysColor[COLOR_BASE_BALCK]               = RGB(0,0,0);     //一级窗口背景
 
-			g_tpSysColor[COLOR_BASE_FRAME]               = RGB(125,125,125);  //一级窗口背景	//2006-9-15
+			g_tpSysColor[COLOR_BASE_FRAME]               = RGB(234,234,233);  //一级窗口背景	//2006-9-15
 			g_tpSysColor[COLOR_BASE_FRAME2]              = RGB(90,90,90);     //二级窗口背景
 
-			g_tpSysColor[COLOR_BASE_WINDOW]              = RGB(139,139,139);  //控件窗口背景	
+			g_tpSysColor[COLOR_BASE_WINDOW]              = RGB(234,234,233);  //控件窗口背景	
 			g_tpSysColor[COLOR_BASE_WINDOW2]             = RGB(125,125,125);  //控件窗口背景	//2006-12-21
 			g_tpSysColor[COLOR_BASE_HIGHLIGHT]           = RGB(33,33,33);     //控件高亮背景
 			g_tpSysColor[COLOR_BASE_HIGHLIGHT2]          = RGB(33,33,33);     //控件高亮背景
@@ -155,8 +176,8 @@ namespace _tp_commonctrl
 
 			//{{2006-11-08 hezhou:same as xpri
 
-			g_tpSysColor[COLOR_BASE_TEXT]                = RGB(240,240,240);	//正常文本
-			g_tpSysColor[COLOR_BASE_TEXTFOCUS]           = RGB(255,255,255);	//焦点文本
+			g_tpSysColor[COLOR_BASE_TEXT]                = RGB(0, 0, 0);	//正常文本
+			g_tpSysColor[COLOR_BASE_TEXTFOCUS]           = RGB(0, 0, 0);	//焦点文本
 			g_tpSysColor[COLOR_BASE_TEXTDIS]             = RGB(182,182,182);	//无效文本 
 			g_tpSysColor[COLOR_BASE_TEXTHIGHLIGHT]       = RGB(255,255,255);    //高亮文本	
 			//}}

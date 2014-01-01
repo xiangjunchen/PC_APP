@@ -243,8 +243,11 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Lib\;..\..\..\Lib\Lib_Import\dx9sdk;..\..\..\Lib\Lib_Import\imgio"
 				ModuleDefinitionFile=".\TPCommonClassud.def"
+				DelayLoadDLLs=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				OptimizeReferences="1"
+				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="..\..\..\Lib\TPCommonClassud.lib"
@@ -413,6 +416,14 @@
 				Name="fio_img"
 				>
 				<File
+					RelativePath=".\gif.h"
+					>
+				</File>
+				<File
+					RelativePath=".\gif_file.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\JCONFIG.H"
 					>
 				</File>
@@ -430,6 +441,66 @@
 				</File>
 				<File
 					RelativePath=".\JPEGLIB.H"
+					>
+				</File>
+				<File
+					RelativePath=".\jpg_file.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\pcx_file.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\png.h"
+					>
+				</File>
+				<File
+					RelativePath=".\png_file.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\pngconf.h"
+					>
+				</File>
+				<File
+					RelativePath=".\RGBClusterInterface.h"
+					>
+				</File>
+				<File
+					RelativePath=".\sg_algorithm.h"
+					>
+				</File>
+				<File
+					RelativePath=".\sg_interface.h"
+					>
+				</File>
+				<File
+					RelativePath=".\sg_manual.h"
+					>
+				</File>
+				<File
+					RelativePath=".\TgaFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TgaFile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\TPAVTgaFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TPAVTgaFile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\zconf.h"
+					>
+				</File>
+				<File
+					RelativePath=".\zlib.h"
 					>
 				</File>
 			</Filter>

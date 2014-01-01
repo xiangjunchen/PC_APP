@@ -3,6 +3,8 @@
 CString TP_GetSysPath();
 void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile);
 void    File_FindFile(CString strPath,CString sType,CStringArray &aFile);
+BOOL	TP_DeleteDirectory(CString sPath,BOOL bRoot = TRUE);
+
 class CTPMemFile : public CMemFile
 {
 public:

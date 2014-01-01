@@ -247,6 +247,7 @@ BOOL CTPChannelParser::ParserItemNode(MSXML2::IXMLDOMNodePtr ChildNode)
 // 				ASSERT(0);
 // 			}
 		}
+		TP_StrCpy(pstuChannelItem->cChannelTitle, m_pChannelInfo->cChannelTitle, TP_StrLen(m_pChannelInfo->cChannelTitle));
 		m_pChannelInfo->aChannelItem.Add(pstuChannelItem);
 	}	
 	return TRUE;
@@ -275,6 +276,7 @@ CTPArticleParser::CTPArticleParser(void)
 	m_pChannelItem = NULL;
 	m_cKeyDiv      = NULL;
 	m_cItemText	   = NULL;
+	m_cImgPath	   = NULL;
 }
 
 CTPArticleParser::~CTPArticleParser(void)
@@ -323,49 +325,71 @@ int CTPArticleParser::GetItemInfo(TCHAR *&cItemText,TCHAR *&cImgPath)
 	cItemText = m_cItemText;
 
 	//download img
-// 	CString sImgUrl = ParserImg(sArticle);
-// 	if(!sImgUrl.IsEmpty())
-// 	{
-// 		CString sExt = sImgUrl.Right(4);
-// 		sExt = PathFindExtension(sImgUrl);
-// 		TCHAR cXMLPath[MAX_PATH];
-// 		::GetModuleFileName(NULL,cXMLPath,MAX_PATH);
-// 		PathRemoveFileSpec(cXMLPath);	
-// 		lstrcat(cXMLPath,_T("\\temp")+sExt);
-// 
-// 		CTPDownloadHttp stuDownload;
-// 		stuDownload.SetHttpUrl(sImgUrl, cXMLPath);
-// 		stuDownload.Download();
-// 
-// 		TP_StrCpy(cImgPath, cXMLPath,MAX_PATH);		
-// 	}
+ 	CString sImgUrl = ParserImg(sArticle);
+ 	if(!sImgUrl.IsEmpty())
+ 	{
+		int iFind = sImgUrl.ReverseFind('/');
+ 		CString sFileName = sImgUrl.Right(sImgUrl.GetLength()-iFind-1);
+ 		//sExt = PathFindExtension(sImgUrl);
+ 		TCHAR cXMLPath[MAX_PATH];
+ 		::GetModuleFileName(NULL,cXMLPath,MAX_PATH);
+ 		PathRemoveFileSpec(cXMLPath);	
+ 		lstrcat(cXMLPath,_T("\\")+sFileName);
+ 
+ 		CTPDownloadHttp stuDownload;
+ 		stuDownload.SetHttpUrl(sImgUrl, cXMLPath);
+ 		stuDownload.Download();
+ 
+ 		TP_StrCpy(m_cImgPath, cXMLPath,MAX_PATH);	
+		cImgPath = m_cImgPath;		
+ 	}
 
-	return 1;
+	return 1;	
 }
 
 CString	CTPArticleParser::ParserImg(CString sHtmlStr, int iPos)
 {
 	//<img src = "http://u.img.huxiu.com/portal/201312/12/120803iiix2jljkxp6ibk6.jpg" alt = 
 	CString sImg = _T("");
-// 	sHtmlStr.Find(_T("<img"));
 	int iFind = -1;
-	TCHAR *szImg[] = {_T(".jpg"),_T(".png"),_T(".bmp")};
-	for (int l = 0 ; l < sizeof(szImg)/sizeof(TCHAR); l++)
+	if(0)
 	{
-		iFind = sHtmlStr.Find(szImg[l]);
-		if(iFind > 0)
+		TCHAR *szImg[] = {_T(".jpg"),_T(".png"),_T(".bmp")};
+		for (int l = 0 ; l < sizeof(szImg)/sizeof(TCHAR*); l++)
 		{
-			sImg = sHtmlStr.Left(iFind);
-			iFind = sImg.ReverseFind('\"');
-			if(iFind > 0)
+			iFind = sHtmlStr.Find(szImg[l]);
+			if(iFind >= 0)
 			{
-				sImg = sImg.Right(sImg.GetLength() - iFind - 1);
-				sImg += szImg[l];
-				break;
+				sImg = sHtmlStr.Left(iFind);
+				iFind = sImg.ReverseFind('\"');
+				if(iFind > 0)
+				{
+					sImg = sImg.Right(sImg.GetLength() - iFind - 1);
+					sImg += szImg[l];
+					iFind = sImg.Find(_T("http:"));
+					if(iFind >= 0)
+						break;
+					else
+						ASSERT(0);
+				}
 			}
 		}
+	}	
+	else
+	{
+		iFind = sHtmlStr.Find(_T("<img"));
+		if(iFind >= 0)
+		{
+			int iLeft = -1 , iRight = -1;
+			iLeft  = sHtmlStr.Find('\"', iFind);
+			iRight = sHtmlStr.Find('\"', ++iLeft);
+			if(iLeft > 0 && iRight > 0)
+			{
+				sImg = sHtmlStr.Mid(iLeft, iRight - iLeft);
+			}
+		}
+
 	}
-	
 
 	return sImg;
 }
@@ -378,6 +402,12 @@ BOOL	CTPArticleParser::ParserHtml(CString &sHtmlStr)
 	sHtmlStr = sTemp;
 	ASSERT(sHtmlStr.GetLength() > 50);
 	int iMark  = sHtmlStr.Find(m_cKeyDiv,0);
+	if(iMark < 0)
+	{
+		//初始匹配失败
+		sHtmlStr = m_pChannelItem->cItemDescription;
+		return TRUE;
+	}
 	sHtmlStr = CTPWebHost::GetTagRangeStr(_T("<div"), _T("</div>"), iMark, sHtmlStr);
 	ASSERT(sHtmlStr.GetLength() > 50);
 //	AfxMessageBox(sArticle); 
@@ -389,18 +419,31 @@ BOOL	CTPArticleParser::ParserHtml(CString &sHtmlStr)
 // 	{
 	return TRUE;
 }
+CString CTPArticleParser::GetBodyString(const TCHAR *cHtmlBody)
+{
+	CString sText = cHtmlBody;
+	if(sText.GetLength() <= 0)
+	{
+		sText = _T("稍等下下，内容正在努力加载中噢 ^_^");
+	}
+	return sText;
+}
 CString CTPArticleParser::GetTemplateString(const TCHAR *cFileName, 
 											const TCHAR *cHtmlBody, 
 											const TCHAR *cHtmlTitle,
 											const TCHAR *cHtmlAuthor,
-											const TCHAR *cPubData)
+											const TCHAR *cPubData,
+											BOOL bFullScreen)
 {
 	CString sPatch = _T(""), sHtmlAll = _T("");
 	TCHAR cPath[MAX_PATH];
 	lstrcpy(cPath, cFileName);
 	PathRemoveFileSpec(cPath);	
 	sPatch  = cPath;
-	sPatch += _T("\\template1.html");
+	if(bFullScreen)
+		sPatch += _T("\\template1.html");
+	else
+		sPatch += _T("\\template0.html");
 	CString sTempHtml = GetHtmlString(sPatch);
 	int iHead = sTempHtml.Find(_T("</HEAD>"));
 	int iLength = sTempHtml.GetLength();
@@ -422,7 +465,7 @@ CString CTPArticleParser::GetTemplateString(const TCHAR *cFileName,
 		CString sBodyStart = sHtmlAll.Left(iBody);
 		CString sBodyEnd = sHtmlAll.Right(iLength - iBody);
 		sHtmlAll = sBodyStart;
-		sHtmlAll += cHtmlBody;
+		sHtmlAll += GetBodyString(cHtmlBody);
 		sHtmlAll += sBodyEnd;
 	}		
 	return sHtmlAll;
@@ -432,11 +475,12 @@ BOOL CTPArticleParser::SaveHtml(const TCHAR *cFileName,
 								const TCHAR *cHtmlTitle,
 								const TCHAR *cHtmlAuthor,
 								const TCHAR *cPubData,
-								BOOL bApplyTemplate)
+								BOOL bApplyTemplate,
+								BOOL bFullScreen)
 {
 	CString sHtmlAll = cHtmlBody;
 	if(bApplyTemplate)
-		sHtmlAll = GetTemplateString(cFileName, cHtmlBody, cHtmlTitle, cHtmlAuthor, cPubData);
+		sHtmlAll = GetTemplateString(cFileName, cHtmlBody, cHtmlTitle, cHtmlAuthor, cPubData,bFullScreen);
 	CFile file;
 	try
 	{
@@ -500,6 +544,11 @@ CString CTPArticleParser::GetHtmlString(const TCHAR *cFileName)
 
 BOOL CTPArticleParser::ReleaseItemInfo()
 {
+	if(m_cImgPath)
+	{
+		delete m_cImgPath;
+		m_cImgPath = NULL;
+	}
 	if(m_cItemText)
 	{
 		delete m_cItemText;

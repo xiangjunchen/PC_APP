@@ -37,7 +37,7 @@
 #define  TPWNDLEVEL1         0x00000001
 #define  TPWNDLEVEL2         0x00000002
 #define  TPWNDLEVEL3         0x00000004 //Ãÿ ‚
-#define  TPSCROLLBAR         17
+#define  TPSCROLLBAR         10
 #define  TP_SYSMENU_HELP     6502
 
 #define  WM_MESSAGEEXCHANGE1		WM_USER + 2241

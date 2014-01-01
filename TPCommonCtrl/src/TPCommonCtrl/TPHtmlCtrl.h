@@ -6,7 +6,7 @@
  
 // CTPHtmlCtrl html view
 
-class AFX_EXT_CLASS CTPHtmlCtrl : public CHtmlView
+class AFX_EXT_CLASS CTPHtmlCtrl : public CHtmlView,public CTPBaseCtrl
 {
 	DECLARE_DYNCREATE(CTPHtmlCtrl)
 
@@ -33,7 +33,25 @@ public:
 
 	// override to handle links to "app:mumble...". lpszWhere will be "mumble"
 	virtual void OnAppCmd(LPCTSTR lpszWhere);
+	virtual BOOL Create(
+		LPCTSTR lpszClassName,
+		LPCTSTR lpszWindowName,
+		DWORD dwStyle,
+		const RECT& rect,
+		CWnd* pParentWnd,
+		UINT nID,
+		CCreateContext* pContext = NULL 
+		);
+	virtual void OnQuit( );
 
+protected:
+	TPScrollBarData          *m_pScrollBar;
+	SCROLLINFO                m_sVScrollInfo;
+	SCROLLINFO                m_sHScrollInfo;
+	CPoint                    m_ptScrollPos;
+	BOOL					  m_bSubWindow;
+
+	void SubCtrl(BOOL bCreate);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

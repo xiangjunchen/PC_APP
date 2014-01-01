@@ -6,6 +6,7 @@ const GUID guidPublicSportChannelNode	= { 0xA78AFD2D, 0xc34b, 0x4246, { 0x97, 0x
 const GUID guidPublicLifeChannelNode    = { 0xA78AFD2D, 0xd443, 0x483d, { 0xb7, 0xb0, 0xa, 0xd7, 0xc0, 0x5b, 0x6d, 0xd4 } };
 
 const GUID guidPrivateChannelNode  = { 0xA78AFFFF, 0x9fca, 0x4f77, { 0xbe, 0x80, 0xe6, 0xdc, 0xf3, 0x4d, 0xeb, 0x5b } };
+const GUID guidPrivateChannel      = { 0xA78AFFFF, 0x9fca, 0x4f77, { 0xbe, 0x80, 0xe6, 0xdc, 0xf3, 0x4e, 0xec, 0x5c } };
 
 #include "..\..\Include\TPCommonInclude.h"
 typedef CArray<GUID,GUID &> CGUIDArray;
@@ -18,6 +19,7 @@ typedef CArray<GUID,GUID &> CGUIDArray;
 #define  TP_RES_CHANNEL				0x00000002
 #define  TP_RES_ARTICLE             0x00000004
 #define  TP_RES_COMMENT				0x00000008
+#define  TP_RES_ARTICLERES			0x00000010
 
 #define  TP_GRADE_TYPE              ULONGLONG
 #define  TP_GRADE_UNKNOW			0x00000000
@@ -243,7 +245,7 @@ typedef struct _tagTPResBaseInfo
 	SYSTEMTIME	tmModify;
 	SYSTEMTIME	tmRead;
 	TP_RES_TYPE eResType;
-
+	TP_CHANNEL_NODETYPE		eNodeType;
 	_tagTPResBaseInfo()
 	{
 		Reset();
@@ -259,6 +261,7 @@ typedef struct _tagTPResBaseInfo
 		GetLocalTime(&tmModify);
 		GetLocalTime(&tmRead);
 		eResType   = TP_RES_UNKNOW;
+		eNodeType  = TP_CHANNEL_UNKNOW;
 	}
 	
 }TPResBaseInfo;
@@ -363,6 +366,7 @@ typedef struct _tagTPArticleData : public TPResBaseInfo
 	INT64					lCommentSize;
 	TPChannelItem			stuChannelItem;
 	CTPPictureItemArray		aPictureItem;
+
 	_tagTPArticleData()
 	{
 		Reset();
@@ -403,7 +407,6 @@ typedef struct _tagTPArticleData : public TPResBaseInfo
 
 typedef struct _tagTPChannelData : public TPResBaseInfo
 {
-	TP_CHANNEL_NODETYPE		eNodeType;
 	int						lUpdateInterval;		//刷新间隔时间（单位是分）
 	int						lSaveNum;				//保存条目数
 	TCHAR					*cKeyDiv;
@@ -487,7 +490,6 @@ typedef CArray<TPChannelData ,TPChannelData &> TPChannelDataArray;
 typedef struct _tagTPChannelNodeData : public TPResBaseInfo
 {
 	TCHAR					*cNodeName;
-	TP_CHANNEL_NODETYPE		eNodeType;
 	_tagTPChannelNodeData()
 	{
 		Reset();
@@ -500,7 +502,6 @@ typedef struct _tagTPChannelNodeData : public TPResBaseInfo
 	{
 		TPResBaseInfo::Reset();
 		cNodeName = NULL;
-		eNodeType = TP_CHANNEL_UNKNOW;
 	}
 	void Release()
 	{
@@ -529,7 +530,7 @@ typedef struct _tagTPChannelInterface
 	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
 	LRESULT  (*TP_DelChannelInfo)(GUID guidRes);
 	LRESULT  (*TP_GetChannelChild)(GUID guidRes, TPResDataArray &hChildRes);
-	BOOL     (*TP_IsChannelExist)(GUID guidChannelNode, TPChannelBase *pChannelInfo);
+	BOOL     (*TP_IsChannelExist)(GUID guidChannelNode, TPChannelBase *pChannelInfo, GUID &guidExist);
 
 	_tagTPChannelInterface()
 	{
@@ -544,6 +545,9 @@ typedef struct _tagTPArticleInterface
 	LRESULT  (*TP_SetArticleInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade, TPArticleData &stuArticleData); //
 	LRESULT  (*TP_DelArticleInfo)(GUID guidRes);
 	CString  (*TP_GetCurArticleHtmlPath)(); //
+	CString  (*TP_GetArticleResourcePath)(GUID guidRes, TCHAR *cPath);
+	BOOL     (*TP_IsArticleExist)(GUID guidChannel, TPChannelItem *pChannelItem);
+	LRESULT  (*TP_GetArticleChild)(GUID guidNode, TPResDataArray &hChildRes);
 
 	_tagTPArticleInterface()
 	{
@@ -591,6 +595,9 @@ typedef struct _tagTPArticlePluginInterface
 	LRESULT  (*TP_SetArticleInfo)(GUID guidRes,TP_GRADE_TYPE eClipGrade,TPArticleData &stuArtData); //
 	LRESULT  (*TP_DelArticleInfo)(GUID guidRes);
 	CString  (*TP_GetCurArticleHtmlPath)();
+	CString  (*TP_GetArticleResourcePath)(GUID guidRes, TCHAR *cPath);
+	BOOL     (*TP_IsArticleExist)(GUID guidChannel, TPChannelItem *pChannelItem);
+	LRESULT  (*TP_GetArticleChild)(GUID guidNode, TPResDataArray &hChildRes);
 
 }TPArticlePluginInterface;
 
@@ -600,7 +607,7 @@ typedef struct _tagTPChannelPluginInterface
 	LRESULT  (*TP_SetChannelInfo)(GUID guidRes,TPChannelData &stuChannelData); //
 	LRESULT  (*TP_DelChannelInfo)(GUID guidRes);
 	LRESULT  (*TP_GetChannelChild)(GUID guidRes, TPResDataArray &hChildRes);
-	BOOL     (*TP_IsChannelExist)(GUID guidChannelNode, TPChannelBase *pChannelInfo);
+	BOOL     (*TP_IsChannelExist)(GUID guidChannelNode, TPChannelBase *pChannelInfo, GUID &guidExist);
 
 }TPChannelPluginInterface;
 

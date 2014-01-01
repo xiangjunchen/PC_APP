@@ -11,7 +11,25 @@ CString TP_GetSysPath()
 	sPatch += _T("\\Sys");
 	return sPatch;
 }
-
+BOOL TP_DeleteDirectory(CString sPath,BOOL bRoot)
+{
+	CStringArray aPath;
+	TP_FindFile(sPath,_L("\\*.*"), FALSE,FALSE,aPath);
+	for(INT_PTR l=0;l<aPath.GetSize();l++)
+	{
+		if(!DeleteFile(aPath[l])) return FALSE;
+	}
+	aPath.RemoveAll();
+	TP_FindFile(sPath,_L("\\*.*"), TRUE,FALSE,aPath);
+	for(INT_PTR l=0;l<aPath.GetSize();l++) 
+	{
+		BOOL bReturn = TP_DeleteDirectory(aPath[l],TRUE);
+		if(bReturn == FALSE) return FALSE;
+	}	
+	BOOL bReturn = TRUE;
+	if(bRoot) bReturn = ::RemoveDirectory(sPath);	
+	return bReturn;
+}
 void    File_FindFile(CString strPath,CString strFile,BOOL bPath,CStringArray &aFile)
 {
 	WIN32_FIND_DATA findData;

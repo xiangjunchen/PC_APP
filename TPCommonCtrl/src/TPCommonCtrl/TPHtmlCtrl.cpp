@@ -10,7 +10,8 @@ IMPLEMENT_DYNCREATE(CTPHtmlCtrl, CHtmlView)
 
 CTPHtmlCtrl::CTPHtmlCtrl()
 {
-
+	m_pScrollBar = NULL;
+	m_bSubWindow = FALSE;
 }
 
 CTPHtmlCtrl::~CTPHtmlCtrl()
@@ -70,6 +71,46 @@ void CTPHtmlCtrl::Dump(CDumpContext& dc) const
 	CHtmlView::Dump(dc);
 }
 #endif //_DEBUG
+void CTPHtmlCtrl::SubCtrl(BOOL bCreate)
+{
+ 	//if(bCreate)
+ 	//{	
+ 	//	if(m_bSubWindow) return;
+ 	//	m_bSubWindow = TRUE;	
+ 	//	m_pScrollBar = TP_ReplaceWnd(this);
+ 	//	m_pScrollBar ->iScrollHeight = TPSCROLLBAR;
+ 	//	m_pScrollBar ->iScrollWidth  = TPSCROLLBAR;
+ 	//	m_pScrollBar ->m_pVScrollInfo = &m_sVScrollInfo;
+ 	//	m_pScrollBar ->m_pHScrollInfo = &m_sHScrollInfo;
+ 	//	SaveFont(m_hWnd);
+ 	//}
+ 	//else
+ 	//{
+ 	//	if(!m_bSubWindow) return;
+ 	//	m_bSubWindow = FALSE;	
+ 	//	TP_UnReplaceWnd(this);
+ 	//	m_pScrollBar = NULL;
+ 	//	RestoreFont(m_hWnd);
+ 	//}
+}
+BOOL CTPHtmlCtrl::Create(
+					LPCTSTR lpszClassName,
+					LPCTSTR lpszWindowName,
+					DWORD dwStyle,
+					const RECT& rect,
+					CWnd* pParentWnd,
+					UINT nID,
+					CCreateContext* pContext  
+					)
+{
+	BOOL bCreate = CHtmlView::Create(lpszClassName, lpszWindowName,dwStyle,rect,pParentWnd,nID,pContext);
 
+	SubCtrl(TRUE);
+	return bCreate;
+}
+void CTPHtmlCtrl::OnQuit( )
+{
+	ASSERT(0);
+}
 
 // CTPHtmlCtrl message handlers

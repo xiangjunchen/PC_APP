@@ -23,13 +23,19 @@ public:
 	LRESULT ReadChannel(CString  sFileName,TPChannelData &stuChannelData);
 	LRESULT ReadChannel(GUID guidRes,TPChannelData &stuChannelData);
 	LRESULT WriteChannel(GUID guidRes,TPChannelData &stuChannelData);
+	LRESULT DeleteChannel(GUID guidRes);
 	LRESULT GetChannelChild(GUID guidRes, TPResDataArray &hChildRes);
-	BOOL    IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo);
+	BOOL    IsChannelExist(GUID guidChannelNode, TPChannelBase *pChannelInfo, GUID &guidExist);
 
 	//Article
+	LRESULT ReadArticle(CString sFileName,TP_GRADE_TYPE eGradeType, TPArticleData &stuArticleData);
 	LRESULT ReadArticle(GUID guidRes,TP_GRADE_TYPE eGradeType, TPArticleData &stuArticleData);
 	LRESULT WriteArticle(GUID guidRes,TPArticleData &stuArticleData);
+	LRESULT DeleteArticle(GUID guidRes);
 	CString GetCurArticleHtmlPath();	
+	CString GetArticleResourcePath(GUID guidRes, TCHAR *cPath);
+	BOOL    IsArticleExist(GUID guidChannel, TPChannelItem *pChannelItem);
+	LRESULT GetArticleChild(GUID guidNode, TPResDataArray &hChildRes);
 	//base
 	CTPMapStringToString *GetMap(TP_RES_TYPE eResType);
 	LRESULT InitFileMap();
