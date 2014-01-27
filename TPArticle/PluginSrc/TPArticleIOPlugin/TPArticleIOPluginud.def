@@ -1,6 +1,0 @@
-; TPArticleIOPluginud.def : Declares the module parameters for the DLL.
-
-LIBRARY      "TPArticleIOPluginud"
-
-EXPORTS
-   TP_GetPlugInProcess

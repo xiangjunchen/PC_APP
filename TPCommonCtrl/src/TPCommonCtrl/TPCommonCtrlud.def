@@ -1,6 +1,0 @@
-; TPCommonCtrlUD.def : Declares the module parameters for the DLL.
-
-LIBRARY      "TPCommonCtrlUD"
-
-EXPORTS
-    ; Explicit exports can go here
